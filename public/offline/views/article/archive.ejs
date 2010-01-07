@@ -1,0 +1,22 @@
+    <% if (!articles.length){ %>
+        <p>No articles found</p>
+        <% } else {
+    var currentmonth = 0
+    var currentyear = 0
+    for(var i=0;i<articles.length;i++) {
+        if (articles[i].published_at_month() != currentmonth || articles[i].published_at_year() != currentyear) {
+            currentmonth = articles[i].published_at_month()
+            currentyear = articles[i].published_at_year()
+                %>
+                <h3 class="archivemonth"><%= month_names[articles[i].published_at_month()-1] %> <%= articles[i].published_at_year() %></h3>
+                <% }%>
+            <div class="archivepost <%= articles[i].identity() %>">
+            <%= articles[i].published_at_mday() %> -
+            <a href="javascript:void(0)" class="view"><%= articles[i].title %></a>
+            <% if (articles[i].category.name){ %> posted in
+                <span id="category" class="category_<%= articles[i].category.id %>"><a href="javascript:void(0)" class="view"><%= articles[i].category.name %></a></span>
+                <% } %>
+                </div>
+                <%
+            }
+    } %>

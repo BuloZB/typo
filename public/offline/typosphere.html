@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>offline app</title>
+        <link href="resources/themes/ims/stylesheets/application.css" media="all" rel="stylesheet" />
+
+        <!--[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div id="message" style="display:none;"></div>
+    <header id="logo">
+        <hgroup>
+            <h1></h1>
+            <h2></h2>
+        </hgroup>
+        <section id="date">
+        </section>
+    </header>
+    <div id="wrapper">
+        <nav id="navigation">
+            <ul id="link">
+                <li>
+                    <a href="javascript: void(0)" id="home-page">Home</a>
+                </li>
+                <li>
+                    <a href="javascript: void(0)" rel="archives" id="archive"> Archives</a>
+                </li>
+                <li>
+                    <a href="javascript: void(0)" rel="author" class="page" id="about">About</a>
+                </li>
+            </ul>
+            <form action="/search" id="searchform" method="get" onsubmit="javascript:void(0); return false;">
+                <input type="text" id="s" name="q" value="" size="15" />
+                <input id="searchsubmit" type='submit' value='Search' />
+            </form>
+        </nav>
+        <div id="content">
+            <div id="content-inner">
+                <section class="section">
+                    <script type='text/javascript'
+                            src='jmvc/include.js?typosphere,development'>
+                    </script>
+                </section>
+            </div>
+            <aside id="boxes">
+            </aside>
+        </div>
+    </div>
+    <footer id="footer">
+        <section id="about-author">
+            <h4>About author</h4>
+            <p>Something about author.</p>
+            <address>
+
+            </address>
+            <span>
+                
+            </span>
+        </section>
+        <section id="subscribe">
+            <h4>RSS</h4>
+            <ul>
+                <li><a class="offline" href="javascript:void(0)">Articles</a></li>
+                <li><a class="offline" href="javascript:void(0)">Comments</a></li>
+            </ul>
+        </section>
+        <section id="copyright">
+        </section>
+    </footer>
+</body>
+</html>

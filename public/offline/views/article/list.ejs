@@ -1,0 +1,6 @@
+    <% if(!articles.length) {%>
+        No articles in category
+        <%}%>
+    <%for(var i = 0; i < articles.length ; i++){%>
+        <%= view('views/article/show',articles[i])%>
+        <%}%>

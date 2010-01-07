@@ -1,0 +1,17 @@
+    <li>
+    <article id="comment-<%= this.id %>">
+    <header>
+    <cite>
+    <% if(this.url){%>
+        <a href="<%=this.url%>"><%= this.author %></a>
+        <%} else {%>
+        <%= this.author %>
+        <%}%></cite>
+    <time datetime="<%= this.created_at %>" pubdate><%= this.created_at %></time>
+    </header>
+    <p><%= this.body %></p>
+    <% if(typeof this.published != 'undefined'){%>
+        <div class="spamwarning">This comment has been flagged for moderator approval.</div>
+        <%}%>
+    </article>
+    </li>

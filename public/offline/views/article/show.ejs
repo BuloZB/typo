@@ -1,0 +1,50 @@
+    <article class="post <%= this.identity()%>">
+    <header>
+    <% if(this.name == '') { %>
+        <h1 class="title"><a href='javascript: void(0)' class="view"><%= this.title %></a></h1>
+        <span>
+        Posted by <%= this.author %>, <time datetime="<%= this.published_at %>" pubdate>Date <%= this.published_at %></time>
+        </span>
+        <% } else { %>
+        <h1 class="title"><%= this.title %></h1>
+        <% } %>
+    <% if(typeof this.tags == 'object'){%>
+        <% if(this.tags.length>0){%>
+            <div class="tags" id="tag">
+            <%for(var i=0;i<this.tags.length;i++){%>
+                <a href="javascript:void(0)" rel="tag" class="<%='tag_'+this.tags[i].id%> view"><%= this.tags[i].display_name%></a>
+                <%}%>
+            </div>
+            <%}%>
+        <%}%>
+    </header>
+    <p><%= this.body %></p>
+    <% if(typeof this.category[0].name != 'undefined') { %>
+        <p class="postmetadata">
+        Posted in:
+        <% for(var j=0;j<this.category.length;j++) {%>
+            <span id="category" class="category_<%= this.category[j].id %>"><a href='javascript:void(0)' class="category_view"><%= this.category[j].name %></a></span>
+            <% } %>
+        </p>
+        <%}%>
+    <% if(typeof this.comments == 'object') {%>
+        <ul class="social-links">
+        <li><a href="http://digg.com/submit?url='<%= this.permalink_url + '&amp;title=' + this.title%>" onclick="javascript:void(0); return false" class="offline"><img src='resources/themes/ims/images/social/digg.png' alt="Digg.com export" /></a></li>
+        <li><a href="http://delicious.com/save" onclick="void(0); return false;" class="offline"><img src='resources/themes/ims/images/social/delicious.png' alt="Delicious.com export" /></a></li>
+        <li><a href="'http://www.facebook.com/sharer.php?u='<%=this.permalink_url%>" onclick="void(0); return false;" class="offline"><img src='resources/themes/ims/images/social/facebook.png' alt="Facebook.com export" /></li>
+        <li><a href="javascript:void(0)" class="offline"><img src='resources/themes/ims/images/social/rss.png' alt="Rss export" /></a></li>
+        </ul>
+        <% if(this.allow_comments){%>
+            <ol id="commentList" class="comments">
+            <h2>Comments</h2>
+            <% for(var i=0;i<this.comments.length;i++) {%>
+                <%= view('views/article/comment',this.comments[i]) %>
+                <%}%>
+            <% if(this.comments.length==0){%>
+                <li>No comments</li>
+                <%}%>
+            </ol>
+            <%}%>
+        <%= view('views/article/comment_form',this) %>
+        <%}%>
+    </article>

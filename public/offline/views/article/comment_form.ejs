@@ -1,0 +1,33 @@
+    <div id="preview" style="display:none"></div>
+    <div class="post" id="article">
+    <form method="post" id="comment-form" action="javascript:void(0)">
+    <h2 class="title">Leave a comment</h2>
+    <input id="article_id" name="article_id" type="hidden" value="<%=this.id%>" />
+    <p>
+    <input id="comment_author" name="author" size="30" type="text" />
+    <label for="comment_author">Name <small>(required)</small></label>
+    </p>
+
+    <p>
+    <input id="comment_email" name="email" size="30" type="text" />
+    <label for="comment_email">Email  <small>(never displayed)</small></label>
+    </p>
+    <p><input id="comment_url" name="url" size="30" type="text" />
+    <label>Website</label>
+    </p>
+
+    <p>
+    <label>
+    Comments:
+
+    <small id="link"><a href="http://daringfireball.net/projects/markdown/" class="offline" onclick='javascript:void(0); return false;'>Markdown enabled</a></small></label>
+    <br />
+    <textarea cols="40" id="comment_body" name="body" rows="10"></textarea>
+    </p>
+
+    <p>
+    <input class="submit" id-"form-preview-button" name="preview" value="Preview!" type="button" />
+    <input class="submit" id="form-submit-button" name="commit" value="Submit" type="submit" />
+    </p>
+    </form>
+    </div>

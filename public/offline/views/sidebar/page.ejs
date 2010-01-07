@@ -1,0 +1,10 @@
+    <header>
+    <h1>Pages</h1>
+    </header>
+    <% if(pages.length > 0){ %>
+        <ul>
+        <% for(var i=0;i<pages.length;i++){ %>
+            <li><a href="javascript:void(0)" class="page" id="<%= pages[i].name%>"><%= pages[i].title %></a></li>
+            <% } %>
+        </ul>
+        <% } %>
