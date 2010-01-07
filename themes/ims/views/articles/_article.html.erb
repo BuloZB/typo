@@ -1,0 +1,59 @@
+<article class="post" id="article-<%= article.id %>">
+  <header>
+    <h1 class="title"><%= (controller.action_name.include? 'permalink') ? article.title : link_to_permalink(article,article.title) %></h1>
+    <span>
+      <%= _("Posted by") %> <%= author_link(article) %>, <time datetime="<%= article.published_at.strftime('%Y-%m-%dT%H:%M') %>" pubdate><%= _('Date') %> <%= article.published_at.strftime('%d. %m. %Y %H:%M') %></time>
+    </span>
+    <% unless @article.nil? %>
+      <% unless @article.tags.empty? %>
+        <div class="tags"><%= tag_links(@article) unless @article.tags.empty? %></div>
+      <% end %>
+    <% end %>
+  </header>
+  <% if controller.controller_name == 'articles' and controller.action_name == 'search' -%>
+      <p><%= article.body.gsub(/<\/?[^>]*>/, "").slice(0..300) %>...</p>
+  <% else -%>
+    <%= article.html(:body) %>
+  <% end -%>
+  <% if article.extended? -%>
+    <div class="extended">
+      <% if controller.action_name == 'index' -%>
+        <p><%= link_to_permalink article,_("Continue reading...") %></p>
+      <% else -%>
+        <%= article.html(:extended) %>
+      <% end -%>
+    </div>
+  <% end -%>
+  <% #hack because of incorrect controller info
+  if controller.controller_name == "redirect" and controller.action_name == 'redirect' %>
+    <ul class="social-links">
+      <li><%= link_to image_tag('theme/social/digg.png'),'http://digg.com/submit?url=' + article.permalink_url + '&amp;title=' + URI.escape(article.title) %></li>
+      <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title), 'delicious','toolbar=no,width=550,height=550'); return false;"><%= image_tag('theme/social/delicious.png') %></a></li>
+      <li><%= link_to image_tag('theme/social/facebook.png'), 'http://www.facebook.com/sharer.php?u=' + article.permalink_url %></li>
+      <li><%= link_to image_tag('theme/social/rss.png'),@auto_discovery_url_atom %></li>
+    </ul>
+  <% else %>
+    <p class="postmetadata">
+      <%= category_links(article) unless article.categories.empty?;  %> |
+      <%= link_to_permalink(article,pluralize(article.published_comments.size, _('no comments') , _('1 comment'), __('%d comments')),'comments', 'comments') %>
+    </p>
+  <% end %>
+
+  <% unless @article.nil? %>
+    <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
+      <% unless @article.comments_closed? and @article.published_comments.size == 0 %>
+        <h2><%= _("Comments")%></h2>
+      <% end -%>
+
+      <% unless @article.comments_closed? %>
+        <p><a href="#commentform"><%= _("Leave a response")%></a></p>
+      <% end -%>
+
+      <ol id="commentList" class="comments">
+        <%= render :partial => "comment_list" %>
+      </ol>
+    <% end -%>
+
+    <%= render :partial => 'comment_form' unless @article.comments_closed? %>
+  <% end %>
+</article>

@@ -1,0 +1,6 @@
+<section class="section" id="search">
+  <% for article in @articles -%>
+    <%= render :partial => 'article', :object => article  %>
+<% end -%>
+<p id="pagination"><%= will_paginate @articles %></p>
+</section>
