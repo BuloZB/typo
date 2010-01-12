@@ -18,6 +18,11 @@ jQuery.Class.extend('Notification',{
             msg += i + ' - ' + val + '\n'
         })
         alert(msg)
+    },
+    progress_bar: function(val) {
+        $('#progressbar').progressbar({
+            value:val
+        })
     }
 },
 {

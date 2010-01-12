@@ -1,5 +1,15 @@
 ActionController::Routing::Routes.draw do |map|
 
+  # sync services for offline browsing
+  map.resources :syncblog, :as => 'sync/blog', :controller => 'sync/blog'
+  map.resources :synccategories, :as => 'sync/categories', :controller => 'sync/categories'
+  map.resources :synccategorizations, :as => 'sync/categorizations', :controller => 'sync/categorizations'
+  map.resources :synccontents, :as => 'sync/contents', :controller => 'sync/contents'
+  map.resources :syncfeedback, :as => 'sync/feedback', :controller => 'sync/feedback'
+  map.resources :syncsidebars, :as => 'sync/sidebars', :controller => 'sync/sidebars'
+  map.resources :synctags, :as => 'sync/tags', :controller => 'sync/tags'
+  map.resources :syncarticlestags, :as =>'sync/articles_tags', :controller => 'sync/articlestags'
+  
   # default
   map.root :controller  => 'articles', :action => 'index'
 
@@ -32,7 +42,7 @@ ActionController::Routing::Routes.draw do |map|
       action.xml ':format/:type/:id/feed.xml'
     end
   end
-  
+
 
   map.resources :comments, :name_prefix => 'admin_', :collection => [:preview]
   map.resources :trackbacks

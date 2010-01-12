@@ -38,6 +38,9 @@ jQuery.Class.extend('Sqlite',{
                 tx.executeSql("CREATE TABLE IF NOT EXISTS sidebars (id INTEGER PRIMARY KEY, active_position INTEGER, config TEXT, staged_position INTEGER, type TEXT)")
                 //table blogs
                 tx.executeSql("CREATE TABLE IF NOT EXISTS blogs (id INTEGER PRIMARY KEY, settings TEXT, base_url TEXT)")
+                //table sync
+                tx.executeSql("CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, action TEXT)")
+//                tx.executeSql("CREATE INDEX IF NOT EXISTS index_feedback_on_table ON feedback (table_name)")
             });
         },
         get_instance: function() {
@@ -52,6 +55,3 @@ jQuery.Class.extend('Sqlite',{
 var db_con = new Sqlite()
 db_con.open()
 var db = db_con.get_instance()
-
-//db.sql('insert into Contens (title,body,author) values(?,?,?)',['title','body','author'])
-//db.sql("INSERT INTO contents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[2,'Article 2', 'Hello World 2', 'Mr Typo', 'Welcome to Typo. This is your first article. Edit or delete it, then start blogging!', '', '', 'Typo, Ruby, Ruby on Rails,', '2009-11-11 17:14:39', '2009-11-15 11:44:20', 1, 'hello-world', '05a15b78-0d28-4454-a49b-e1b97507aeba', 5, '','', 1, 0, 1, '2009-11-11 17:14:00', 'published'])
