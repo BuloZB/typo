@@ -19,11 +19,6 @@ jQuery.Class.extend('Notification',{
         })
         alert(msg)
     },
-    progress_bar: function(val) {
-        $('#progressbar').progressbar({
-            value:val
-        })
-    }
 },
 {
 }

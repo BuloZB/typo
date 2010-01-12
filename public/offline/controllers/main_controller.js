@@ -9,7 +9,9 @@ jQuery.Controller.extend('MainController',
 /* @Prototype */
 {
     load: function() {
+        //set time displayed on homepage
         this.time()
+
         //set blog settings (name, description, number of index articles etc.)
         Blog.settings([],this.callback('load_settings'),this.callback(db_con.error))
     },
@@ -64,7 +66,6 @@ jQuery.Controller.extend('MainController',
 
         //set number of articles to be displayed on index page
         localStorage['limit_article_display'] = settings['limit_article_display']
-//        localStorage['limit_article_display'] = 1
     },
     '#searchform submit': function(el) {
         this.offline_msg()

@@ -3,7 +3,7 @@
     <header>
     <cite>
     <% if(this.url){%>
-        <a href="<%=this.url%>"><%= this.author %></a>
+        <a href="<%=this.url%>" onclick="javascript:void(0); return false;" class="offline"><%= this.author %></a>
         <%} else {%>
         <%= this.author %>
         <%}%></cite>

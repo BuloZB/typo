@@ -1,6 +1,6 @@
     <article class="post <%= this.identity()%>">
     <header>
-    <% if(this.name == '') { %>
+    <% if(this.name == null) { %>
         <h1 class="title"><a href='javascript: void(0)' class="view"><%= this.title %></a></h1>
         <span>
         Posted by <%= this.author %>, <time datetime="<%= this.published_at %>" pubdate>Date <%= this.published_at %></time>

@@ -28,7 +28,7 @@ $.Model.extend('Article',
         
         //only if we need to display articles in certain category, call from find_by_category() method
         var category_join = (typeof cat_id != 'undefined' ? "LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id " : '')
-        var category_where = (typeof cat_id != 'undefined' ? "AND (c2.category_id="+cat_id+")" : " AND (c1.id=c1.id)")
+        var category_where = (typeof cat_id != 'undefined' ? "AND (c2.category_id="+cat_id+")" : "")
 
         //only if we need to display articles in certain tag, call from find_byt_tag_id() method
         var tag_join = (typeof tag_id != 'undefined' ? 'INNER JOIN articles_tags a1 ON c1.id = a1.article_id ' : '')
@@ -42,7 +42,7 @@ $.Model.extend('Article',
                 "FROM contents c1 " +
                 category_join +
                 tag_join +
-                "WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+category_where+" "+tag_where+" "+date_where+" ) ORDER BY c1.published_at DESC LIMIT ? OFFSET ?", [limit,offset],
+                "WHERE (( c1.published=1 ) AND ( c1.type =  'Article' ) "+category_where+" "+tag_where+" "+date_where+" ) ORDER BY c1.published_at DESC LIMIT ? OFFSET ?", [limit,offset],
                 function(tx, articles) {
                     tx.executeSql("SELECT count(*) as count " +
                         "FROM contents c1 " +
