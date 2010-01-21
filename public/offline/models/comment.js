@@ -38,7 +38,7 @@ $.Model.extend('Comment',
                         function(rs,tx){
                             //we need to display when the comment was created.
                             var created_at = new Date()
-                            attrs['created_at'] = created_at.strftime('%Y-%d-%m %H-%M-%S')
+                            attrs['created_at'] = created_at.strftime('%Y-%m-%d %H:%M:%S')
                             return success(attrs)
                         },
                         function(tx,err){
