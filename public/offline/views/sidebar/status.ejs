@@ -1,0 +1,7 @@
+    <header>
+    <h1>Your status</h1>
+    </header>
+    <p>Status: <span  class="<%= status %>-status" id="status"><%= status %></span></p>
+    <p>Last sync:
+    <% if(typeof last_sync == 'undefined') { %> never sync <% } else { %> <%= (new Date(parseInt(last_sync)).strftime('%Y-%m-%d %H:%M:%S')) %> <% } %></p>
+    <p id="sidebar" class="sync"><a href="javascript:void(0);" id="synchronize">synchronize</a></p>

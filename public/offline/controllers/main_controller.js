@@ -14,23 +14,26 @@ jQuery.Controller.extend('MainController',
 
         //set blog settings (name, description, number of index articles etc.)
         Blog.settings([],this.callback('load_settings'),this.callback(db_con.error))
+
+        $(window).bind('online', this.callback('is_online'))
+        $(window).bind('offline',this.callback('is_online'))
+
     },
     /**
      * Shows current time in template
      */
     time: function() {
         var date = new Date()
-        $('#date').html(date.toLocaleDateString())
+        $('#date > span').html(date.toLocaleDateString())
     },
     /**
      * Displays a list of articles
      * @param {Array} articles An array of Article objects.
      */
-    article_list: function(articles,current_page,count){
+    article_list: function(articles,params){
         $('#article').html(this.view('article/init', {
             articles:articles,
-            current_page: current_page,
-            count: count
+            params:params,
         } ))
     },
     /**
@@ -65,13 +68,22 @@ jQuery.Controller.extend('MainController',
         $('#logo > hgroup > h2').html(settings['blog_subtitle'])
 
         //set number of articles to be displayed on index page
-        localStorage['limit_article_display'] = settings['limit_article_display']
+        if(parseInt(localStorage['limit_article_display']) != parseInt(settings['limit_article_display'])) {
+            localStorage['limit_article_display'] = settings['limit_article_display']
+        }
+    },
+    is_online: function() {
+        var status = navigator.onLine ? 'online' : 'offline'
+        var el = $('#status')
+        el.attr("class",status + '-status')
+        el.html(status)
+        Notification.msg("You are now " + status)
     },
     '#searchform submit': function(el) {
         this.offline_msg()
     },
     '#home-page click': function(el) {
-        Article.find_all([1], this.callback('article_list'),this.callback(db_con.error));
+        Article.find_all({current_page:1}, this.callback('article_list'),this.callback(db_con.error));
     },
     '.offline click': function(el) {
         this.offline_msg()
@@ -80,6 +92,10 @@ jQuery.Controller.extend('MainController',
         Article.find_page($(el).attr('id'), this.callback('show_page'),this.callback(db_con.error));
     },
     '#archive click': function(el) {
-        Article.find_archive([],this.callback('archive'),this.callback(db_con.error))
+        Article.find_archive({},this.callback('archive'),this.callback(db_con.error))
+    },
+    '#synchronize click': function() {
+        Synchronization.start()
+        Article.find_all({current_page:1}, this.callback('article_list'),this.callback(db_con.error))
     }
 });

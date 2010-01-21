@@ -9,6 +9,7 @@ jQuery.Controller.extend('SidebarController',
 /* @Prototype */
 {
     load: function(sidebars) {
+        this.sidebar_status()
         Category.sidebar([],this.callback('sidebar_category'))
         Tag.sidebar([],this.callback('sidebar_tag'),this.callback(db_con.error))
         Article.sidebar([],this.callback('sidebar_archive'),this.callback(db_con.error))
@@ -45,5 +46,20 @@ jQuery.Controller.extend('SidebarController',
         $("#PageSidebar").html(this.view('sidebar/page',{
             pages:pages
         }))
+    },
+    sidebar_status: function() {
+        if (!$('#StatusSidebar').length) {
+            $('#boxes').append($(document.createElement('section')).attr('id','StatusSidebar'))
+        }
+        var status = navigator.onLine ? 'online' : 'offline'
+        var last_sync = localStorage['last_sync']
+        $("#StatusSidebar").html(this.view('sidebar/status',{
+            status:status,
+            last_sync:last_sync
+        }))
+    },
+    //when we click on sync button, we need to reload all sidebars with new data
+    '#synchronize click': function() {
+        this.load()
     }
 });
