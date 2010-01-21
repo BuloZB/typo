@@ -9,6 +9,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :syncsidebars, :as => 'sync/sidebars', :controller => 'sync/sidebars'
   map.resources :synctags, :as => 'sync/tags', :controller => 'sync/tags'
   map.resources :syncarticlestags, :as =>'sync/articles_tags', :controller => 'sync/articlestags'
+
+  map.connect 'manifest', :controller => 'manifest', :action => 'index'
   
   # default
   map.root :controller  => 'articles', :action => 'index'
