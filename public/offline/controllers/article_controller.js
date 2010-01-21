@@ -18,32 +18,38 @@ jQuery.Controller.extend('ArticleController',
     load: function(){
         if(!$("#article").length)
             $('.section').attr('id','article')
-        Article.find_all([1], this.callback('list'),this.callback(db_con.error));
+
+        Article.find_all({
+            current_page:1
+        }, this.callback('list'),this.callback(db_con.error));
     },
     /**
      * Displays a list of articles
      * @param {Array} articles An array of Article objects.
      */
-    list: function(articles,current_page,count){
+    list: function(articles,params){
         $('.section').html(this.view('init', {
             articles:articles,
-            current_page:current_page,
-            count:count
+            params:params
         } ))
     },
-    list_archive: function(articles,current_page,count){
+    list_archive: function(articles,params){
         $('.section').html(this.view('init_archive', {
             articles:articles,
-            current_page:current_page,
-            count:count
+            params:params
         } ))
     },
     show: function(article) {
         $('.section').html(this.view('show',article[0]))
     },
+    paginate: function(el,ev) {
+        Article.find_all({
+            current_page:$(el).attr('id')
+        },this.callback('list'),this.callback(db_con.error))
+    },
     '.view click': function(el) {
-        var article = el.parents().model()
-        Article.find_by_id(article.identity(),this.callback('show'),this.callback(db_con.error))
+        var article = el.parents().model().identity()
+        Article.find_by_id(article,this.callback('show'),this.callback(db_con.error))
     },
     'form submit': function(el, ev){
         ev.preventDefault();
@@ -54,7 +60,7 @@ jQuery.Controller.extend('ArticleController',
     },
     "comment.created subscribe": function(called, content){
         $('#commentList').append(this.view('comment', content))
-        jQuery("#article form input[type!=submit]").val(""); //clear old vals
+        jQuery("#article form input[type=text]").val(""); //clear old vals
         jQuery("#article form textarea").val(""); //clear old vals
 
     },
@@ -62,12 +68,22 @@ jQuery.Controller.extend('ArticleController',
         
     },
     '.archive click': function(el) {
-        Article.find_by_published_at([1,$(el).attr('id')],this.callback('list'),this.callback(db_con.error))
+        Article.find_by_published_at({
+            current_page:1,
+            date:$(el).attr('id'),
+            //we need to add action because of pagination
+            action:"archive"
+        },this.callback('list_archive'),this.callback(db_con.error))
     },
     '.article_paginate click': function(el,ev) {
-        Article.find_all([$(el).attr('id')],this.callback('list'),this.callback(db_con.error))
+        this.paginate(el,ev)
     },
     '.archive_paginate click': function(el,ev) {
-        Article.find_all([$(el).attr('id')],this.callback('list'),this.callback(db_con.error))
+//        var date = el.parents().model().identity().split('_')[1]
+        alert($(el).parent().get(0).className)
+        Article.find_by_published_at({
+            current_page:$(el).attr('id'),
+            date:date
+        },this.callback('list_archive'),this.callback(db_con.error))
     }
 });

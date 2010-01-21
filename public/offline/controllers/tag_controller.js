@@ -8,15 +8,19 @@ jQuery.Controller.extend('TagController',
 },
 /* @Prototype */
 {
-    show: function(articles,current_page,count) {
+    show: function(articles,params) {
         $('.section').html(this.view('init', {
             articles:articles,
-            current_page:current_page,
-            count:count
+            params:params,
+            id:params.tag
         } ))
     },
     '.view click': function(el) {
-        var element = el.model()
-        Article.find_by_tag_id([1,element.identity()],this.callback('show'),this.callback(db_con.error))
+        var tag = el.model().identity().split('_')[1]
+        Article.find_by_tag_id({current_page:1,tag:tag},this.callback('show'),this.callback(db_con.error))
+    },
+    '.tag_paginate click': function(el,ev) {
+        var tag = el.parents().model().identity().split('_')[1]
+        Article.find_by_tag_id({current_page:$(el).attr('id'),tag:tag},this.callback('show'),this.callback(db_con.error))
     }
 });

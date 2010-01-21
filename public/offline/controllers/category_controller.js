@@ -8,16 +8,19 @@ jQuery.Controller.extend('CategoryController',
 },
 /* @Prototype */
 {
-    show: function(articles,current_page,count) {
+    show: function(articles,params) {
         $('.section').html(this.view('init', {
             articles:articles,
-            current_page:current_page,
-            count:count,
+            params:params,
+            id:params.category
         } ))
     },
     click: function(el,ev) {
-        var element = el.parents().model()
-        Article.find_by_category_id([1,element.identity()],this.callback('show'),this.callback(db_con.error))
+        var category = el.parents().model().identity().split('_')[1]
+        Article.find_by_category_id({
+            current_page:1,
+            category:category
+        },this.callback('show'),this.callback(db_con.error))
         ev.stopDelegation();
         ev.stopPropagation(); 
     },
@@ -30,6 +33,10 @@ jQuery.Controller.extend('CategoryController',
         this.click(el,ev)
     },
     '.category_paginate click': function(el,ev) {
-        Article.find_all([$(el).attr('id')],this.callback('show'),this.callback(db_con.error))
+        var category = el.parents().model().identity().split('_')[1]
+        Article.find_by_category_id({
+            current_page:$(el).attr('id'),
+            category:category
+        },this.callback('show'),this.callback(db_con.error))
     }
 });

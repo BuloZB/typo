@@ -18,25 +18,25 @@ $.Model.extend('Article',
      * @param {Integer} tag_id id of tag articles belong to.
      * @param {Array} data date between articles are published.
      */
-    find_all: function(params, success, error, cat_id, tag_id, date){
+    find_all: function(params, success, error){
         var obj = this
 
         //pagination
-        var current_page = parseInt(params[0])
+        var current_page = parseInt(params.current_page)
         var limit = parseInt(localStorage['limit_article_display'])
         var offset = parseInt((current_page < 2 ? current_page-1 : ((current_page-1)*limit)))
         
         //only if we need to display articles in certain category, call from find_by_category() method
-        var category_join = (typeof cat_id != 'undefined' ? "LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id " : '')
-        var category_where = (typeof cat_id != 'undefined' ? "AND (c2.category_id="+cat_id+")" : "")
+        var category_join = (typeof params.category != 'undefined' ? "LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id " : '')
+        var category_where = (typeof params.category != 'undefined' ? "AND (c2.category_id="+params.category+")" : "")
 
         //only if we need to display articles in certain tag, call from find_byt_tag_id() method
-        var tag_join = (typeof tag_id != 'undefined' ? 'INNER JOIN articles_tags a1 ON c1.id = a1.article_id ' : '')
-        var tag_where = (typeof tag_id != 'undefined' ? ' AND (a1.tag_id ='+tag_id+')' : '')
+        var tag_join = (typeof params.tag != 'undefined' ? 'INNER JOIN articles_tags a1 ON c1.id = a1.article_id ' : '')
+        var tag_where = (typeof params.tag != 'undefined' ? ' AND (a1.tag_id ='+params.tag+')' : '')
 
         //only if we need to display articles published at certain time
-        var date_where = (typeof date != 'undefined' ? ' AND (c1.published_at BETWEEN "'+date[0]+'-'+date[1]+'-1'+' 00:00:00" AND "'+date[0]+'-'+date[1]+'-31 23:59:59")' : '')
-
+        var date_where = (typeof params.date != 'undefined' ? ' AND (c1.published_at BETWEEN "'+params.date.year+'-'+params.date.month+'-1'+' 00:00:00" AND "'+params.date.year+'-'+params.date.month+'-31 23:59:59")' : '')
+        
         db.transaction(function(tx) {
             tx.executeSql("SELECT c1 . * " +
                 "FROM contents c1 " +
@@ -51,7 +51,8 @@ $.Model.extend('Article',
                         "WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+category_where+" "+tag_where+" "+date_where+" )",[],
                         function(tx,rs) {
                             var row = rs.rows.item(0)
-                            return success(obj.parse_result(articles),current_page,row['count'])
+                            params.count = row.count
+                            return success(obj.parse_result(articles),params)
                         },
                         function(tx,err) {
                             return error(err)
@@ -133,8 +134,7 @@ $.Model.extend('Article',
      * @param {Function} error a callback function for an error in the ajax request.
      */
     find_by_category_id: function(params, success, error ){
-        params[1] = this.get_id(params[1])
-        this.find_all(params,success,error,params[1])
+        this.find_all(params,success,error)
     },
     /**
      * Finds articles by tag id
@@ -143,8 +143,7 @@ $.Model.extend('Article',
      * @param {Function} error a callback function for an error in the ajax request.
      */
     find_by_tag_id: function(params, success, error ){
-        params[1] = this.get_id(params[1])
-        this.find_all(params,success,error,undefined,params[1])
+        this.find_all(params,success,error)
     },
     /**
      * Finds articles by published date
@@ -153,14 +152,9 @@ $.Model.extend('Article',
      * @param {Function} error a callback function for an error in the ajax request.
      */
     find_by_published_at: function(params, success, error) {
-        //pagination
-        var current_page = parseInt(params[0])
-        var limit = parseInt(localStorage['limit_article_display'])
-        var offset = parseInt((current_page < 2 ? current_page-1 : ((current_page-1)*limit)))
-
-        //date of articles to be displayed
-        var date = params[1].split("_")
-        this.find_all(params,success,error,undefined,undefined,date)
+        //date of articles to be displayed, format year_month
+        params.date = {year:params.date.split("_")[0],month:params.date.split("_")[1]}
+        this.find_all(params,success,error)
     },
     /**
      * Finds articles for article sidebar
