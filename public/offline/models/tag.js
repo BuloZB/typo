@@ -24,7 +24,7 @@ $.Model.extend('Tag',
                 "LEFT OUTER JOIN contents articles ON articles_tags.article_id = articles.id "+
                 "WHERE articles.published =1 "+
                 "GROUP BY tags.id, tags.name, tags.display_name "+
-                "ORDER BY article_counter DESC", [],
+                "ORDER BY tags.name", [],
                 function(tx, rs) {
                     return success(obj.parse_result(rs))
                 },function(tx,err) {
@@ -51,4 +51,19 @@ $.Model.extend('Tag',
     }
 },
 /* @Prototype */
-{})
+{
+    /**
+     * Counts font size of tag inside tag sidebar
+     * @param {Array} tags tags
+     */
+    font_size: function(tags) {
+        var total = 0;
+        jQuery.each(tags, function(i,data){
+            total += parseInt(data.article_counter)
+        })
+        var average = parseFloat(total)/parseFloat(tags.length)
+        var size = parseFloat(this.article_counter)/average
+        var font_size = Math.min(Math.max(2.0/3.0,size),2) * 100
+        return font_size
+    }
+})

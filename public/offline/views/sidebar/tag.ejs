@@ -4,7 +4,7 @@
     <ul id="tag">
     <p style="overflow:hidden">
     <%for(var i = 0; i < tags.length ; i++){%>
-        <%= view('views/tag/show',tags[i])%>
+        <%= view('views/tag/show',{tag:tags[i],tags:tags})%>
         <%}%>
     <% if(!tags.length){ %>
         No tags
