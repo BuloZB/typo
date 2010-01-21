@@ -163,7 +163,7 @@ nav#navigation ul li a {
 
 
 /* [] MAIN CONTENT */
-#content-inner section {
+#content-inner .section {
     padding: .5em;
 }
 #content-inner h1, h2, h3, h4, h5, h6 {
@@ -201,15 +201,15 @@ nav#navigation ul li a {
     -webkit-border-radius: 5px;
     margin-bottom: 1em;
 }
-section article.post ul, section article.post ol {
+article.post ul, article.post ol {
     margin-bottom: 1em;
 
 }
-section article.post ul li {
+article.post ul li {
     list-style-type: disc;
     margin-left: 2em;
 }
-section article.post ol li {
+article.post ol li {
     list-style-type: decimal;
     margin-left: 2em;
 }
@@ -259,7 +259,7 @@ section article.post ol li {
     float: left;
     margin: 1em;
 }
-#footer section h4 {
+#footer section h1 {
     margin-bottom: .5em;
     color: white;
 }
@@ -292,11 +292,11 @@ section#copyright {
 
 
 /* [] SOCIAL LINKS */
-ul.social-links {
+.social-links ul {
     overflow: auto;
     margin-top: 1em;
 }
-section article ul.social-links li {
+article .social-links ul li {
     float: left;
     padding: .5em .5em .5em 0;
     margin: 0;
@@ -340,4 +340,34 @@ section article ul.social-links li {
     background: yellow;
     color: black;
     font-size: 1.4em;
+}
+
+
+/* [] STATUS */
+.offline-status, .online-status {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+.offline-status {
+    background: red;
+    color: white;
+    padding: .3em;
+}
+.online-status {
+    background: green;
+    color: white;
+    padding: .3em;
+}
+.animate {
+    background: url(../images/ajax-loader.gif);
+    width: 128px;
+    height: 15px;
+    display: block;
+    float: right;
+}
+
+/* [] ARCHIVES */
+section#archives aside h1.archivemonth {
+    font-size: 1.4em;
+    margin: 1em .5em .5em 0;
 }

@@ -163,7 +163,7 @@ nav#navigation ul li a {
 
 
 /* [] MAIN CONTENT */
-#content-inner section {
+#content-inner .section {
     padding: .5em;
 }
 #content-inner h1, h2, h3, h4, h5, h6 {
@@ -259,7 +259,7 @@ section article.post ol li {
     float: left;
     margin: 1em;
 }
-#footer section h4 {
+#footer section h1 {
     margin-bottom: .5em;
     color: white;
 }
@@ -296,7 +296,7 @@ ul.social-links {
     overflow: auto;
     margin-top: 1em;
 }
-section article ul.social-links li {
+article ul.social-links li {
     float: left;
     padding: .5em .5em .5em 0;
     margin: 0;
@@ -323,4 +323,9 @@ section article ul.social-links li {
 }
 .comments time {
     font-weight: bold;
+}
+
+/* [] ARCHIVES */
+.archivemonth {
+    margin: 1em .5em .5em 0;
 }

@@ -13,20 +13,22 @@
   dc:date="<%= @article.updated_at.xmlschema %>" />
 </rdf:RDF>
 -->
-<section class="section" id="read">
-<%= render :partial => 'article', :object => @article %>
+<div class="section" id="read">
+  <%= render :partial => 'article', :object => @article %>
 
-<% if @article.allow_pings? -%>
-  <h2><a name="trackbacks"><%= _("Trackbacks")%></a></h2>
-  <p>
-    <%= _("Use the following link to trackback from your own site")%>:<br />
-    <%= @article.trackback_url %>
-  </p>
+  <% if @article.allow_pings? -%>
+    <aside class="trackbacks">
+      <h2><a name="trackbacks"><%= _("Trackbacks")%></a></h2>
+      <p>
+        <%= _("Use the following link to trackback from your own site")%>:<br />
+        <%= @article.trackback_url %>
+      </p>
 
-  <% unless @article.published_trackbacks.blank? -%>
-  <ol id="trackbacks" class="trackbacks">
-    <%= render(:partial => "trackback", :collection => @article.published_trackbacks) %>
-  </ol>
+      <% unless @article.published_trackbacks.blank? -%>
+        <ol id="trackbacks" class="trackbacks">
+          <%= render(:partial => "trackback", :collection => @article.published_trackbacks) %>
+        </ol>
+      <% end -%>
+    </aside>
   <% end -%>
-<% end -%>
-</section>
+</div>

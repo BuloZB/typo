@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" manifest="http://localhost:3000/manifest">
     <head>
         <meta charset="utf-8" />
         <title>offline app</title>
@@ -18,10 +18,13 @@
             <h2></h2>
         </hgroup>
         <section id="date">
+            <h1 style="display: none">Actual date</h1>
+            <span></span>
         </section>
     </header>
     <div id="wrapper">
         <nav id="navigation">
+            <h1 style="display: none">Navigation</h1>
             <ul id="link">
                 <li>
                     <a href="javascript: void(0)" id="home-page">Home</a>
@@ -40,35 +43,32 @@
         </nav>
         <div id="content">
             <div id="content-inner">
-                <section class="section">
+                <div class="section">
                     <script type='text/javascript'
-                            src='jmvc/include.js?typosphere,development'>
+                            src='jmvc/include.js?typosphere,production'>
                     </script>
-                </section>
+                </div>
             </div>
             <aside id="boxes">
+                <h1 style="display: none">Sideboxes</h1>
             </aside>
         </div>
     </div>
     <footer id="footer">
         <section id="about-author">
-            <h4>About author</h4>
+            <h1>About author</h1>
             <p>Something about author.</p>
-            <address>
-
-            </address>
-            <span>
-
-            </span>
         </section>
         <section id="subscribe">
-            <h4>RSS</h4>
+            <h1>RSS</h1>
             <ul>
                 <li><a class="offline" href="javascript:void(0)">Articles</a></li>
                 <li><a class="offline" href="javascript:void(0)">Comments</a></li>
             </ul>
         </section>
         <section id="copyright">
+            <h1 style="display:none">Made by</h1>
+            Made by <a href="http://blueweb.rockretail.com" class="offline" onclick="javascript:void(0); return false;">Tibor Pino</a>
         </section>
     </footer>
 </body>

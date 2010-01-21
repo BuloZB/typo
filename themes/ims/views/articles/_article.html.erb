@@ -10,11 +10,13 @@
       <% end %>
     <% end %>
   </header>
-  <% if controller.controller_name == 'articles' and controller.action_name == 'search' -%>
-      <p><%= article.body.gsub(/<\/?[^>]*>/, "").slice(0..300) %>...</p>
-  <% else -%>
-    <%= article.html(:body) %>
-  <% end -%>
+  <div class="post-body">
+    <% if controller.controller_name == 'articles' and controller.action_name == 'search' -%>
+      <%= article.body.gsub(/<\/?[^>]*>/, "").slice(0..300) %>...
+    <% else -%>
+      <%= article.html(:body) %>
+    <% end -%>
+  </div>
   <% if article.extended? -%>
     <div class="extended">
       <% if controller.action_name == 'index' -%>
@@ -26,32 +28,39 @@
   <% end -%>
   <% #hack because of incorrect controller info
   if controller.controller_name == "redirect" and controller.action_name == 'redirect' %>
-    <ul class="social-links">
-      <li><%= link_to image_tag('theme/social/digg.png'),'http://digg.com/submit?url=' + article.permalink_url + '&amp;title=' + URI.escape(article.title) %></li>
-      <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title), 'delicious','toolbar=no,width=550,height=550'); return false;"><%= image_tag('theme/social/delicious.png') %></a></li>
-      <li><%= link_to image_tag('theme/social/facebook.png'), 'http://www.facebook.com/sharer.php?u=' + article.permalink_url %></li>
-      <li><%= link_to image_tag('theme/social/rss.png'),@auto_discovery_url_atom %></li>
-    </ul>
+    <aside>
+      <header style="display: none">
+        <h1>Social links</h1>
+      </header>
+      <ul class="social-links">
+        <li><%= link_to image_tag('theme/social/digg.png'),'http://digg.com/submit?url=' + article.permalink_url + '&amp;title=' + URI.escape(article.title) %></li>
+        <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title), 'delicious','toolbar=no,width=550,height=550'); return false;"><%= image_tag('theme/social/delicious.png') %></a></li>
+        <li><%= link_to image_tag('theme/social/facebook.png'), 'http://www.facebook.com/sharer.php?u=' + article.permalink_url %></li>
+        <li><%= link_to image_tag('theme/social/rss.png'),@auto_discovery_url_atom %></li>
+      </ul>
+    </aside>
   <% else %>
-    <p class="postmetadata">
+    <footer class="postmetadata">
       <%= category_links(article) unless article.categories.empty?;  %> |
       <%= link_to_permalink(article,pluralize(article.published_comments.size, _('no comments') , _('1 comment'), __('%d comments')),'comments', 'comments') %>
-    </p>
+    </footer>
   <% end %>
 
   <% unless @article.nil? %>
     <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
-      <% unless @article.comments_closed? and @article.published_comments.size == 0 %>
-        <h2><%= _("Comments")%></h2>
-      <% end -%>
+      <aside class="comments">
+        <% unless @article.comments_closed? and @article.published_comments.size == 0 %>
+          <h2><%= _("Comments")%></h2>
+        <% end -%>
 
-      <% unless @article.comments_closed? %>
-        <p><a href="#commentform"><%= _("Leave a response")%></a></p>
-      <% end -%>
+        <% unless @article.comments_closed? %>
+          <p><a href="#commentform"><%= _("Leave a response")%></a></p>
+        <% end -%>
 
-      <ol id="commentList" class="comments">
-        <%= render :partial => "comment_list" %>
-      </ol>
+        <ol id="commentList">
+          <%= render :partial => "comment_list" %>
+        </ol>
+      </aside>
     <% end -%>
 
     <%= render :partial => 'comment_form' unless @article.comments_closed? %>
