@@ -83,7 +83,9 @@ jQuery.Controller.extend('MainController',
         this.offline_msg()
     },
     '#home-page click': function(el) {
-        Article.find_all({current_page:1}, this.callback('article_list'),this.callback(db_con.error));
+        Article.find_all({
+            current_page:1
+        }, this.callback('article_list'),this.callback(db_con.error));
     },
     '.offline click': function(el) {
         this.offline_msg()
@@ -95,7 +97,13 @@ jQuery.Controller.extend('MainController',
         Article.find_archive({},this.callback('archive'),this.callback(db_con.error))
     },
     '#synchronize click': function() {
-        Synchronization.start()
-        Article.find_all({current_page:1}, this.callback('article_list'),this.callback(db_con.error))
+        if(navigator.onLine) {
+            Synchronization.start()
+            Article.find_all({
+                current_page:1
+            }, this.callback('article_list'),this.callback(db_con.error))
+        } else {
+            Notification.msg("Sync error: you must be online.")
+        }
     }
 });
