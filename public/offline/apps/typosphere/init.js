@@ -2,7 +2,7 @@ include.plugins('model','view','controller','dom/form_params','model/validation'
 
 
 include(function(){ //runs after prior includes are loaded
-    include.resources('sqlite_driver','notification','strftime');
+    include.resources('sqlite_driver','notification','strftime','jquery-ui-1-2/jquery-ui-1.7.2.custom.min');
     include.models('article','category','tag','sidebar','comment','blog','synchronization');
 
     //sync service for offline database, must be run before controllers start fetching data
