@@ -18,8 +18,8 @@ jQuery.Class.extend('Notification',{
             msg += i + ' - ' + val + '\n'
         })
         alert(msg)
-    },
-},
+    }
+}
 {
 }
 );
