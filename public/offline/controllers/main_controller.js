@@ -27,7 +27,6 @@ jQuery.Controller.extend('MainController',
 
         //initial syncing, when user comes for the first time
         this.initial_syncing()
-
     },
     /**
      * Shows current time in template

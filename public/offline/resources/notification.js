@@ -19,7 +19,7 @@ jQuery.Class.extend('Notification',{
         })
         alert(msg)
     }
-}
+},
 {
 }
 );
