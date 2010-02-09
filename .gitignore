@@ -11,3 +11,15 @@ installer/rails_installer.yml
 /public/javascripts/ckeditor/config.js
 /public/stylesheets/theme
 tmp/*
+nbproject/private/private.properties
+nbproject/private/rake-d.txt
+nbproject/project.xml
+nbproject/project.properties
+public/offline/apps/typosphere/docs/
+public/offline/test/*
+
+public/offline/typosphere_doc.html
+nbproject/private/private.xml
+nbproject/private/config.properties
+public/offline/index.htm
+config/database.yml
