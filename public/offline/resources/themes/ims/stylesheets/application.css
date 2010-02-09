@@ -371,3 +371,24 @@ section#archives aside h1.archivemonth {
     font-size: 1.4em;
     margin: 1em .5em .5em 0;
 }
+
+
+/* [] HTML5 DETECTION */
+#html5-detection h1 {
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+#html5-detection dl dt {
+    float: left;
+    width: 10em;
+    margin-bottom: .5em;
+}
+#html5-detection dl dd {
+    margin-bottom: .5em;
+}
+#html5-detection p {
+    margin: 1em 0 1em 0;
+}
+#dialog-message {
+    font-size: 1.4em;
+}
