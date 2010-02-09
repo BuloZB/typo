@@ -1,4 +1,4 @@
-class Sync::ContentsController < Sync::ApplicationController
+class Sync::ContentsController < Sync::BaseController
 
   def index
     @articles = Content.find(:all, :limit => 20)

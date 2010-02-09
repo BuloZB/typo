@@ -1,4 +1,4 @@
-class Sync::FeedbackController < Sync::ApplicationController
+class Sync::FeedbackController < Sync::BaseController
 
   def index
     @feedback = Feedback.find(:all)

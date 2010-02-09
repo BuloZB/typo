@@ -1,4 +1,4 @@
-class Sync::CategorizationsController < Sync::ApplicationController
+class Sync::CategorizationsController < Sync::BaseController
 
   def index
     @categorizations = Categorization.find(:all)

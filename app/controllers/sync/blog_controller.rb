@@ -1,4 +1,4 @@
-class Sync::BlogController < Sync::ApplicationController
+class Sync::BlogController < Sync::BaseController
   def index
     @blog = Blog.find(1)
     respond_to do |format|

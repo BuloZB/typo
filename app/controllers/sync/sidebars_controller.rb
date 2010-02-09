@@ -1,4 +1,4 @@
-class Sync::SidebarsController < Sync::ApplicationController
+class Sync::SidebarsController < Sync::BaseController
 
   def index
     @sidebars = Sidebar.find(:all)

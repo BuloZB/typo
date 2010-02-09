@@ -1,4 +1,4 @@
-class Sync::ArticlestagsController < Sync::ApplicationController
+class Sync::ArticlestagsController < Sync::BaseController
 
   def index
     @articles_tags = Content.find_by_sql('SELECT * FROM articles_tags')

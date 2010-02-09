@@ -1,4 +1,4 @@
-class Sync::CategoriesController < Sync::ApplicationController
+class Sync::CategoriesController < Sync::BaseController
   def index
     @categories = Category.find(:all)
     respond_to do |format|

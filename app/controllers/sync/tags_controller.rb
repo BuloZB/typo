@@ -1,4 +1,4 @@
-class Sync::TagsController < Sync::ApplicationController
+class Sync::TagsController < Sync::BaseController
 
   def index
     @tags = Tag.find(:all)
