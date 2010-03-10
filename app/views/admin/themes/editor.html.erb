@@ -1,3 +1,22 @@
+<script>
+window.onBespinLoad = function() {
+    console.log("this is called when Bespin is loaded");
+    window.bespin = document.getElementById("bespin-editor").bespin;
+};
+
+function showContents() {
+  // Just like a textarea, you can get/set value on the bespin object
+  document.getElementById("copiedcontents").innerHTML = bespin.value;
+};
+</script>
+
+<div id="editor" class="bespin" data-bespinoptions='{ "settings": { "strictlines": true }, "syntax": "html", "stealFocus": true }'>// The text of this div shows up in the editor.
+var thisCode = "what shows up in the editor";
+function editMe() {
+ alert("and have fun!");
+}
+</div>
+
 <% @page_heading = _('Theme editor') %>
 <% subtabs_for(:themes) %>
 
