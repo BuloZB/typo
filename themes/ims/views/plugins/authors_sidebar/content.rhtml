@@ -1,0 +1,15 @@
+<% unless sidebar.authors.blank? -%>
+  <section>
+    <header>
+      <h1><%= _('Authors') %></h1>
+    </header>
+    <ul id="categories">
+      <% for user in sidebar.authors -%>
+        <li>
+          <%= link_to h(user.name), :controller => 'authors', :action => 'show', :id => user.login  %>
+          <%= "(#{user.articles.count})" if sidebar.count %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
