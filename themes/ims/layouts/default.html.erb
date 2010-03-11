@@ -35,10 +35,6 @@
           <%= link_to _("About"), this_blog.base_url + "/pages/about", :rel => 'author' %>
         </li>
       </ul>
-      <% form_tag({:controller => 'articles',  :action => 'search'}, {:method => 'get', :id => 'searchform'}) do %>
-        <input type="text" id="s" name="q" value="" size="15" />
-        <input id="searchsubmit" type='submit' value='<%= _("Search") %>' />
-      <% end %>
     </nav>
     <div id="content">
       <div id="content-inner">
