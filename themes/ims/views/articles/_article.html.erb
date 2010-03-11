@@ -6,12 +6,13 @@
     </span>
     <% unless @article.nil? %>
       <% unless @article.tags.empty? %>
-        <div class="tags"><%= tag_links(@article) unless @article.tags.empty? %></div>
+        <aside class="tags"><%= tag_links(@article) unless @article.tags.empty? %></aside>
       <% end %>
     <% end %>
   </header>
   <div class="post-body">
-    <% if controller.controller_name == 'articles' and controller.action_name == 'search' -%>
+    <% #hack because of incorrect controller info
+    unless controller.controller_name == "redirect" and controller.action_name == 'redirect' %>
       <%= article.body.gsub(/<\/?[^>]*>/, "").slice(0..300) %>...
     <% else -%>
       <%= article.html(:body) %>
@@ -48,9 +49,9 @@
 
   <% unless @article.nil? %>
     <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
-      <aside class="comments">
+      <section class="comments">
         <% unless @article.comments_closed? and @article.published_comments.size == 0 %>
-          <h2><%= _("Comments")%></h2>
+          <h1><%= _("Comments")%></h1>
         <% end -%>
 
         <% unless @article.comments_closed? %>
@@ -60,7 +61,7 @@
         <ol id="commentList">
           <%= render :partial => "comment_list" %>
         </ol>
-      </aside>
+      </section>
     <% end -%>
 
     <%= render :partial => 'comment_form' unless @article.comments_closed? %>
