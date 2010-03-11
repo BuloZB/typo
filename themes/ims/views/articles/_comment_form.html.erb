@@ -13,15 +13,15 @@
 	<h2 class="title"><%= _("Leave a comment")%></h2>
 
   <p>
-		<%= text_field "comment", "author" %> 
+		<%= text_field "comment", "author" %>
 		<label for="comment_author"><%= _("Name %s", content_tag(:small, '('+_('required')+')' ))%></label>
   </p>
 
   <p>
-		<%= text_field "comment", "email" %>
+		<%= input_field "comment", "email",{:type => "email"} %>
 		<label for="comment_email"><%= _("Email")%> <%= content_tag('small', "(#{link_to('gravatar', 'http://gravatar.com')} "+ _("enabled") + ")") if this_blog.use_gravatar %> <small>(<%= _("never displayed") %>)</small></label>
 	</p>
-	<p><%= text_field "comment", "url" %>
+	<p><%= input_field "comment", "url",{:type=>"url"} %>
 		<label><%= _("Website")%></label>
 	</p>
 

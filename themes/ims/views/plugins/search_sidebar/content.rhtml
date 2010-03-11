@@ -5,7 +5,7 @@
     </h1>
   </header>
     <% form_tag({:controller => 'articles',  :action => 'search'}, {:method => 'get', :id => 'sform'}) do %>
-      <input type="text" id="q" name="q" value="" size="15" />
+      <input type="search" id="q" name="q" value="" size="15" />
       <input type='submit' value='<%= _("Search") %>' />
     <% end %>
 </section>
