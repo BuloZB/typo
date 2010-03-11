@@ -1,0 +1,34 @@
+<section>
+  <svg>
+    <g id="archives">
+        <rect
+            width="100%"
+            height="2em"
+            rx="0"
+            ry="0"
+            x="0"
+            y="0"
+            id="rect2"
+            style="fill:url(#blue_gray_small);fill-opacity:1;" />
+        <text
+            x="0"
+            y="0"
+            id="text1"
+            xml:space="preserve"
+            style="font-size:100%;"><tspan
+                x="1em"
+                y="15%"
+                id="tspan1"><%= _('Archives') %></tspan></text>
+    </g>
+</svg>
+  <% unless sidebar.archives.blank? %>
+    <ul>
+      <% sidebar.archives.each do |month| %>
+        <li>
+          <%= link_to month[:name], articles_by_month_path(month[:year], "%02i" % month[:month]) %>
+          <%= "<em>(#{month[:article_count]})</em>" if show_count %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>

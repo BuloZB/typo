@@ -1,0 +1,155 @@
+/*
+Theme Name: IMS
+Theme URI: http://ims.rockretail.com
+Description: HTML5 theme for Typosphere
+Version: 1.0
+Author: Tibor Pino
+Author URI: http://blueweb.rockretail.com
+*/
+
+@import "reset.css";
+
+body {
+    background: black;
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color: white;
+    font-size: 1em;
+}
+
+/* [] LAYOUT */
+header, footer, section, aside, nav, article, svg {
+    display: block;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color: #2a3841;
+}
+
+a, a:link, a:active {
+    color: #2a3841;
+}
+a:hover {
+    text-decoration: none;
+}
+#wrapper {
+    position: absolute;
+    left: 1em;
+    top: 0;
+    z-index: 2;
+    width: 90%;
+}
+
+/* [] HEADER */
+#header {
+    font-size: 2em;
+    margin-bottom: 1em;
+}
+#header h1, #header h2 {
+    color: white;
+}
+
+/* [] BOXES */
+#boxes {
+    margin-bottom: 1em;
+    color: black;
+}
+#boxes section {
+    background: white;
+    margin-top: 1em;
+    padding-bottom: 1em;
+}
+#boxes section svg {
+    margin-bottom: -7em;
+}
+#boxes section ul, #boxes section p {
+    margin: 0 1em 0 1em;
+}
+
+/* [] NAVIGATION */
+#navigation,#current-date {
+    margin: 0 0 -6em 0;
+    padding: 0;
+}
+#navigation ul li {
+    float: left;
+    padding: .8em;
+}
+#navigation ul li a {
+    color: white;
+}
+#date {
+    padding: .8em;
+}
+
+/* [] CONTENT */
+#content {
+    background: #ffffff;
+    color: #000000;
+    padding: .5em;
+}
+#content h1 {
+    font-size: 140%;
+    font-weight: bold;
+}
+#content #posts article {
+    margin-bottom: 1em;
+    border-bottom: 1px solid gray;
+}
+#content article header span {
+    font-size: .8em;
+    margin-bottom: .5em;
+    display: block;
+}
+#content article .more a, #content article .more a:active, #content article .more a:visited {
+    display: block;
+    width: 50%;
+    padding: .5em 0 .5em 0;
+    text-decoration: none;
+    text-align: center;
+    font-size: .8em;
+    color: black;
+    font-weight: bold;
+}
+#content article .more a:hover {
+    color: white;
+}
+
+/* [] ARTICLE */
+.post .tags {
+    margin-bottom: 1em;
+}
+.post .comments {
+    margin-top: 1em;
+}
+.comments input, .comments textarea {
+    width: 100%;
+}
+.comments label {
+    display: block;
+}
+.comments p {
+    margin: .5em .5em .5em 0;
+}
+.comments article {
+    background: #f0f0f0;
+    margin: .5em 0 .5em 0;
+    padding: .5em;
+}
+
+/* [] FOOTER */
+#footer {
+    color: white;
+    overflow: auto;
+    padding: .8em;
+}
+#footer a, #footer a:visited, #footer a:active {
+    color: #7dc8e1;
+}
+#footer a:hover {
+    text-decoration: none;
+}
+
+/* [] ARCHIVES */
+#archives h3 {
+    margin-top: 1em;
+}

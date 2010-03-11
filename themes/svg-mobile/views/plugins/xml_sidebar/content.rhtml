@@ -1,0 +1,35 @@
+<section>
+    <svg>
+    <g id="pages">
+        <rect
+            width="100%"
+            height="2em"
+            rx="0"
+            ry="0"
+            x="0"
+            y="0"
+            id="rect2"
+            style="fill:url(#blue_gray_small);fill-opacity:1;" />
+        <text
+            x="0"
+            y="0"
+            id="text1"
+            xml:space="preserve"
+            style="font-size:100%;"><tspan
+                x="1em"
+                y="15%"
+                id="tspan1"><%= _("Syndicate")%></tspan></text>
+    </g>
+</svg>
+  <ul>
+    <% if @sidebar.articles -%>
+      <li><a href="<%= url_for :controller => 'articles', :action => 'index', :format => @sidebar.format_strip %>" title="Articles feed"><%= _("Articles")%></a></li>
+    <% end %>
+    <% if @sidebar.comments -%>
+      <li><a href="<%= formatted_admin_comments_url(@sidebar.format_strip) %>" title="Comments feed"><%= _("Comments")%></a></li>
+    <% end %>
+    <% if @sidebar.trackbacks -%>
+      <li><a href="<%= url_for :controller=>'xml', :action=>'feed', :format => @sidebar.format_strip, :type => 'trackbacks' %>" title="Trackbacks feed"><%= _("Trackbacks")%></a></li>
+    <% end %>
+  </ul>
+</section>

@@ -1,0 +1,34 @@
+<section>
+  <svg>
+    <g id="tags">
+        <rect
+            width="100%"
+            height="2em"
+            rx="0"
+            ry="0"
+            x="0"
+            y="0"
+            id="rect2"
+            style="fill:url(#blue_gray_small);fill-opacity:1;" />
+        <text
+            x="0"
+            y="0"
+            id="text1"
+            xml:space="preserve"
+            style="font-size:100%;"><tspan
+                x="1em"
+                y="15%"
+                id="tspan1"><%= _('Tags') %></tspan></text>
+    </g>
+</svg>
+  <% unless sidebar.tags.blank? -%>
+    <p style="overflow:hidden">
+      <% sidebar.tags.each do |tag| -%>
+        <span style="font-size:<%= sidebar.sizes[tag] %>%"><%= link_to tag.display_name, tag_url(tag), :rel => :tag %></span>
+      <% end -%>
+    </p>
+  <% end %>
+  <% if sidebar.tags.empty? -%>
+    <p><%= _('No tags') %></p>
+  <% end %>
+</section>
