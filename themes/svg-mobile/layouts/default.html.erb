@@ -1,9 +1,9 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title><%=h page_title %></title>
-    <%#= page_header %>
+<%#= page_header %>
     <%= stylesheet_link_tag '/stylesheets/theme/application.css', :media => 'all' %>
     <link rel='index' title='<%= this_blog.blog_name %>' href='<%= this_blog.base_url %>' />
     <!--[if IE]>
@@ -25,31 +25,9 @@
     <header id="header">
       <hgroup>
         <h1><%= this_blog.blog_name %></h1>
-        <h2><%= this_blog.blog_subtitle %></h2>
       </hgroup>
     </header>
-    <svg id="current-date">
-      <linearGradient id="green_green" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style="stop-color:rgb(146,185,113);stop-opacity:1"/>
-        <stop offset="100%" style="stop-color:rgb(61,130,54);stop-opacity:1"/>
-      </linearGradient>
-      <g>
-        <rect
-          width="100%"
-          height="3em"
-          rx="10"
-          ry="10"
-          x="0"
-          y="0"
-          style="fill:url(#green_green);fill-opacity:1" />
-        <foreignObject x="0" y="0" width="100%" height="100%">
-          <body xmlns="http://www.w3.org/1999/xhtml">
-          <section id="date"><%= _('Today is ') %> <%= Date.today.to_s%></section>
-          </body>
-        </foreignObject>
-      </g>
-    </svg>
-    <svg id="navigation">
+    <svg id="svg-date" width="100%" height="3em">
       <defs id="defs1">
         <linearGradient id="blue_gray" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" style="stop-color:rgb(50,105,122);stop-opacity:1"/>
@@ -59,17 +37,13 @@
           <stop offset="0%" style="stop-color:rgb(139,139,139);stop-opacity:1"/>
           <stop offset="100%" style="stop-color:rgb(221,221,221);stop-opacity:1"/>
         </linearGradient>
-        <style type="text/css">
-          a:hover {
-            fill: #ffffff;
-          }
-          a {
-            fill: #ffffff;
-          }
-        </style>
         <linearGradient id="blue_gray_small" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" style="stop-color:rgb(50,105,122);stop-opacity:1"/>
           <stop offset="100%" style="stop-color:rgb(42,56,65);stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="green_green" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:rgb(146,185,113);stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:rgb(61,130,54);stop-opacity:1"/>
         </linearGradient>
         <style type="text/css">
           text {
@@ -77,16 +51,30 @@
           }
         </style>
       </defs>
-      <g id="menu">
+      <g>
         <rect
           width="100%"
-          height="3em"
+          height="100%"
           rx="10"
           ry="10"
           x="0"
           y="0"
-          id="rect1"
-          style="fill:url(#blue_gray);fill-opacity:1" />
+          style="fill:url(#green_green);" />
+        <foreignObject x="0" y="0" width="100%" height="100%">
+          <body xmlns="http://www.w3.org/1999/xhtml">
+          <section id="date"><%= _('Today is ') %> <%= Date.today.to_s%></section>
+          </body>
+        </foreignObject>
+      </g>
+    </svg>
+    <svg id="svg-navigation" width="100%" height="3em">
+      <g>
+        <rect
+          width="100%"
+          height="100%"
+          rx="10"
+          ry="10"
+          style="fill:url(#blue_gray);" />
         <foreignObject x="0" y="0" width="100%" height="100%">
           <body xmlns="http://www.w3.org/1999/xhtml">
           <nav id="navigation">
@@ -116,11 +104,11 @@
       <!-- sidebar components -->
       <%= render_sidebars %>
     </aside>
-    <svg>
+    <svg id="svg-footer" widht="100%" height="3em">
       <g>
         <rect
           width="100%"
-          height="3em"
+          height="100%"
           rx="10"
           ry="10"
           x="0"

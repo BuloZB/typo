@@ -1,24 +1,13 @@
 <section>
-  <svg>
-    <g id="tags">
+  <svg id="tags" width="100%" height="2em">
+    <g>
         <rect
             width="100%"
-            height="2em"
-            rx="0"
-            ry="0"
-            x="0"
-            y="0"
-            id="rect2"
-            style="fill:url(#blue_gray_small);fill-opacity:1;" />
+            height="100%"
+            style="fill:url(#blue_gray_small);" />
         <text
-            x="0"
-            y="0"
-            id="text1"
-            xml:space="preserve"
-            style="font-size:100%;"><tspan
-                x="1em"
-                y="15%"
-                id="tspan1"><%= _('Tags') %></tspan></text>
+            x="1em"
+            y="1.3em"><tspan><%= _('Tags') %></tspan></text>
     </g>
 </svg>
   <% unless sidebar.tags.blank? -%>
