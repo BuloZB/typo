@@ -29,40 +29,37 @@
   <% end -%>
   <% #hack because of incorrect controller info
   unless controller.controller_name == "redirect" and controller.action_name == 'redirect' %>
-    <svg id="svg-more" width="10em" height="2em">
-      <g>
-        <rect
-          width="100%"
-          height="100%"
-          rx="10"
-          ry="10"
-          style="fill:url(#gray_gray);" />
-        <foreignObject x="0" y="0" width="100%" height="100%">
-          <body xmlns="http://www.w3.org/1999/xhtml">
-            <span class="more"><%= link_to_permalink(article,_("read more")) %></span>
-          </body>
-        </foreignObject>
-      </g>
+    <svg class="svg-more" width="10em" height="2em">
+      <a xlink:href="<%= article.permalink_url %>">
+        <rect class="button"
+              width="100%"
+              height="100%"
+              rx="10"
+              ry="10" />
+        <text x="2.5em" y="1.3em">
+          <%= _("read more") %>
+        </text>
+      </a>
     </svg>
-  <% end %>
+<% end %>
 
-  <% unless @article.nil? %>
-    <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
-      <section class="comments">
-        <% unless @article.comments_closed? and @article.published_comments.size == 0 %>
-          <h1><%= _("Comments")%></h1>
-        <% end -%>
+<% unless @article.nil? %>
+  <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
+    <section class="comments">
+      <% unless @article.comments_closed? and @article.published_comments.size == 0 %>
+        <h1><%= _("Comments")%></h1>
+      <% end -%>
 
-        <% unless @article.comments_closed? %>
-          <p><a href="#commentform"><%= _("Leave a response")%></a></p>
-        <% end -%>
+      <% unless @article.comments_closed? %>
+        <p><a href="#commentform"><%= _("Leave a response")%></a></p>
+      <% end -%>
 
-        <ol id="commentList">
-          <%= render :partial => "comment_list" %>
-        </ol>
-      </section>
-    <% end -%>
+      <ol id="commentList">
+        <%= render :partial => "comment_list" %>
+      </ol>
+    </section>
+  <% end -%>
 
-    <%= render :partial => 'comment_form' unless @article.comments_closed? %>
-  <% end %>
+  <%= render :partial => 'comment_form' unless @article.comments_closed? %>
+<% end %>
 </article>

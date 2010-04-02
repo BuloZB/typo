@@ -41,7 +41,7 @@ a:hover {
 #svg-date, #svg-navigation, #svg-footer {
     margin-bottom: .5em;
 }
-#svg-more {
+.svg-more {
     margin: .5em 0 .5em 0;
 }
 
