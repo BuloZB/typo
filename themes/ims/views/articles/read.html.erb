@@ -18,9 +18,9 @@
 
   <% if @article.allow_pings? -%>
     <aside class="trackbacks">
-      <h2><a name="trackbacks"><%= _("Trackbacks")%></a></h2>
+      <h1><a name="trackbacks"><%= _("Trackbacks")%></a></h1>
       <p>
-        <%= _("Use the following link to trackback from your own site")%>:<br />
+        <%= _("Use the following link to trackback from your own site")%>:
         <%= @article.trackback_url %>
       </p>
 

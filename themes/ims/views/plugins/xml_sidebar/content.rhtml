@@ -1,7 +1,5 @@
 <section>
-  <header>
-    <h1><%= _("Syndicate")%></h1>
-  </header>
+  <h1><%= _("Syndicate")%></h1>
   <ul>
     <% if @sidebar.articles -%>
       <li><a href="<%= url_for :controller => 'articles', :action => 'index', :format => @sidebar.format_strip %>" title="Articles feed"><%= _("Articles")%></a></li>

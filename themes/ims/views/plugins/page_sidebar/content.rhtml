@@ -1,14 +1,12 @@
 <section>
-  <header>
-    <h1><%= _("Pages")%></h1>
-  </header>
+  <h1><%= _("Pages")%></h1>
   <% unless sidebar.pages.blank? -%>
-      <ul>
-        <% for page in sidebar.pages -%>
-          <li>
-            <%= link_to page.title, page.permalink_url %>
-          </li>
-        <% end %>
-      </ul>
+    <ul>
+      <% for page in sidebar.pages -%>
+        <li>
+          <%= link_to page.title, page.permalink_url %>
+        </li>
+      <% end %>
+    </ul>
   <% end %>
 </section>

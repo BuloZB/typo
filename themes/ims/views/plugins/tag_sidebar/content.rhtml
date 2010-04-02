@@ -1,11 +1,9 @@
 <section>
-  <header>
-    <h1><%= _("Tags")%></h1>
-  </header>
+  <h1><%= _("Tags")%></h1>
   <% unless sidebar.tags.blank? -%>
     <p style="overflow:hidden">
       <% sidebar.tags.each do |tag| -%>
-        <span style="font-size:<%= sidebar.sizes[tag] %>%"><%= link_to tag.display_name, tag_url(tag), :rel => :tag %></span>
+        <span style="font-size:<%= sidebar.sizes[tag] %>"><%= link_to tag.display_name, tag_url(tag), :rel => :tag %></span>
       <% end -%>
     </p>
   <% end %>
