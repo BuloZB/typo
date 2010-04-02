@@ -148,7 +148,6 @@ module ApplicationHelper
     end.flatten.uniq
     (
     <<-HTML
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   #{ meta_tag 'ICBM', this_blog.geourl_location unless this_blog.geourl_location.blank? }
   #{ meta_tag 'description', @description unless @description.blank? }
   #{ meta_tag 'robots', 'noindex, follow' unless @noindex.nil? }
