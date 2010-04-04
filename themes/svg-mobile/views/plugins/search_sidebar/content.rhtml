@@ -9,7 +9,7 @@
     </g>
   </svg>
   <% form_tag({:controller => 'articles',  :action => 'search'}, {:method => 'get', :id => 'sform'}) do %>
-    <p><input type="search" id="q" name="q" value="" size="15" />
-      <input type='submit' value='<%= _("Search") %>' /></p>
+    <p><input type="search" id="q" name="q" value="" size="15">
+      <input type='submit' value='<%= _("Search") %>'></p>
   <% end %>
 </section>
