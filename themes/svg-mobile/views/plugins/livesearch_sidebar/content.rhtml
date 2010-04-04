@@ -1,24 +1,13 @@
 <section>
-  <svg>
-    <g id="pages">
+  <svg id="live-search" width="100%" height="2em">
+    <g>
         <rect
             width="100%"
-            height="2em"
-            rx="0"
-            ry="0"
-            x="0"
-            y="0"
-            id="rect2"
-            style="fill:url(#blue_gray_small);fill-opacity:1;" />
+            height="100%"
+            style="fill:url(#blue_gray_small);" />
         <text
-            x="0"
-            y="0"
-            id="text1"
-            xml:space="preserve"
-            style="font-size:100%;"><tspan
-                x="1em"
-                y="15%"
-                id="tspan1"><%= @sidebar.title %></tspan></text>
+            x="1em"
+            y="1.3em"><tspan><%= @sidebar.title %></tspan></text>
     </g>
 </svg>
   <% form_tag({:controller => 'articles',  :action => 'search'}, {:method => 'get', :id => 'sform'}) do %>
