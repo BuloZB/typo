@@ -2812,7 +2812,7 @@ $("#dialog-message").dialog("open");
 include.resources("sqlite_driver","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min");
 include.models("article","category","tag","sidebar","comment","blog","synchronization");
 include.controllers("main","article","category","tag","sidebar");
-include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/tag/init","views/tag/show");
+include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show");
 });
 ;
 include.setPath('jmvc/plugins/model');
@@ -6988,7 +6988,7 @@ db.transaction(function(tx){
 tx.executeSql("SELECT * FROM sidebars ORDER BY active_position ASC",[],function(tx,rs){
 return _2(_4.parse_result(rs));
 },function(tx,_9){
-alert(_9.message);
+return _3(_9);
 });
 });
 },parse_result:function(rs){
@@ -7082,8 +7082,7 @@ var row=rs.rows.item(i);
 var id=row.id;
 tx.executeSql("SELECT author,body,email,article_id,url FROM feedback WHERE id = ?",[row.row_id],function(tx,rs){
 var row=rs.rows.item(0);
-Synchronization.update_feedback("author="+row.author+"&body="+row.body+"&email="+row.email+"&url="+row.url+"&article_id="+row.article_id+"");
-tx.executeSql("DELETE FROM sync WHERE id = ?",[id]);
+Synchronization.update_feedback("author="+row.author+"&body="+row.body+"&email="+row.email+"&url="+row.url+"&article_id="+row.article_id+"",tx.executeSql("DELETE FROM sync WHERE id = ?",[id]));
 });
 }
 },function(tx,_29){
@@ -7320,7 +7319,6 @@ Article.find_by_published_at({current_page:1,date:$(el).attr("id"),action:"archi
 },".article_paginate click":function(el,ev){
 this.paginate(el,ev);
 },".archive_paginate click":function(el,ev){
-alert($(el).parent().get(0).className);
 Article.find_by_published_at({current_page:$(el).attr("id"),date:date},this.callback("list_archive"),this.callback(db_con.error));
 }});
 ;
@@ -7355,10 +7353,16 @@ Article.find_by_tag_id({current_page:$(el).attr("id"),tag:_7},this.callback("sho
 include.setPath('controllers');
 jQuery.Controller.extend("SidebarController",{onDocument:true},{load:function(_1){
 this.sidebar_status();
+this.sidebar_search();
 Category.sidebar([],this.callback("sidebar_category"));
 Tag.sidebar([],this.callback("sidebar_tag"),this.callback(db_con.error));
 Article.sidebar([],this.callback("sidebar_archive"),this.callback(db_con.error));
 Article.sidebar_page([],this.callback("sidebar_page"),this.callback(db_con.error));
+},sidebar_search:function(){
+if(!$("#SearchSidebar").length){
+$("#boxes").append($(document.createElement("section")).attr("id","SearchSidebar"));
+}
+$("#SearchSidebar").html(this.view("sidebar/search",{}));
 },sidebar_category:function(_2){
 if(!$("#CategorySidebar").length){
 $("#boxes").append($(document.createElement("section")).attr("id","CategorySidebar"));
@@ -7491,11 +7495,11 @@ _4.push("\" onclick=\"void(0); return false;\" class=\"offline\"><img src='resou
 _4.push("        <li><a href=\"javascript:void(0)\" class=\"offline\"><img src='resources/themes/ims/images/social/rss.png' alt=\"Rss export\" /></a></li>\n");
 _4.push("        </ul>\n");
 _4.push("        </aside>\n");
+_4.push("        <section class=\"comments\">\n");
+_4.push("        <h1>Comments</h1>\n");
 _4.push("        ");
-if(this.allow_comments){
+if(this.comments.length>0){
 _4.push("\n");
-_4.push("            <aside class=\"comments\">\n");
-_4.push("            <h1>Comments</h1>\n");
 _4.push("            <ol id=\"commentList\">\n");
 _4.push("            ");
 for(var i=0;i<this.comments.length;i++){
@@ -7506,20 +7510,23 @@ _4.push("\n");
 _4.push("                ");
 }
 _4.push("\n");
-_4.push("            ");
-if(this.comments.length==0){
-_4.push("\n");
-_4.push("                <li>No comments</li>\n");
-_4.push("                ");
-}
-_4.push("\n");
 _4.push("            </ol>\n");
-_4.push("            </aside>\n");
-_4.push("            ");
+_4.push("        ");
+}else{
+_4.push("\n");
+_4.push("            <p>No comments</p>\n");
+_4.push("        ");
 }
 _4.push("\n");
+_4.push("        </section>\n");
 _4.push("        ");
+if(this.allow_comments){
+_4.push("\n");
+_4.push("            ");
 _4.push((jQuery.View.Scanner.to_text(view("views/article/comment_form",this))));
+_4.push("\n");
+_4.push("            ");
+}
 _4.push("\n");
 _4.push("        ");
 }
@@ -7545,7 +7552,7 @@ with(_2){
 var _4=[];
 _4.push("    <section id=\"archives\">\n");
 _4.push("    <h1>Archives</h1>\n");
-_4.push("        ");
+_4.push("    ");
 if(!articles.length){
 _4.push("\n");
 _4.push("        <p>No articles found</p>\n");
@@ -7563,11 +7570,11 @@ if(i>0){
 _4.push("</aside>");
 }
 _4.push("\n");
-_4.push("                <aside><h1 class=\"archivemonth\">");
+_4.push("                <h3 class=\"archivemonth\">");
 _4.push((jQuery.View.Scanner.to_text(month_names[articles[i].published_at_month()-1])));
 _4.push(" ");
 _4.push((jQuery.View.Scanner.to_text(articles[i].published_at_year())));
-_4.push("</h1>\n");
+_4.push("</h3>\n");
 _4.push("                ");
 }
 _4.push("\n");
@@ -7591,12 +7598,12 @@ _4.push("</a></span>\n");
 _4.push("                ");
 }
 _4.push("\n");
-_4.push("                </div>\n");
-_4.push("                ");
+_4.push("            </div>\n");
+_4.push("            ");
 }
 }
 _4.push("\n");
-_4.push("        </section>");
+_4.push("    </section>");
 return _4.join("");
 }
 }
@@ -7669,7 +7676,7 @@ _4.push("    <article id=\"comment-");
 _4.push((jQuery.View.Scanner.to_text(this.id)));
 _4.push("\">\n");
 _4.push("    <header>\n");
-_4.push("    <h1 style=\"display:none\">Comment #");
+_4.push("    <h1 class=\"hidden\">Comment #");
 _4.push((jQuery.View.Scanner.to_text(this.id)));
 _4.push("</h1>\n");
 _4.push("    <cite>\n");
@@ -7696,14 +7703,17 @@ _4.push("\" pubdate>");
 _4.push((jQuery.View.Scanner.to_text(this.created_at)));
 _4.push("</time>\n");
 _4.push("    </header>\n");
-_4.push("    <p>");
-_4.push((jQuery.View.Scanner.to_text(this.body)));
-_4.push("</p>\n");
 _4.push("    ");
 if(typeof this.published!="undefined"){
 _4.push("\n");
 _4.push("        <div class=\"spamwarning\">This comment has been flagged for moderator approval.</div>\n");
+_4.push("    ");
+}else{
+_4.push("\n");
 _4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(this.body)));
+_4.push("\n");
+_4.push("    ");
 }
 _4.push("\n");
 _4.push("    </article>\n");
@@ -7726,23 +7736,22 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <div id=\"preview\" style=\"display:none\"></div>\n");
 _4.push("    <div id=\"article\">\n");
 _4.push("    <form method=\"post\" id=\"comment-form\" action=\"javascript:void(0)\">\n");
 _4.push("    <h2 class=\"title\">Leave a comment</h2>\n");
 _4.push("    <input id=\"article_id\" name=\"article_id\" type=\"hidden\" value=\"");
 _4.push((jQuery.View.Scanner.to_text(this.id)));
-_4.push("\" />\n");
+_4.push("\">\n");
 _4.push("    <p>\n");
-_4.push("    <input id=\"comment_author\" tabindex=\"1\" name=\"author\" size=\"30\" type=\"text\" />\n");
+_4.push("    <input id=\"comment_author\" tabindex=\"1\" name=\"author\" size=\"30\" type=\"text\">\n");
 _4.push("    <label for=\"comment_author\">Name <small>(required)</small></label>\n");
 _4.push("    </p>\n");
 _4.push("\n");
 _4.push("    <p>\n");
-_4.push("    <input id=\"comment_email\" tabindex=\"2\" name=\"email\" size=\"30\" type=\"email\" />\n");
+_4.push("    <input id=\"comment_email\" tabindex=\"2\" name=\"email\" size=\"30\" type=\"email\">\n");
 _4.push("    <label for=\"comment_email\">Email  <small>(never displayed)</small></label>\n");
 _4.push("    </p>\n");
-_4.push("    <p><input id=\"comment_url\" tabindex=\"3\" name=\"url\" size=\"30\" type=\"url\" />\n");
+_4.push("    <p><input id=\"comment_url\" tabindex=\"3\" name=\"url\" size=\"30\" type=\"url\">\n");
 _4.push("    <label>Website</label>\n");
 _4.push("    </p>\n");
 _4.push("\n");
@@ -7751,13 +7760,12 @@ _4.push("    <label>\n");
 _4.push("    Comments:\n");
 _4.push("\n");
 _4.push("    <small id=\"link\"><a href=\"http://daringfireball.net/projects/markdown/\" class=\"offline\" onclick='javascript:void(0); return false;'>Markdown enabled</a></small></label>\n");
-_4.push("    <br />\n");
+_4.push("    <br>\n");
 _4.push("    <textarea cols=\"40\" tabindex=\"4\" id=\"comment_body\" name=\"body\" rows=\"10\"></textarea>\n");
 _4.push("    </p>\n");
 _4.push("\n");
 _4.push("    <p>\n");
-_4.push("    <input class=\"offline\" onlick=\"javascript:void(0); return false;\" id-\"form-preview-button\" name=\"preview\" value=\"Preview!\" type=\"button\" />\n");
-_4.push("    <input class=\"submit\" id=\"form-submit-button\" name=\"commit\" value=\"Submit\" type=\"submit\" />\n");
+_4.push("    <input class=\"submit\" id=\"form-submit-button\" name=\"commit\" value=\"Submit\" type=\"submit\">\n");
 _4.push("    </p>\n");
 _4.push("    </form>\n");
 _4.push("    </div>");
@@ -7780,7 +7788,7 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("<section>\n");
-_4.push("<h1 style=\"display:none\">List of articles</h1>\n");
+_4.push("<h1 class=\"hidden\">List of articles</h1>\n");
 _4.push("    ");
 if(!articles.length){
 _4.push("\n");
@@ -7841,9 +7849,10 @@ try{
 with(_3){
 with(_2){
 var _4=[];
+_4.push("    ");
 _4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:articles}))));
 _4.push("\n");
-_4.push("            ");
+_4.push("    ");
 _4.push((jQuery.View.Scanner.to_text(pagination(params,"category",id))));
 _4.push("\n");
 return _4.join("");
@@ -7864,9 +7873,7 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("        <header>\n");
 _4.push("    <h1>Archives</h1>\n");
-_4.push("    </header>\n");
 _4.push("    <ul id=\"article\">\n");
 _4.push("    ");
 for(var i=0;i<articles.length;i++){
@@ -7898,9 +7905,7 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <header>\n");
 _4.push("    <h1>Categories</h1>\n");
-_4.push("    </header>\n");
 _4.push("    <ul id=\"category\">\n");
 _4.push("    ");
 for(var i=0;i<categories.length;i++){
@@ -7930,9 +7935,7 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <header>\n");
 _4.push("    <h1>Pages</h1>\n");
-_4.push("    </header>\n");
 _4.push("    ");
 if(pages.length>0){
 _4.push("\n");
@@ -7969,9 +7972,7 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <header>\n");
 _4.push("    <h1>Tags</h1>\n");
-_4.push("    </header>\n");
 _4.push("    <ul id=\"tag\">\n");
 _4.push("    <p style=\"overflow:hidden\">\n");
 _4.push("    ");
@@ -8010,9 +8011,7 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <header>\n");
 _4.push("    <h1>Your status</h1>\n");
-_4.push("    </header>\n");
 _4.push("    <p>Status: <span  class=\"");
 _4.push((jQuery.View.Scanner.to_text(status)));
 _4.push("-status\" id=\"status\">");
@@ -8029,6 +8028,29 @@ _4.push(" ");
 }
 _4.push("</p>\n");
 _4.push("    <p id=\"sidebar\" class=\"sync\"><a href=\"javascript:void(0);\" id=\"synchronize\">synchronize</a></p>");
+return _4.join("");
+}
+}
+}
+catch(e){
+e.lineNumber=null;
+throw e;
+}
+});
+})(jQuery);
+;
+include.setPath('views/sidebar');
+(function($){
+jQuery.View.PreCompiledFunction("../../views/sidebar/search.ejs","views/sidebar/search.ejs",function(_2,_3){
+try{
+with(_3){
+with(_2){
+var _4=[];
+_4.push("    <h1>Search</h1>\n");
+_4.push("    <form action=\"/search\" method=\"get\">\n");
+_4.push("    <input type=\"search\" id=\"q\" name=\"q\" placeholder=\"search blog\" value=\"\" size=\"15\">\n");
+_4.push("    <input type='submit' value='Search' onclick=\"javascript:void(0); return false;\" class=\"offline\">\n");
+_4.push("    </form>");
 return _4.join("");
 }
 }

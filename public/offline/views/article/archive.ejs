@@ -1,6 +1,6 @@
     <section id="archives">
     <h1>Archives</h1>
-        <% if (!articles.length){ %>
+    <% if (!articles.length){ %>
         <p>No articles found</p>
         <% } else {
     var currentmonth = 0
@@ -11,7 +11,7 @@
             currentyear = articles[i].published_at_year()
                 %>
                 <% if(i>0){%></aside><% } %>
-                <aside><h1 class="archivemonth"><%= month_names[articles[i].published_at_month()-1] %> <%= articles[i].published_at_year() %></h1>
+                <h3 class="archivemonth"><%= month_names[articles[i].published_at_month()-1] %> <%= articles[i].published_at_year() %></h3>
                 <% }%>
             <div class="archivepost <%= articles[i].identity() %>">
             <%= articles[i].published_at_mday() %> -
@@ -19,8 +19,8 @@
             <% if (articles[i].category.name){ %> posted in
                 <span id="category" class="category_<%= articles[i].category.id %>"><a href="javascript:void(0)" class="view"><%= articles[i].category.name %></a></span>
                 <% } %>
-                </div>
-                <%
-            }
-    } %>
-        </section>
+            </div>
+            <%
+        }
+        } %>
+    </section>

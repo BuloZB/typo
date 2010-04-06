@@ -85,6 +85,9 @@ table {
 em {
     font-style: italic;
 }
+.hidden {
+    display: none;
+}
 
 /* [] HEADER */
 header#logo hgroup {

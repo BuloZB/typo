@@ -17,13 +17,13 @@
       <h2><%= this_blog.blog_subtitle %></h2>
     </hgroup>
     <section id="date">
-        <h1 style="display:none">Actual date</h1>
+      <h1 class="hidden">Actual date</h1>
       <%= _('Today is') %> <%= Date.today.to_s%>
     </section>
   </header>
   <div id="wrapper">
     <nav id="navigation">
-        <h1 style="display:none">Navigation</h1>
+      <h1 class="hidden">Navigation</h1>
       <ul>
         <li>
           <%= link_to _("Home"), this_blog.base_url %>
@@ -41,9 +41,7 @@
         <%= @content_for_layout %>
       </div>
       <aside id="boxes">
-        <header style="display:none">
-          <h1>Sideboxes</h1>
-        </header>
+        <h1 class="hidden">Sideboxes</h1>
         <!-- sidebar components -->
         <%= render_sidebars %>
       </aside>
@@ -64,7 +62,7 @@
       </ul>
     </section>
     <section id="copyright">
-      <h1 style="display:none">Made by</h1>
+      <h1 class="hidden">Made by</h1>
       Made by <%= link_to "Tibor Pino", "http://blueweb.rockretail.com",{:target => :new} %>, Icons by <%= link_to "Profimgazin.cz", "http://www.profimagazin.cz/ikony/dalsi-sada-socialnich-ikon-ke-stazeni-zdarma",{:target => :new} %>
     </section>
   </footer>

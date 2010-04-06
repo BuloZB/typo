@@ -1,6 +1,4 @@
-        <header>
     <h1>Archives</h1>
-    </header>
     <ul id="article">
     <% for(var i=0;i<articles.length;i++){ %>
         <li><a href="javascript:void(0)" id="<%= articles[i].year + '_' + articles[i].month %>" class="archive"><%= month_names[(parseInt(articles[i].month)-1)] + ' ' + articles[i].year %></a></li>

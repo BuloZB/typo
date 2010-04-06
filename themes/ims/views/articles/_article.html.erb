@@ -6,7 +6,7 @@
     </span>
     <% unless @article.nil? %>
       <% unless @article.tags.empty? %>
-        <aside class="tags"><%= tag_links(@article) unless @article.tags.empty? %></aside>
+        <div class="tags"><%= tag_links(@article) unless @article.tags.empty? %></div>
       <% end %>
     <% end %>
   </header>
@@ -30,9 +30,7 @@
   <% #hack because of incorrect controller info
   if controller.controller_name == "redirect" and controller.action_name == 'redirect' %>
     <aside>
-      <header style="display: none">
-        <h1>Social links</h1>
-      </header>
+      <h1 class="hidden">Social links</h1>
       <ul class="social-links">
         <li><%= link_to image_tag('theme/social/digg.png'),'http://digg.com/submit?url=' + article.permalink_url + '&amp;title=' + URI.escape(article.title) %></li>
         <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title), 'delicious','toolbar=no,width=550,height=550'); return false;"><%= image_tag('theme/social/delicious.png') %></a></li>

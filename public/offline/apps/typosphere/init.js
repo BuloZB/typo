@@ -40,6 +40,6 @@ include(function(){ //runs after prior includes are loaded
     include.controllers('main','article','category','tag','sidebar');
     include.views('views/article/show','views/article/archive','views/article/init','views/article/init_archive','views/article/comment','views/article/comment_form','views/article/list',
         'views/category/show','views/category/init',
-        'views/sidebar/archive','views/sidebar/category','views/sidebar/page','views/sidebar/tag','views/sidebar/status',
+        'views/sidebar/archive','views/sidebar/category','views/sidebar/page','views/sidebar/tag','views/sidebar/status','views/sidebar/search',
         'views/tag/init','views/tag/show');
 })

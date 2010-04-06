@@ -1,18 +1,17 @@
-    <div id="preview" style="display:none"></div>
     <div id="article">
     <form method="post" id="comment-form" action="javascript:void(0)">
     <h2 class="title">Leave a comment</h2>
-    <input id="article_id" name="article_id" type="hidden" value="<%=this.id%>" />
+    <input id="article_id" name="article_id" type="hidden" value="<%=this.id%>">
     <p>
-    <input id="comment_author" tabindex="1" name="author" size="30" type="text" />
+    <input id="comment_author" tabindex="1" name="author" size="30" type="text">
     <label for="comment_author">Name <small>(required)</small></label>
     </p>
 
     <p>
-    <input id="comment_email" tabindex="2" name="email" size="30" type="email" />
+    <input id="comment_email" tabindex="2" name="email" size="30" type="email">
     <label for="comment_email">Email  <small>(never displayed)</small></label>
     </p>
-    <p><input id="comment_url" tabindex="3" name="url" size="30" type="url" />
+    <p><input id="comment_url" tabindex="3" name="url" size="30" type="url">
     <label>Website</label>
     </p>
 
@@ -21,13 +20,12 @@
     Comments:
 
     <small id="link"><a href="http://daringfireball.net/projects/markdown/" class="offline" onclick='javascript:void(0); return false;'>Markdown enabled</a></small></label>
-    <br />
+    <br>
     <textarea cols="40" tabindex="4" id="comment_body" name="body" rows="10"></textarea>
     </p>
 
     <p>
-    <input class="offline" onlick="javascript:void(0); return false;" id-"form-preview-button" name="preview" value="Preview!" type="button" />
-    <input class="submit" id="form-submit-button" name="commit" value="Submit" type="submit" />
+    <input class="submit" id="form-submit-button" name="commit" value="Submit" type="submit">
     </p>
     </form>
     </div>

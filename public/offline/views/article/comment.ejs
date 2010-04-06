@@ -1,7 +1,7 @@
     <li>
     <article id="comment-<%= this.id %>">
     <header>
-    <h1 style="display:none">Comment #<%= this.id %></h1>
+    <h1 class="hidden">Comment #<%= this.id %></h1>
     <cite>
     <% if(this.url){%>
         <a href="<%=this.url%>" onclick="javascript:void(0); return false;" class="offline"><%= this.author %></a>
@@ -10,9 +10,10 @@
         <%}%></cite>
     <time datetime="<%= this.created_at.replace(' ','T') %>" pubdate><%= this.created_at %></time>
     </header>
-    <p><%= this.body %></p>
     <% if(typeof this.published != 'undefined'){%>
         <div class="spamwarning">This comment has been flagged for moderator approval.</div>
-        <%}%>
+    <%} else {%>
+        <%= this.body %>
+    <%}%>
     </article>
     </li>

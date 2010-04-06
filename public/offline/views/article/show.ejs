@@ -38,19 +38,20 @@
         <li><a href="javascript:void(0)" class="offline"><img src='resources/themes/ims/images/social/rss.png' alt="Rss export" /></a></li>
         </ul>
         </aside>
-        <% if(this.allow_comments){%>
-            <aside class="comments">
-            <h1>Comments</h1>
+        <section class="comments">
+        <h1>Comments</h1>
+        <% if(this.comments.length > 0) {%>
             <ol id="commentList">
             <% for(var i=0;i<this.comments.length;i++) {%>
                 <%= view('views/article/comment',this.comments[i]) %>
                 <%}%>
-            <% if(this.comments.length==0){%>
-                <li>No comments</li>
-                <%}%>
             </ol>
-            </aside>
+        <%} else {%>
+            <p>No comments</p>
+        <%}%>
+        </section>
+        <% if(this.allow_comments){%>
+            <%= view('views/article/comment_form',this) %>
             <%}%>
-        <%= view('views/article/comment_form',this) %>
         <%}%>
     </article>

@@ -85,6 +85,9 @@ table {
 em {
     font-style: italic;
 }
+.hidden {
+    display: none;
+}
 
 /* [] HEADER */
 header#logo hgroup {
@@ -367,7 +370,7 @@ article .social-links ul li {
 }
 
 /* [] ARCHIVES */
-section#archives aside h1.archivemonth {
+section#archives  h3.archivemonth {
     font-size: 1.4em;
     margin: 1em .5em .5em 0;
 }

@@ -3,7 +3,7 @@
     <label for="q"><%= @sidebar.title %></label>
   </h1>
   <% form_tag({:controller => 'articles',  :action => 'search'}, {:method => 'get', :id => 'sform'}) do %>
-    <input type="search" id="q" name="q" value="" size="15" />
-    <input type='submit' value='<%= _("Search") %>' />
+    <input type="search" id="q" name="q" value="" size="15">
+    <input type='submit' value='<%= _("Search") %>'>
   <% end %>
 </section>
