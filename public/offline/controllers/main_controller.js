@@ -127,15 +127,19 @@ jQuery.Controller.extend('MainController',
 
                 $('#dialog-message').dialog('option','buttons',{
                     done: function() {
-                        $(this).dialog('close')
+//                        $(this).dialog('close')
+                        window.location.reload()
                     }
                 })
                 $('#dialog-message').html('Syncing done succesfully. Click on done button.')
                 $('#dialog-message').dialog('open')
 
-                Article.find_all({
-                    current_page:1
-                }, obj.callback('article_list'),obj.callback(db_con.error))
+                //we must reload a page with new data
+//                Article.find_all({
+//                    current_page:1
+//                }, obj.callback('article_list'),obj.callback(db_con.error))
+//
+//                Blog.settings([],obj.callback('load_settings'),obj.callback(db_con.error))
             },
         })
         $('#dialog-message').dialog('open')

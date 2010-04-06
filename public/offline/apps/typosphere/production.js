@@ -4887,6 +4887,9 @@ var _7=((_4+1)>_5?"":_4+1);
 var _8="";
 var _9="";
 var _a="";
+if(isNaN(_5)){
+return;
+}
 if(typeof _1.action=="undefined"){
 _1.action=_2;
 }
@@ -6643,10 +6646,10 @@ this.con.transaction(function(tx){
 tx.executeSql("CREATE TABLE IF NOT EXISTS contents (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, extended TEXT, excerpt TEXT, keywords TEXT, created_at TEXT, updated_at TEXT, user_id INTEGER, permalink TEXT, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, name TEXT, published INTEGER, allow_pings INTEGER, allow_comments INTEGER, published_at TEXT, state TEXT)");
 tx.executeSql("CREATE INDEX IF NOT EXISTS index_contents_on_published ON contents (published)");
 tx.executeSql("CREATE INDEX IF NOT EXISTS index_contents_on_text_filter_id ON contents (text_filter_id)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id)");
+tx.executeSql("CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id INTEGER)");
 tx.executeSql("CREATE INDEX IF NOT EXISTS index_categories_on_permalink ON categories (permalink)");
 tx.executeSql("CREATE TABLE IF NOT EXISTS categorizations (id INTEGER PRIMARY KEY, article_id INTEGER, category_id INTEGER, is_primary INTEGER)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at  TEXT, updated_at  TEXT, display_name  TEXT)");
+tx.executeSql("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at TEXT, display_name TEXT)");
 tx.executeSql("CREATE TABLE IF NOT EXISTS articles_tags (article_id INTEGER, tag_id INTEGER)");
 tx.executeSql("CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, excerpt TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, user_id INTEGER, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, article_id INTEGER, email TEXT, url TEXT, ip TEXT, blog_name TEXT, published INTEGER, published_at TEXT, state TEXT, status_confirmed INTEGER)");
 tx.executeSql("CREATE INDEX IF NOT EXISTS index_feedback_on_article_id ON feedback (article_id)");
@@ -6797,6 +6800,9 @@ $.Model.extend("Article",{find_all:function(_1,_2,_3){
 var _4=this;
 var _5=parseInt(_1.current_page);
 var _6=parseInt(localStorage["limit_article_display"]);
+if(isNaN(_6)){
+_6=10;
+}
 var _7=parseInt((_5<2?_5-1:((_5-1)*_6)));
 var _8=(typeof _1.category!="undefined"?"LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id ":"");
 var _9=(typeof _1.category!="undefined"?"AND (c2.category_id="+_1.category+")":"");
@@ -7261,11 +7267,10 @@ $("#dialog-message").dialog("option","title","Syncing process");
 $("#dialog-message").dialog("option","buttons",{sync:function(){
 Synchronization.start();
 $("#dialog-message").dialog("option","buttons",{done:function(){
-$(this).dialog("close");
+window.location.reload();
 }});
 $("#dialog-message").html("Syncing done succesfully. Click on done button.");
 $("#dialog-message").dialog("open");
-Article.find_all({current_page:1},_a.callback("article_list"),_a.callback(db_con.error));
 },});
 $("#dialog-message").dialog("open");
 },"#searchform submit":function(el){
@@ -7792,7 +7797,7 @@ _4.push("<h1 class=\"hidden\">List of articles</h1>\n");
 _4.push("    ");
 if(!articles.length){
 _4.push("\n");
-_4.push("        No articles in category\n");
+_4.push("        No articles\n");
 _4.push("        ");
 }
 _4.push("\n");

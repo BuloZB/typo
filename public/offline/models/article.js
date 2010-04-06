@@ -13,6 +13,7 @@ $.Model.extend('Article',
         //pagination
         var current_page = parseInt(params.current_page)
         var limit = parseInt(localStorage['limit_article_display'])
+        if(isNaN(limit)) limit = 10
         var offset = parseInt((current_page < 2 ? current_page-1 : ((current_page-1)*limit)))
         
         //only if we need to display articles in certain category, call from find_by_category() method
@@ -25,7 +26,7 @@ $.Model.extend('Article',
 
         //only if we need to display articles published at certain time
         var date_where = (typeof params.date != 'undefined' ? ' AND (c1.published_at BETWEEN "'+params.date.year+'-'+params.date.month+'-1'+' 00:00:00" AND "'+params.date.year+'-'+params.date.month+'-31 23:59:59")' : '')
-        
+
         db.transaction(function(tx) {
             tx.executeSql("SELECT c1 . * " +
                 "FROM contents c1 " +

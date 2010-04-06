@@ -8,6 +8,8 @@ $.extend($.View.Helpers.prototype, {
         var next_span = ''
         var identity = ''
 
+        if(isNaN(count)) return;
+
         if(typeof params.action == 'undefined') {
             params.action = controller
         }

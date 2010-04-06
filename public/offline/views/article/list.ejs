@@ -1,7 +1,7 @@
 <section>
 <h1 class="hidden">List of articles</h1>
     <% if(!articles.length) {%>
-        No articles in category
+        No articles
         <%}%>
     <%for(var i = 0; i < articles.length ; i++){%>
         <%= view('views/article/show',articles[i])%>

@@ -22,12 +22,12 @@ jQuery.Class.extend('Sqlite',{
                 tx.executeSql("CREATE INDEX IF NOT EXISTS index_contents_on_published ON contents (published)")
                 tx.executeSql("CREATE INDEX IF NOT EXISTS index_contents_on_text_filter_id ON contents (text_filter_id)")
                 //table categories
-                tx.executeSql("CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id)")
+                tx.executeSql("CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id INTEGER)")
                 tx.executeSql("CREATE INDEX IF NOT EXISTS index_categories_on_permalink ON categories (permalink)")
                 //table categorizations
                 tx.executeSql("CREATE TABLE IF NOT EXISTS categorizations (id INTEGER PRIMARY KEY, article_id INTEGER, category_id INTEGER, is_primary INTEGER)")
                 //table tags
-                tx.executeSql("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at  TEXT, updated_at  TEXT, display_name  TEXT)")
+                tx.executeSql("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at TEXT, display_name TEXT)")
                 //table articles_tags
                 tx.executeSql("CREATE TABLE IF NOT EXISTS articles_tags (article_id INTEGER, tag_id INTEGER)")
                 //table comments
