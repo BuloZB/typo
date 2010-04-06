@@ -1,19 +1,11 @@
-/**
- * @tag models, home
- * Wraps backend sidebar services.  Enables 
- * [Sidebar.static.findAll retrieving],
- * [Sidebar.static.update updating],
- * [Sidebar.static.destroy destroying], and
- * [Sidebar.static.create creating] sidebars.
- */
 $.Model.extend('Sidebar',
 /* @Static */
 {
     /**
-     * Retrieves sidebars data from your backend services.
-     * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped sidebar objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Retrieves sidebars data.
+     * @param {Object} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped sidebar objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_all : function(params, success, error){
         var obj = this
@@ -22,14 +14,15 @@ $.Model.extend('Sidebar',
                 function(tx, rs) {
                     return success(obj.parse_result(rs))
                 },
-                function(tx, error) {
-                    alert(error.message)
+                function(tx, err) {
+                    return error(err)
                 })
         })
     },
+    
     /**
-     * Parse result of sql
-     * @param {Object} sql result
+     * Parses result of sql.
+     * @param {Object} rs - a sql result.
      */
     parse_result: function(rs) {
         var result = []

@@ -1,6 +1,3 @@
-/**
- * @tag controllers, home
- */
 jQuery.Controller.extend('CategoryController',
 /* @Static */
 {
@@ -8,6 +5,11 @@ jQuery.Controller.extend('CategoryController',
 },
 /* @Prototype */
 {
+    /**
+     * Displays articles in a category.
+     * @param {Array} articles - a list of articles.
+     * @param {Array} params - params that might refine your results.
+     */
     show: function(articles,params) {
         $('.section').html(this.view('init', {
             articles:articles,
@@ -15,6 +17,12 @@ jQuery.Controller.extend('CategoryController',
             id:params.category
         } ))
     },
+
+    /**
+     * Displays first page of categories list.
+     * @param {Object} el - invoked element.
+     * @param {Object} ev - invoked event.
+     */
     click: function(el,ev) {
         var category = el.parents().model().identity().split('_')[1]
         Article.find_by_category_id({
@@ -24,14 +32,19 @@ jQuery.Controller.extend('CategoryController',
         ev.stopDelegation();
         ev.stopPropagation(); 
     },
+
+    //Events handlers
+
     //called from sidebar
     '.view click': function(el,ev) {
         this.click(el,ev)
     },
+
     //called from article
     '.category_view click': function(el,ev) {
         this.click(el,ev)
     },
+    
     '.category_paginate click': function(el,ev) {
         var category = el.parents().model().identity().split('_')[1]
         Article.find_by_category_id({

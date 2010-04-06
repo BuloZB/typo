@@ -1,16 +1,7 @@
-/**
- * @tag models, home
- * Wraps backend comment services.  Enables 
- * [Comment.static.findAll retrieving],
- * [Comment.static.update updating],
- * [Comment.static.destroy destroying], and
- * [Comment.static.create creating] comments.
- */
 $.Model.extend('Comment',
 /* @Static */
 {
     init: function() {
-
         // Call the base classes constructor.
         this._super();
 
@@ -22,11 +13,12 @@ $.Model.extend('Comment',
             message: 'must be supplied'
         });
     },
+    
     /**
      * Creates a comment.
-     * @param {Object} attrs A comment's attributes.
-     * @param {Function} success a callback function that indicates a successful create.  The data that comes back must have an ID property.
-     * @param {Function} error a callback that should be called with an object of errors.
+     * @param {Object} attrs - a comment's attributes.
+     * @param {Function} success - a callback function that indicates a successful create.
+     * @param {Function} error - a callback function for an error.
      */
     create : function(attrs, success, error){
         var obj = this
@@ -36,7 +28,7 @@ $.Model.extend('Comment',
                 function(tx, rs) {
                     tx.executeSql("INSERT INTO sync (table_name,row_id,action) VALUES (?,?,?)",['feedback',rs.insertId,'post'],
                         function(rs,tx){
-                            //we need to display when the comment was created.
+                            //we need to display date when the comment was created.
                             var created_at = new Date()
                             attrs['created_at'] = created_at.strftime('%Y-%m-%d %H:%M:%S')
                             return success(attrs)

@@ -1,22 +1,11 @@
-/**
- * @tag models, home
- * Wraps backend article services.  Enables 
- * [Article.static.findAll retrieving],
- * [Article.static.update updating],
- * [Article.static.destroy destroying], and
- * [Article.static.create creating] articles.
- */
 $.Model.extend('Article',
 /* @Static */
 {
     /**
-     * Retrieves articles
-     * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error in the ajax request.
-     * @param {Integer} cat_id id of category articles belong to.
-     * @param {Integer} tag_id id of tag articles belong to.
-     * @param {Array} data date between articles are published.
+     * Retrieves articles.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_all: function(params, success, error){
         var obj = this
@@ -64,11 +53,12 @@ $.Model.extend('Article',
                 })
         })
     },
+
     /**
-     * Finds article by id
-     * @param {Integer} id unique id representing your content.
-     * @param {Function} success a callback function that indicates a successful update.
-     * @param {Function} error a callback that should be called with an object of errors.
+     * Finds article by id.
+     * @param {Integer} id - unique id representing your content.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_by_id: function(id, success, error) {
         var article_id = this.get_id(id)
@@ -93,11 +83,12 @@ $.Model.extend('Article',
             })
         })
     },
+
     /**
-     * Finds archive of articles
-     * @param {Array} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback that should be called with an object of errors.
+     * Finds the archive of articles.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_archive: function(params, success, error) {
         var obj = this
@@ -110,11 +101,12 @@ $.Model.extend('Article',
                 })
         })
     },
+
     /**
-     * Finds page by name
-     * @param {String} page name of the page.
-     * @param {Function} success a callback function that indicates a successful update.
-     * @param {Function} error a callback that should be called with an object of errors.
+     * Finds a page by name.
+     * @param {String} page - the name of a page.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_page: function(page, success, error) {
         var obj = this
@@ -127,40 +119,44 @@ $.Model.extend('Article',
                 })
         })
     },
+
     /**
-     * Finds articles by catetegory id
-     * @param {Integer} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Finds articles by catetegory id.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_by_category_id: function(params, success, error ){
         this.find_all(params,success,error)
     },
+
     /**
-     * Finds articles by tag id
-     * @param {Integer} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Finds articles by tag id.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     find_by_tag_id: function(params, success, error ){
         this.find_all(params,success,error)
     },
+
     /**
-     * Finds articles by published date
+     * Finds articles by published date.
      * @param {Array} params params that might refine your results.
      * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * @param {Function} error a callback function for an error.
      */
     find_by_published_at: function(params, success, error) {
-        //date of articles to be displayed, format year_month
+        //set date of articles in format "year_month"
         params.date = {year:params.date.split("_")[0],month:params.date.split("_")[1]}
         this.find_all(params,success,error)
     },
+
     /**
-     * Finds articles for article sidebar
-     * @param {Array} params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Finds articles for article sidebar.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     sidebar: function(params, success, error ){
         var obj = this
@@ -182,11 +178,12 @@ $.Model.extend('Article',
                 })
         })
     },
+
     /**
-     * Finds pages for page sidebar
-     * @param {Array} params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Finds pages for page sidebar.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
      */
     sidebar_page: function(params, success, error ){
         var obj = this
@@ -199,9 +196,12 @@ $.Model.extend('Article',
                 })
         })
     },
+
     /**
-     * Parses result of sql
-     * @param {Object} sql result
+     * Parses result of sql.
+     * @param {Object} article_rs - sql result.
+     * @param {Object} comments_rs - sql result.
+     * @param {Object} tags_rs - sql result.
      */
     parse_result: function(article_rs,comments_rs,tags_rs) {
         var result = []
@@ -267,16 +267,17 @@ $.Model.extend('Article',
                     comments: comments,
                     tags: tags,
                 }
-                //we saved last index and id because article has many categorie
+                //we saved last index and id because article has many categories
                 last_saved_id = row['id']
                 last_index = i
             }
         }
         return this.wrapMany(result)
     },
+
     /**
-     * Returns record id
-     * @param {String} id record id in format model_id
+     * Returns id of a record.
+     * @param {Integer} id -  id of a record.
      */
     get_id: function(id) {
         var record_id = id.split('_')

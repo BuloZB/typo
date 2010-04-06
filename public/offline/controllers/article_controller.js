@@ -1,10 +1,3 @@
-/**
- * @tag controllers, home
- * Displays a table of articles.  Lets the user 
- * ["ArticleController.prototype.form submit" create], 
- * ["ArticleController.prototype.&#46;edit click" edit],
- * or ["ArticleController.prototype.&#46;destroy click" destroy] articles.
- */
 jQuery.Controller.extend('ArticleController',
 /* @Static */
 {
@@ -12,9 +5,6 @@ jQuery.Controller.extend('ArticleController',
 },
 /* @Prototype */
 {
-    /**
-     * When the page loads, gets all articles to be displayed.
-     */
     load: function(){
         if(!$("#article").length)
             $('.section').attr('id','article')
@@ -23,9 +13,11 @@ jQuery.Controller.extend('ArticleController',
             current_page:1
         }, this.callback('list'),this.callback(db_con.error));
     },
+
     /**
-     * Displays a list of articles
-     * @param {Array} articles An array of Article objects.
+     * Displays a list of articles.
+     * @param {Array} articles - a list of articles.
+     * @param {Array} params - params that might refine your results.
      */
     list: function(articles,params){
         $('.section').html(this.view('init', {
@@ -33,24 +25,43 @@ jQuery.Controller.extend('ArticleController',
             params:params
         } ))
     },
+
+    /**
+     * Displays the archive of articles.
+     * @param {Array} articles - list of articles.
+     * @param {Array} params - params that might refine your results.
+     */
     list_archive: function(articles,params){
         $('.section').html(this.view('init_archive', {
             articles:articles,
             params:params
         } ))
     },
+
+    /**
+     * Displays an article.
+     * @param {Object} article - an article to be displayed.
+     */
     show: function(article) {
         $('.section').html(this.view('show',article[0]))
     },
+
+    /**
+     * Pagination
+     */
     paginate: function(el,ev) {
         Article.find_all({
             current_page:$(el).attr('id')
         },this.callback('list'),this.callback(db_con.error))
     },
+
+    //Events handlers
+    
     '.view click': function(el) {
         var article = el.parents().model().identity()
         Article.find_by_id(article,this.callback('show'),this.callback(db_con.error))
     },
+
     'form submit': function(el, ev){
         ev.preventDefault();
         var comment = new Comment( el.formParams() )
@@ -58,15 +69,18 @@ jQuery.Controller.extend('ArticleController',
             Notification.validation_errors(comment.errors)
         }
     },
+
     "comment.created subscribe": function(called, content){
         $('#commentList').append(this.view('comment', content))
         jQuery("#article form input[type=text]").val(""); //clear old vals
         jQuery("#article form textarea").val(""); //clear old vals
 
     },
+
     '#form-preview-button click': function(el) {
         
     },
+
     '.archive click': function(el) {
         Article.find_by_published_at({
             current_page:1,
@@ -75,12 +89,12 @@ jQuery.Controller.extend('ArticleController',
             action:"archive"
         },this.callback('list_archive'),this.callback(db_con.error))
     },
+
     '.article_paginate click': function(el,ev) {
         this.paginate(el,ev)
     },
+
     '.archive_paginate click': function(el,ev) {
-//        var date = el.parents().model().identity().split('_')[1]
-        alert($(el).parent().get(0).className)
         Article.find_by_published_at({
             current_page:$(el).attr('id'),
             date:date

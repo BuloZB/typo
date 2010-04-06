@@ -1,19 +1,11 @@
-/**
- * @tag models, home
- * Wraps backend tag services.  Enables 
- * [Tag.static.findAll retrieving],
- * [Tag.static.update updating],
- * [Tag.static.destroy destroying], and
- * [Tag.static.create creating] tags.
- */
 $.Model.extend('Tag',
 /* @Static */
 {
     /**
-     * Retrieves tags data from your backend services.
-     * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped tag objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Retrieves tags data.
+     * @param {Object} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped tag objects.
+     * @param {Function} error - a callback function for an error.
      */
     sidebar: function(params, success, error) {
         var obj = this
@@ -32,9 +24,10 @@ $.Model.extend('Tag',
                 })
         })
     },
+    
     /**
-     * Parse result of sql
-     * @param {Object} sql result
+     * Parses result of sql.
+     * @param {Object} rs - a sql result.
      */
     parse_result: function(rs) {
         var result = []
@@ -53,8 +46,8 @@ $.Model.extend('Tag',
 /* @Prototype */
 {
     /**
-     * Counts font size of tag inside tag sidebar
-     * @param {Array} tags tags
+     * Counts font size of a tag.
+     * @param {Array} tags - a list of tags.
      */
     font_size: function(tags) {
         var total = 0;

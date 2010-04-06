@@ -1,19 +1,11 @@
-/**
- * @tag models, home
- * Wraps backend category services.  Enables 
- * [Category.static.findAll retrieving],
- * [Category.static.update updating],
- * [Category.static.destroy destroying], and
- * [Category.static.create creating] categories.
- */
 $.Model.extend('Category',
 /* @Static */
 {
     /**
-     * Retrieves categories data from your backend services.
-     * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped category objects.
-     * @param {Function} error a callback function for an error in the ajax request.
+     * Retrieves categories.
+     * @param {Object} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped category objects.
+     * @param {Function} error - a callback function for an error.
      */
     sidebar: function(params, success, error) {
         var obj = this
@@ -33,9 +25,10 @@ $.Model.extend('Category',
                 })
         })
     },
+
     /**
-     * Parse result of sql
-     * @param {Object} sql result
+     * Parses result of sql.
+     * @param {Object} rs - a sql result.
      */
     parse_result: function(rs) {
         var result = []
