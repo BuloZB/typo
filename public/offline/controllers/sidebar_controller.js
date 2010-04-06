@@ -7,10 +7,21 @@ jQuery.Controller.extend('SidebarController',
 {
     load: function(sidebars) {
         this.sidebar_status()
+        this.sidebar_search()
         Category.sidebar([],this.callback('sidebar_category'))
         Tag.sidebar([],this.callback('sidebar_tag'),this.callback(db_con.error))
         Article.sidebar([],this.callback('sidebar_archive'),this.callback(db_con.error))
         Article.sidebar_page([],this.callback('sidebar_page'),this.callback(db_con.error))
+    },
+
+    /**
+     * Creates search sidebar.
+     */
+    sidebar_search: function() {
+        if(!$('#SearchSidebar').length) {
+            $('#boxes').append($(document.createElement('section')).attr('id','SearchSidebar'))
+        }
+        $("#SearchSidebar").html(this.view('sidebar/search',{}))
     },
 
     /**
