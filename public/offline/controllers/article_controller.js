@@ -47,7 +47,7 @@ jQuery.Controller.extend('ArticleController',
     },
 
     /**
-     * Pagination
+     * Pagination for articles
      */
     paginate: function(el,ev) {
         Article.find_all({
@@ -97,7 +97,9 @@ jQuery.Controller.extend('ArticleController',
     '.archive_paginate click': function(el,ev) {
         Article.find_by_published_at({
             current_page:$(el).attr('id'),
-            date:date
+            //we take additional info from parent's class attribute
+            date:$(el).parent().attr('class'),
+            action:"archive"
         },this.callback('list_archive'),this.callback(db_con.error))
     }
 });

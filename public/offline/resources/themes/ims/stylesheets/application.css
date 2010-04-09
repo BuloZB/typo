@@ -395,3 +395,21 @@ section#archives  h3.archivemonth {
 #dialog-message {
     font-size: 1.4em;
 }
+
+
+/* [] PAGINATION */
+.pagination {
+    margin: auto;
+    text-align: center;
+}
+.pagination span a {
+    padding: .5em;
+    background: rgb(108,183,210);
+    color: white;
+    margin: .5em;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+}
+.pagination span a:hover {
+    background: rgb(42,56,65);
+}

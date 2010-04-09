@@ -20,9 +20,11 @@ jQuery.Controller.extend('TagController',
 
     //Events handlers
     
-    '.view click': function(el) {
+    '.view click': function(el,ev) {
         var tag = el.model().identity().split('_')[1]
         Article.find_by_tag_id({current_page:1,tag:tag},this.callback('show'),this.callback(db_con.error))
+        //prevent Article->view action
+        el.preventDefault()
     },
     
     '.tag_paginate click': function(el,ev) {
