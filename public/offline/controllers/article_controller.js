@@ -11,7 +11,7 @@ jQuery.Controller.extend('ArticleController',
 
         Article.find_all({
             current_page:1
-        }, this.callback('list'),this.callback(db_con.error));
+        }, this.callback('list'),this.callback(Notification.msg));
     },
 
     /**
@@ -52,14 +52,14 @@ jQuery.Controller.extend('ArticleController',
     paginate: function(el,ev) {
         Article.find_all({
             current_page:$(el).attr('id')
-        },this.callback('list'),this.callback(db_con.error))
+        },this.callback('list'),this.callback(Notification.msg))
     },
 
     //Events handlers
     
     '.view click': function(el) {
         var article = el.parents().model().identity()
-        Article.find_by_id(article,this.callback('show'),this.callback(db_con.error))
+        Article.find_by_id(article,this.callback('show'),this.callback(Notification.msg))
     },
 
     'form submit': function(el, ev){
@@ -87,7 +87,7 @@ jQuery.Controller.extend('ArticleController',
             date:$(el).attr('id'),
             //we need to add action because of pagination
             action:"archive"
-        },this.callback('list_archive'),this.callback(db_con.error))
+        },this.callback('list_archive'),this.callback(Notification.msg))
     },
 
     '.article_paginate click': function(el,ev) {
@@ -100,6 +100,6 @@ jQuery.Controller.extend('ArticleController',
             //we take additional info from parent's class attribute
             date:$(el).parent().attr('class'),
             action:"archive"
-        },this.callback('list_archive'),this.callback(db_con.error))
+        },this.callback('list_archive'),this.callback(Notification.msg))
     }
 });

@@ -1,10 +1,9 @@
 include.plugins('model','view','controller','dom/form_params','model/validation','view/helpers');
 include.resources('jquery-ui-1-2/jquery-ui-1.7.2.custom.min','modernizr-1.1.min');
 
-
 include(function(){ //runs after prior includes are loaded
 
-    //Modernizr does not support sqlstorage test
+    //Modernizr - sqlstorage support test
     Modernizr.addTest('sqlstorage',function(){
         return typeof window.openDatabase == "function" ? true : false;
     })
@@ -34,9 +33,8 @@ include(function(){ //runs after prior includes are loaded
         $('#dialog-message').dialog('open')
     }
 
-    include.resources('sqlite_driver','strftime','notification','jquery-ui-1-2/jquery-ui-1.7.2.custom.min','modernizr-1.1.min')
+    include.resources('strftime','notification','jquery-ui-1-2/jquery-ui-1.7.2.custom.min','modernizr-1.1.min','database/driver','database/sqlite_driver','database/creator','database/database_creator','database/init')
     include.models('article','category','tag','sidebar','comment','blog','synchronization');
-
     include.controllers('main','article','category','tag','sidebar');
     include.views('views/article/show','views/article/archive','views/article/init','views/article/init_archive','views/article/comment','views/article/comment_form','views/article/list',
         'views/category/show','views/category/init',

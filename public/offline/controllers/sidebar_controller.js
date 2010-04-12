@@ -9,9 +9,9 @@ jQuery.Controller.extend('SidebarController',
         this.sidebar_status()
         this.sidebar_search()
         Category.sidebar([],this.callback('sidebar_category'))
-        Tag.sidebar([],this.callback('sidebar_tag'),this.callback(db_con.error))
-        Article.sidebar([],this.callback('sidebar_archive'),this.callback(db_con.error))
-        Article.sidebar_page([],this.callback('sidebar_page'),this.callback(db_con.error))
+        Tag.sidebar([],this.callback('sidebar_tag'),this.callback(Notification.msg))
+        Article.sidebar([],this.callback('sidebar_archive'),this.callback(Notification.msg))
+        Article.sidebar_page([],this.callback('sidebar_page'),this.callback(Notification.msg))
     },
 
     /**

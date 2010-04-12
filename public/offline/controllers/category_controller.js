@@ -28,7 +28,7 @@ jQuery.Controller.extend('CategoryController',
         Article.find_by_category_id({
             current_page:1,
             category:category
-        },this.callback('show'),this.callback(db_con.error))
+        },this.callback('show'),this.callback(Notification.msg))
         ev.stopDelegation();
         ev.stopPropagation(); 
     },
@@ -50,6 +50,6 @@ jQuery.Controller.extend('CategoryController',
         Article.find_by_category_id({
             current_page:$(el).attr('id'),
             category:category
-        },this.callback('show'),this.callback(db_con.error))
+        },this.callback('show'),this.callback(Notification.msg))
     }
 });

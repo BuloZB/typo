@@ -10,7 +10,7 @@ jQuery.Controller.extend('MainController',
         this.time()
 
         //set blog settings (name, description, number of index articles etc.)
-        Blog.settings([],this.callback('load_settings'),this.callback(db_con.error))
+        Blog.settings([],this.callback('load_settings'),this.callback(Notification.msg))
 
         $(window).bind('online', this.callback('is_online'))
         $(window).bind('offline',this.callback('is_online'))
@@ -137,9 +137,9 @@ jQuery.Controller.extend('MainController',
                 //we must reload a page with new data
 //                Article.find_all({
 //                    current_page:1
-//                }, obj.callback('article_list'),obj.callback(db_con.error))
+//                }, obj.callback('article_list'),obj.callback(Notification.msg))
 //
-//                Blog.settings([],obj.callback('load_settings'),obj.callback(db_con.error))
+//                Blog.settings([],obj.callback('load_settings'),obj.callback(Notification.msg))
             },
         })
         $('#dialog-message').dialog('open')
@@ -154,7 +154,7 @@ jQuery.Controller.extend('MainController',
     '#home-page click': function(el) {
         Article.find_all({
             current_page:1
-        }, this.callback('article_list'),this.callback(db_con.error));
+        }, this.callback('article_list'),this.callback(Notification.msg));
     },
 
     '.offline click': function(el) {
@@ -162,11 +162,11 @@ jQuery.Controller.extend('MainController',
     },
 
     '.page click': function(el) {
-        Article.find_page($(el).attr('id'), this.callback('show_page'),this.callback(db_con.error));
+        Article.find_page($(el).attr('id'), this.callback('show_page'),this.callback(Notification.msg));
     },
 
     '#archive click': function(el) {
-        Article.find_archive({},this.callback('archive'),this.callback(db_con.error))
+        Article.find_archive({},this.callback('archive'),this.callback(Notification.msg))
     },
 
     '#synchronize click': function() {
