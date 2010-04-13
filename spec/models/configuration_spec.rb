@@ -23,27 +23,12 @@ describe 'Given a new blog' do
     @blog.sp_article_auto_close.should == 0
   end
 
-  it "#sp_allow_non_ajax_comments should be false" do
-    @blog.should be_sp_allow_non_ajax_comments
-  end
-
   it "#sp_url_limit should be 0" do
     @blog.sp_url_limit.should == 0
   end
 
   it "#sp_akismet_key should be blank" do
     @blog.sp_akismet_key.should == ''
-  end
-
-  # Another icky setting name
-  it "#itunes_explicit should be false" do
-    @blog.itunes_explicit.should be_false
-  end
-
-  it "Other itunes settings should be blank" do
-    %w{ author subtitle summary owner email name copyright}.each do |setting|
-      @blog.send("itunes_#{setting}").should == ''
-    end
   end
 
   it '#text_filter and #comment_text_filter should be markdown smartypants' do

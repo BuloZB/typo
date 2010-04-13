@@ -10,7 +10,7 @@ Spec::Runner.configure do |config|
   config.use_instantiated_fixtures  = false
   config.fixture_path = RAILS_ROOT + '/test/fixtures/'
   config.global_fixtures =
-    %w{ blacklist_patterns blogs categories categorizations contents
+    %w{ blogs categories categorizations contents
         feedback notifications page_caches profiles redirects resources sidebars
         tags text_filters triggers users }
 
@@ -53,6 +53,19 @@ def this_blog
   Blog.default || Blog.create!
 end
 
+# test standard view and all themes
+def with_each_theme
+  yield nil, ""
+  Dir.new(File.join(RAILS_ROOT, "themes")).each do |theme|
+    next if theme =~ /\.\.?/
+    view_path = "#{RAILS_ROOT}/themes/#{theme}/views" 
+    if File.exists?("#{RAILS_ROOT}/themes/#{theme}/helpers/theme_helper.rb")
+      require "#{RAILS_ROOT}/themes/#{theme}/helpers/theme_helper.rb"
+    end
+    yield theme, view_path
+  end
+end
+
 # This test now has optional support for validating the generated RSS feeds.
 # Since Ruby doesn't have a RSS/Atom validator, I'm using the Python source
 # for http://feedvalidator.org and calling it via 'system'.
@@ -79,7 +92,7 @@ end
 
 def assert_feedvalidator(rss, todo=nil)
   unless $validator_installed
-    puts 'not test of validating feed because no validator (feedvalidator in python) installed'
+    puts 'Not validating feed because no validator (feedvalidator in python) is installed'
     return
   end
 

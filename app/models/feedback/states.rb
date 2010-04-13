@@ -59,7 +59,7 @@ module Feedback::States
     def before_save
       classify_content
     end
-    
+
     def to_s
       _("Unclassified")
     end
@@ -69,11 +69,12 @@ module Feedback::States
     def enter_hook
       super
       content.just_changed_published_status = true
-      content.state = :presumed_ham
+      content.state = :presumed_ham unless content.user_id
+      content.state = :just_marked_as_ham if content.user_id
     end
     def to_s
       _("Just Presumed Ham")
-    end    
+    end
   end
 
   class PresumedHam < Base
@@ -119,7 +120,7 @@ module Feedback::States
     end
     def to_s
       _("Just Marked As Ham")
-    end    
+    end
   end
 
   class Ham < Base
@@ -153,7 +154,7 @@ module Feedback::States
     end
     def to_s
       _("Ham")
-    end   
+    end
   end
 
   class PresumedSpam < Base
@@ -194,7 +195,7 @@ module Feedback::States
     end
     def to_s
       _("Just Marked As Spam")
-    end    
+    end
   end
 
   class Spam < Base
@@ -215,6 +216,6 @@ module Feedback::States
     end
     def to_s
       _("Spam")
-    end     
+    end
   end
 end

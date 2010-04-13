@@ -1,0 +1,2589 @@
+--- 
+profiles: 
+- modules: |
+    --- 
+    - :dashboard
+    - :write
+    - :content
+    - :feedback
+    - :themes
+    - :sidebar
+    - :users
+    - :settings
+    - :profile
+
+  label: admin
+  id: "1"
+  nicename: Typo administrator
+- modules: |
+    --- 
+    - :dashboard
+    - :write
+    - :content
+    - :feedback
+    - :profile
+
+  label: publisher
+  id: "2"
+  nicename: Blog publisher
+- modules: |
+    --- 
+    - :dashboard
+    - :profile
+
+  label: contributor
+  id: "3"
+  nicename: Contributor
+pings: []
+
+sidebars: 
+- config: |
+    --- !map:HashWithIndifferentAccess 
+    empty: false
+    count: true
+
+  staged_position: "1"
+  id: "2"
+  type: CategorySidebar
+  active_position: "1"
+- config: |
+    --- !map:HashWithIndifferentAccess 
+    show_count: true
+    count: "10"
+
+  staged_position: "2"
+  id: "3"
+  type: ArchivesSidebar
+  active_position: "2"
+- config: |
+    --- !map:HashWithIndifferentAccess 
+    maximum_tags: "20"
+
+  staged_position: 
+  id: "7"
+  type: TagSidebar
+  active_position: "3"
+- config: |
+    --- !map:HashWithIndifferentAccess 
+    maximum_pages: "10"
+
+  staged_position: 
+  id: "8"
+  type: PageSidebar
+  active_position: "4"
+- config: |
+    --- !map:HashWithIndifferentAccess 
+    title: Search
+
+  staged_position: 
+  id: "21"
+  type: SearchSidebar
+  active_position: "0"
+schema_migrations: 
+- version: "1"
+- version: "10"
+- version: "11"
+- version: "12"
+- version: "13"
+- version: "14"
+- version: "15"
+- version: "16"
+- version: "17"
+- version: "18"
+- version: "19"
+- version: "2"
+- version: "20"
+- version: "21"
+- version: "22"
+- version: "23"
+- version: "24"
+- version: "25"
+- version: "26"
+- version: "27"
+- version: "28"
+- version: "29"
+- version: "3"
+- version: "30"
+- version: "31"
+- version: "32"
+- version: "33"
+- version: "34"
+- version: "35"
+- version: "36"
+- version: "37"
+- version: "38"
+- version: "39"
+- version: "4"
+- version: "40"
+- version: "41"
+- version: "42"
+- version: "43"
+- version: "44"
+- version: "45"
+- version: "46"
+- version: "47"
+- version: "48"
+- version: "49"
+- version: "5"
+- version: "50"
+- version: "51"
+- version: "52"
+- version: "53"
+- version: "54"
+- version: "55"
+- version: "56"
+- version: "57"
+- version: "58"
+- version: "59"
+- version: "6"
+- version: "60"
+- version: "61"
+- version: "62"
+- version: "63"
+- version: "64"
+- version: "65"
+- version: "66"
+- version: "67"
+- version: "68"
+- version: "69"
+- version: "7"
+- version: "70"
+- version: "71"
+- version: "72"
+- version: "73"
+- version: "74"
+- version: "75"
+- version: "76"
+- version: "77"
+- version: "78"
+- version: "79"
+- version: "8"
+- version: "80"
+- version: "81"
+- version: "82"
+- version: "83"
+- version: "84"
+- version: "85"
+- version: "86"
+- version: "9"
+rights: 
+- name: admin
+  id: "1"
+  description: Global administration
+- name: content_create
+  id: "2"
+  description: Create article
+- name: content_edit
+  id: "3"
+  description: Edit article
+- name: content_delete
+  id: "4"
+  description: Delete article
+- name: category_create
+  id: "5"
+  description: Create a category
+- name: category_edit
+  id: "6"
+  description: Edit a category
+- name: category_delete
+  id: "7"
+  description: Delete a category
+- name: page_create
+  id: "8"
+  description: Create a category
+- name: page_edit
+  id: "9"
+  description: Edit a category
+- name: page_delete
+  id: "10"
+  description: Delete a category
+- name: feedback_create
+  id: "11"
+  description: Add a comment
+- name: feedback_self_edit
+  id: "12"
+  description: Edit self comments
+- name: feedback_edit
+  id: "13"
+  description: Edit any comment
+- name: feedback_self_delete
+  id: "14"
+  description: Delete self comments
+- name: feedback_delete
+  id: "15"
+  description: Delete any comment
+- name: user_create
+  id: "16"
+  description: Create users
+- name: user_edit
+  id: "17"
+  description: Edit users
+- name: user_self_edit
+  id: "18"
+  description: Edit self account
+- name: user_delete
+  id: "19"
+  description: Delete users
+page_caches: []
+
+tags: 
+- name: typo
+  created_at: 2009-11-13 11:14:51
+  updated_at: 2009-11-13 11:14:51
+  id: "1"
+  display_name: Typo
+- name: ruby-on-rails
+  created_at: 2009-11-13 11:14:51
+  updated_at: 2009-11-13 12:28:45
+  id: "2"
+  display_name: Ruby on Rails
+- name: ruby
+  created_at: 2009-11-15 11:44:20
+  updated_at: 2009-11-15 11:44:20
+  id: "3"
+  display_name: Ruby
+- name: "on"
+  created_at: 2009-11-15 11:44:20
+  updated_at: 2009-11-15 11:44:20
+  id: "4"
+  display_name: "on"
+- name: rails
+  created_at: 2009-11-15 11:44:20
+  updated_at: 2009-11-15 11:44:20
+  id: "5"
+  display_name: Rails
+- name: jmvc
+  created_at: 2010-01-18 13:15:16
+  updated_at: 2010-01-18 13:15:16
+  id: "6"
+  display_name: jmvc
+- name: op
+  created_at: 2010-03-11 11:09:53
+  updated_at: 2010-03-11 11:09:53
+  id: "7"
+  display_name: Op
+- name: open
+  created_at: 2010-03-11 11:10:03
+  updated_at: 2010-03-11 11:10:03
+  id: "8"
+  display_name: Open
+- name: source
+  created_at: 2010-03-11 11:10:03
+  updated_at: 2010-03-11 11:10:03
+  id: "9"
+  display_name: source
+sitealizer: []
+
+resources: []
+
+redirects: []
+
+profiles_rights: 
+- id: "1"
+  right_id: "1"
+  profile_id: "1"
+- id: "2"
+  right_id: "2"
+  profile_id: "1"
+- id: "3"
+  right_id: "2"
+  profile_id: "2"
+- id: "4"
+  right_id: "3"
+  profile_id: "1"
+- id: "5"
+  right_id: "3"
+  profile_id: "2"
+- id: "6"
+  right_id: "4"
+  profile_id: "1"
+- id: "7"
+  right_id: "4"
+  profile_id: "2"
+- id: "8"
+  right_id: "5"
+  profile_id: "1"
+- id: "9"
+  right_id: "5"
+  profile_id: "2"
+- id: "10"
+  right_id: "6"
+  profile_id: "1"
+- id: "11"
+  right_id: "6"
+  profile_id: "2"
+- id: "12"
+  right_id: "7"
+  profile_id: "1"
+- id: "13"
+  right_id: "7"
+  profile_id: "2"
+- id: "14"
+  right_id: "8"
+  profile_id: "1"
+- id: "15"
+  right_id: "8"
+  profile_id: "2"
+- id: "16"
+  right_id: "9"
+  profile_id: "1"
+- id: "17"
+  right_id: "9"
+  profile_id: "2"
+- id: "18"
+  right_id: "10"
+  profile_id: "1"
+- id: "19"
+  right_id: "10"
+  profile_id: "2"
+- id: "20"
+  right_id: "11"
+  profile_id: "1"
+- id: "21"
+  right_id: "11"
+  profile_id: "2"
+- id: "22"
+  right_id: "11"
+  profile_id: "3"
+- id: "23"
+  right_id: "12"
+  profile_id: "1"
+- id: "24"
+  right_id: "12"
+  profile_id: "2"
+- id: "25"
+  right_id: "12"
+  profile_id: "3"
+- id: "26"
+  right_id: "13"
+  profile_id: "1"
+- id: "27"
+  right_id: "13"
+  profile_id: "2"
+- id: "28"
+  right_id: "13"
+  profile_id: "3"
+- id: "29"
+  right_id: "14"
+  profile_id: "1"
+- id: "30"
+  right_id: "14"
+  profile_id: "2"
+- id: "31"
+  right_id: "14"
+  profile_id: "3"
+- id: "32"
+  right_id: "15"
+  profile_id: "1"
+- id: "33"
+  right_id: "15"
+  profile_id: "2"
+- id: "34"
+  right_id: "15"
+  profile_id: "3"
+- id: "35"
+  right_id: "16"
+  profile_id: "1"
+- id: "36"
+  right_id: "17"
+  profile_id: "1"
+- id: "37"
+  right_id: "18"
+  profile_id: "1"
+- id: "38"
+  right_id: "18"
+  profile_id: "2"
+- id: "39"
+  right_id: "18"
+  profile_id: "3"
+- id: "40"
+  right_id: "19"
+  profile_id: "1"
+cache_informations: []
+
+triggers: []
+
+feedback: 
+- blog_name: 
+  created_at: 2010-01-11 14:52:06
+  guid: f5f146ad-a013-4353-9671-dae56624cb92
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-11 14:52:06
+  excerpt: 
+  url: http://asdf
+  text_filter_id: 
+  id: "11"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-11 17:57:00
+  guid: 36d2fd45-80be-4a36-af55-931e3ff6d257
+  body: text
+  author: ahoj
+  title: 
+  published: "1"
+  updated_at: 2010-01-11 17:57:00
+  excerpt: 
+  url: http://ahoj
+  text_filter_id: 
+  id: "12"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: ahoj
+- blog_name: 
+  created_at: 2010-01-12 12:32:44
+  guid: e70b787b-6b85-45be-8849-6181762d3ffc
+  body: Body
+  author: Tibor
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 12:32:44
+  excerpt: 
+  url: http://ims.rockretail.com
+  text_filter_id: 
+  id: "13"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor.pino@gmail.com
+- blog_name: 
+  created_at: 2010-01-12 13:45:25
+  guid: 5a738af2-b21d-414e-8ecd-d32448510739
+  body: Hello. I am a new comment here
+  author: Tibor
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 13:45:25
+  excerpt: 
+  url: http://ims.rockretail.com
+  text_filter_id: 
+  id: "24"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor.pino@gmail.com
+- blog_name: 
+  created_at: 2010-01-12 13:50:36
+  guid: d69a2d83-6e1f-4fc3-9acb-316f8f7d6772
+  body: xxx
+  author: xxx
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 13:50:36
+  excerpt: 
+  url: http://xxx
+  text_filter_id: 
+  id: "25"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: xxx
+- blog_name: 
+  created_at: 2010-01-12 14:02:23
+  guid: 83765e25-4612-48b9-b659-023c1afcd097
+  body: Tibor
+  author: Tibor
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 14:02:23
+  excerpt: 
+  url: http://Tibor
+  text_filter_id: 
+  id: "29"
+  article_id: "3"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: Tibor
+- blog_name: 
+  created_at: 2010-01-12 14:10:14
+  guid: ec55299d-7717-41eb-bf77-bc1189e4c008
+  body: yyy
+  author: yyy
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 14:10:14
+  excerpt: 
+  url: http://yyy
+  text_filter_id: 
+  id: "30"
+  article_id: "3"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: yyy
+- blog_name: 
+  created_at: 2010-01-12 14:15:01
+  guid: 3b033318-f235-45c4-8b0a-435f23852576
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 14:15:01
+  excerpt: 
+  url: http://asdf
+  text_filter_id: 
+  id: "31"
+  article_id: "3"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsf
+- blog_name: 
+  created_at: 2010-01-12 14:20:45
+  guid: 5380158b-c3e5-4666-bc02-d39a90602337
+  body: asdfdsfsdfafsdaafsdfd
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 14:20:45
+  excerpt: 
+  url: http://asdf
+  text_filter_id: 
+  id: "32"
+  article_id: "3"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsf
+- blog_name: 
+  created_at: 2010-01-12 14:22:20
+  guid: 414576b0-53bc-4b20-920a-74cce80fd47d
+  body: test tibor
+  author: tibor
+  title: 
+  published: "1"
+  updated_at: 2010-01-12 14:22:20
+  excerpt: 
+  url: http://tibor
+  text_filter_id: 
+  id: "33"
+  article_id: "3"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor
+- blog_name: 
+  created_at: 2010-01-15 15:47:18
+  guid: a2bcbada-0a75-42b0-a0bb-f0934c3b8adb
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:18
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "34"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-15 15:47:20
+  guid: d0ef3078-4c81-4633-8359-253d9f5c9598
+  body: asdfasdfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:20
+  excerpt: 
+  url: http://adsfasdf
+  text_filter_id: 
+  id: "35"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdfasdf
+- blog_name: 
+  created_at: 2010-01-15 15:47:21
+  guid: 82045c63-7696-4d87-99c4-5659fd292ecb
+  body: new
+  author: new
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:21
+  excerpt: 
+  url: http://new
+  text_filter_id: 
+  id: "36"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: new
+- blog_name: 
+  created_at: 2010-01-15 15:47:22
+  guid: cda6edeb-4810-4c8b-83c7-e8a3e7e60f67
+  body: asdfasfas
+  author: asdfa
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:22
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "37"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdf
+- blog_name: 
+  created_at: 2010-01-15 15:47:23
+  guid: b459a49b-b99e-4ab2-963c-1f363e548e96
+  body: asdfafadfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:23
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "38"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdfasdfa
+- blog_name: 
+  created_at: 2010-01-15 15:47:25
+  guid: d743a174-ae9a-44d4-aa9b-77a1505f1084
+  body: xx
+  author: xx
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:25
+  excerpt: 
+  url: http://xx
+  text_filter_id: 
+  id: "39"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: xx
+- blog_name: 
+  created_at: 2010-01-15 15:47:26
+  guid: 6da17cb2-eca6-4210-9079-82a4ee848a4c
+  body: xxx
+  author: xxx
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:47:26
+  excerpt: 
+  url: http://xxx
+  text_filter_id: 
+  id: "40"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: xxx
+- blog_name: 
+  created_at: 2010-01-15 15:51:26
+  guid: 5753c647-619c-47be-87e7-4a28a6e64df3
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:51:26
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "41"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-15 15:51:26
+  guid: 05079ee9-b53b-4398-8261-05978022f944
+  body: asdfasdfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:51:26
+  excerpt: 
+  url: http://adsfasdf
+  text_filter_id: 
+  id: "42"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdfasdf
+- blog_name: 
+  created_at: 2010-01-15 15:51:27
+  guid: 7a365a68-d204-44f8-9337-94cd4678f952
+  body: new
+  author: new
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:51:27
+  excerpt: 
+  url: http://new
+  text_filter_id: 
+  id: "43"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: new
+- blog_name: 
+  created_at: 2010-01-15 15:51:27
+  guid: 06fbd3f5-88d5-42be-948c-f234145762f2
+  body: asdfasfas
+  author: asdfa
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:51:27
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "44"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdf
+- blog_name: 
+  created_at: 2010-01-15 15:51:27
+  guid: 8d11f185-dbe1-4be8-aa8f-b8dadc985081
+  body: asdfafadfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:51:27
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "45"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdfasdfa
+- blog_name: 
+  created_at: 2010-01-15 15:51:28
+  guid: 721716a5-e4cb-4fff-ba6c-f92c956f9d89
+  body: xx
+  author: xx
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:51:28
+  excerpt: 
+  url: http://xx
+  text_filter_id: 
+  id: "46"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: xx
+- blog_name: 
+  created_at: 2010-01-15 15:53:52
+  guid: db9661fe-6c6e-432e-b131-22c5ad0643ea
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:53:52
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "47"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-15 15:53:53
+  guid: ee887d7a-e417-4130-9d4f-6c3ed99bfb09
+  body: asdfasdfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:53:53
+  excerpt: 
+  url: http://adsfasdf
+  text_filter_id: 
+  id: "48"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdfasdf
+- blog_name: 
+  created_at: 2010-01-15 15:53:53
+  guid: fc1543a5-c3d4-48e8-8302-a31b0c6a67a5
+  body: new
+  author: new
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:53:53
+  excerpt: 
+  url: http://new
+  text_filter_id: 
+  id: "49"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: new
+- blog_name: 
+  created_at: 2010-01-15 15:53:53
+  guid: b96747e1-fc74-4b6c-9a88-663b24b343c6
+  body: asdfasfas
+  author: asdfa
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:53:53
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "50"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdf
+- blog_name: 
+  created_at: 2010-01-15 15:53:54
+  guid: b51791d3-9c76-4ec3-b1c8-8eb81e2a9282
+  body: asdfafadfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-15 15:53:54
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "51"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdfasdfa
+- blog_name: 
+  created_at: 2010-01-16 12:24:05
+  guid: 24780bbe-41a6-41a9-8eb7-20acc94488bb
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:05
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "52"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-16 12:24:06
+  guid: 835e3ac1-954f-422f-88a2-d65a24b9bc61
+  body: asdfasdfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:06
+  excerpt: 
+  url: http://adsfasdf
+  text_filter_id: 
+  id: "53"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdfasdf
+- blog_name: 
+  created_at: 2010-01-16 12:24:06
+  guid: 0c22fba0-492e-4170-915b-70c33290f91f
+  body: new
+  author: new
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:06
+  excerpt: 
+  url: http://new
+  text_filter_id: 
+  id: "54"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: new
+- blog_name: 
+  created_at: 2010-01-16 12:24:06
+  guid: ba76b217-3164-4709-b03c-b72803d1251e
+  body: asdfasfas
+  author: asdfa
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:06
+  excerpt: 
+  url: http://adsfasfasdf
+  text_filter_id: 
+  id: "55"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdf
+- blog_name: 
+  created_at: 2010-01-16 12:24:48
+  guid: b31d1429-adc6-4614-ae7a-21956c1f3629
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:48
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "56"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-16 12:24:49
+  guid: c9cbafa0-30e0-4246-8c9f-f4249c17d340
+  body: asdfasdfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:49
+  excerpt: 
+  url: http://adsfasdf
+  text_filter_id: 
+  id: "57"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdfasdf
+- blog_name: 
+  created_at: 2010-01-16 12:24:49
+  guid: 069af1bc-cb30-4b30-9935-9af21c93b143
+  body: new
+  author: new
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:24:49
+  excerpt: 
+  url: http://new
+  text_filter_id: 
+  id: "58"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: new
+- blog_name: 
+  created_at: 2010-01-16 12:26:58
+  guid: 850ea519-918d-40f5-abdc-3191d30645bc
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:26:58
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "59"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-01-16 12:26:59
+  guid: eaa1f599-d72a-4888-ba59-93e6327ad862
+  body: asdfasdfasdf
+  author: asdfasdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:26:59
+  excerpt: 
+  url: http://adsfasdf
+  text_filter_id: 
+  id: "60"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: adsfasdfasdf
+- blog_name: 
+  created_at: 2010-01-16 12:29:04
+  guid: ab0aea3e-c6e5-4665-9516-df9df70b8035
+  body: asdf
+  author: asdf
+  title: 
+  published: "1"
+  updated_at: 2010-01-16 12:29:04
+  excerpt: 
+  url: http://adsf
+  text_filter_id: 
+  id: "61"
+  article_id: "4"
+  user_id: 
+  type: Comment
+  status_confirmed: "0"
+  ip: 
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: asdf
+- blog_name: 
+  created_at: 2010-02-09 14:48:48
+  guid: bc7263bf-6901-4762-ac88-fbe97f0233ac
+  body: "**hrube**"
+  author: tibor
+  title: 
+  published: "1"
+  updated_at: 2010-02-09 14:48:48
+  excerpt: 
+  url: http://ahoj
+  text_filter_id: 
+  id: "62"
+  article_id: "8"
+  user_id: "1"
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor.pino@gmail.com
+- blog_name: 
+  created_at: 2010-03-11 12:19:46
+  guid: 4ca1e381-e4a1-44c8-9690-1a35674e4c5f
+  body: tibor
+  author: tibor
+  title: 
+  published: "1"
+  updated_at: 2010-03-11 12:19:46
+  excerpt: 
+  url: http://tibor
+  text_filter_id: 
+  id: "63"
+  article_id: "5"
+  user_id: "1"
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor
+- blog_name: 
+  created_at: 2010-03-11 12:25:05
+  guid: 6121acb2-14af-46c4-9c37-ba95ecfb8d3a
+  body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida, dui non molestie dictum, odio justo rhoncus ipsum, eu luctus mi est vitae magna. Mauris ornare dolor eget dui egestas varius. Vivamus vitae est in tellus ultrices gravida. Phasellus volutpat nisl quis est tempus interdum. Donec quis ligula est, a sollicitudin massa. Nullam fringilla, lacus id congue cursus, arcu turpis elementum elit, et porta elit lectus quis est. Etiam semper pretium commodo. Donec vitae sodales mauris. Phasellus volutpat sagittis nisi, id sagittis risus lacinia ut. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean venenatis lectus ante, in molestie lorem. Cras et feugiat mi. Ut in ultrices justo. Integer in tellus urna, nec sollicitudin augue. Quisque sed turpis eu nisl accumsan accumsan at non ipsum. Ut vel posuere diam. In hac habitasse platea dictumst. Sed non magna nulla. "
+  author: Tibor
+  title: 
+  published: "1"
+  updated_at: 2010-03-11 12:25:05
+  excerpt: 
+  url: http://ims.rockretail.com
+  text_filter_id: 
+  id: "64"
+  article_id: "5"
+  user_id: "1"
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor.pino@gmail.com
+- blog_name: 
+  created_at: 2010-03-11 12:25:34
+  guid: d5f7e24c-07c2-4e92-965d-9eaaef0e1852
+  body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida, dui non molestie dictum, odio justo rhoncus ipsum, eu luctus mi est vitae magna. Mauris ornare dolor eget dui egestas varius. Vivamus vitae est in tellus ultrices gravida. Phasellus volutpat nisl quis est tempus interdum. Donec quis ligula est, a sollicitudin massa. Nullam fringilla, lacus id congue cursus, arcu turpis elementum elit, et porta elit lectus quis est. Etiam semper pretium commodo. Donec vitae sodales mauris. Phasellus volutpat sagittis nisi, id sagittis risus lacinia ut. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean venenatis lectus ante, in molestie lorem. Cras et feugiat mi. Ut in ultrices justo. Integer in tellus urna, nec sollicitudin augue. Quisque sed turpis eu nisl accumsan accumsan at non ipsum. Ut vel posuere diam. In hac habitasse platea dictumst. Sed non magna nulla. "
+  author: Tibor
+  title: 
+  published: "1"
+  updated_at: 2010-03-11 12:25:34
+  excerpt: 
+  url: http://ims.rockretail.com
+  text_filter_id: 
+  id: "65"
+  article_id: "48"
+  user_id: "1"
+  type: Comment
+  status_confirmed: "0"
+  ip: 127.0.0.1
+  whiteboard: 
+  published_at: 
+  state: presumed_ham
+  email: tibor.pino@gmail.com
+blacklist_patterns: []
+
+users: 
+- last_connection: 2010-04-06 11:04:16
+  name: Tibor Pino
+  show_yahoo: 
+  notify_via_email: 
+  remember_token_expires_at: 
+  nickname: 
+  notify_watch_my_articles: 
+  yahoo: 
+  url: 
+  editor: visual
+  aim: 
+  lastname: 
+  text_filter_id: "1"
+  id: "1"
+  show_url: 
+  show_aim: 
+  firstname: 
+  remember_token: 
+  show_twitter: 
+  description: 
+  msn: 
+  jabber: 
+  password: 652b1b54a914207f0cfd15de1967d8ebe26c1b94
+  login: admin
+  show_jabber: 
+  show_msn: 
+  twitter: 
+  state: active
+  profile_id: "1"
+  notify_on_comments: 
+  notify_on_new_articles: 
+  email: tibor.pino@gmail.com
+notifications: []
+
+contents: 
+- name: about
+  permalink: 
+  allow_comments: 
+  created_at: 2009-11-11 17:14:42
+  allow_pings: 
+  guid: 
+  body: This is an example of a Typo page. You can edit this to write information about yourself or your site so readers know who you are. You can create as many pages as this one as you like and manage all of your content inside Typo.
+  author: 
+  title: about
+  published: "1"
+  updated_at: 2009-11-11 17:15:02
+  excerpt: 
+  text_filter_id: "5"
+  id: "2"
+  user_id: "1"
+  type: Page
+  parent_id: 
+  whiteboard: 
+  extended: 
+  published_at: 2009-11-11 17:14:42
+  state: published
+  keywords: 
+- name: 
+  permalink: hello
+  allow_comments: "1"
+  created_at: 2009-12-16 15:17:09
+  allow_pings: "0"
+  guid: 108caeac-d041-4b0b-ac4a-8f1ccb9a3bf8
+  body: |
+    <p>
+    	&nbsp;hello</p>
+
+  author: admin
+  title: Test article
+  published: "1"
+  updated_at: 2010-01-18 12:43:59
+  excerpt: ""
+  text_filter_id: "1"
+  id: "3"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2009-12-16 15:16:00
+  state: published
+  keywords: ruby, rails
+- name: 
+  permalink: fgsdfg
+  allow_comments: "1"
+  created_at: 2009-12-20 21:34:55
+  allow_pings: "0"
+  guid: 15c506dd-ccda-4880-8aac-09ddc8f6360b
+  body: |
+    <p>
+    	Text</p>
+
+  author: admin
+  title: New article
+  published: "1"
+  updated_at: 2010-01-17 22:58:56
+  excerpt: ""
+  text_filter_id: "1"
+  id: "4"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2009-12-20 21:35:00
+  state: published
+  keywords: rails
+- name: 
+  permalink: article-4
+  allow_comments: "1"
+  created_at: 2010-01-18 12:44:55
+  allow_pings: "0"
+  guid: fdeea924-3500-4daa-afb1-00fd019ae73e
+  body: |
+    <p>
+    	article 4</p>
+
+  author: admin
+  title: article 2
+  published: "1"
+  updated_at: 2010-01-24 12:26:42
+  excerpt: ""
+  text_filter_id: "1"
+  id: "5"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2010-01-18 12:44:00
+  state: published
+  keywords: rails
+- name: 
+  permalink: article-4
+  allow_comments: "1"
+  created_at: 2010-01-18 12:45:28
+  allow_pings: "0"
+  guid: 5cb2ab52-76be-410f-8055-c7cb7be767b9
+  body: |
+    <p>
+    	article 4</p>
+
+  author: admin
+  title: article 1
+  published: "1"
+  updated_at: 2010-01-23 10:55:13
+  excerpt: ""
+  text_filter_id: "1"
+  id: "6"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2010-01-18 12:44:00
+  state: published
+  keywords: rails, typo, jmvc
+- name: 
+  permalink: sync
+  allow_comments: "1"
+  created_at: 2010-01-21 09:03:18
+  allow_pings: "0"
+  guid: 32c8bbe8-7e0f-402c-ab1c-432c6d2dc282
+  body: |
+    <p>
+    	test sync</p>
+
+  author: admin
+  title: sync
+  published: "1"
+  updated_at: 2010-01-21 09:03:18
+  excerpt: ""
+  text_filter_id: "1"
+  id: "7"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2010-01-21 09:03:00
+  state: published
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-01-24 13:13:26
+  allow_pings: "0"
+  guid: 5ae8939f-0067-401b-95eb-27d33889513b
+  body: "**article 3**"
+  author: admin
+  title: article 3
+  published: "1"
+  updated_at: 2010-02-09 14:49:24
+  excerpt: ""
+  text_filter_id: "1"
+  id: "8"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2010-01-24 13:13:00
+  state: published
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:19:10
+  allow_pings: "0"
+  guid: 6d7f1435-470e-4f8d-b8db-913776a6913c
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:19:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "9"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:19:40
+  allow_pings: "0"
+  guid: 9a38155d-9ed4-47b4-9f7a-f6996e01c113
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:19:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "10"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:20:10
+  allow_pings: "0"
+  guid: 8a764cb4-3693-4d5e-968b-95cee7a81a3e
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:20:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "11"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:20:40
+  allow_pings: "0"
+  guid: 7c553d12-b784-43dc-aa31-47fe51e101c6
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:20:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "12"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:21:11
+  allow_pings: "0"
+  guid: 7a1f09cb-899a-46f3-80a5-d4f0da3360a0
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:21:11
+  excerpt: ""
+  text_filter_id: "1"
+  id: "13"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:21:41
+  allow_pings: "0"
+  guid: eea2f1c6-58a2-4f4e-918b-eba022be675a
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:21:41
+  excerpt: ""
+  text_filter_id: "1"
+  id: "14"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:22:10
+  allow_pings: "0"
+  guid: e4ea6ae4-a3b6-404b-8d8f-6c6f38c495d0
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:22:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "15"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:22:40
+  allow_pings: "0"
+  guid: 1fd38869-5192-4277-a43f-02d21935fdff
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:22:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "16"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:23:10
+  allow_pings: "0"
+  guid: 6bdf9f2e-86f6-46ca-9219-da48c4d1af85
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:23:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "17"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:23:40
+  allow_pings: "0"
+  guid: e4d47727-0326-4b05-b35d-b22213d792c5
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:23:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "18"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:24:10
+  allow_pings: "0"
+  guid: eff96c42-a783-44c4-b126-d86c17ebfc92
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:24:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "19"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:24:40
+  allow_pings: "0"
+  guid: c41d3efa-16f9-4997-bbd8-7b5e49d1f9b3
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:24:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "20"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:25:10
+  allow_pings: "0"
+  guid: 0763da64-a961-4373-bbf4-b516828f4137
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:25:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "21"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:25:40
+  allow_pings: "0"
+  guid: 404a915b-b61c-4fd7-88ab-5ab69e758e5a
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:25:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "22"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:26:10
+  allow_pings: "0"
+  guid: 50b37b74-ec54-4dd2-98e8-230bc199b3a4
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:26:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "23"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:26:40
+  allow_pings: "0"
+  guid: 637eeffc-20d3-4d82-87b9-17262539e568
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:26:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "24"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:27:10
+  allow_pings: "0"
+  guid: e726bd76-ea8d-4fa9-9aa7-c5c08ab45efd
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:27:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "25"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:27:40
+  allow_pings: "0"
+  guid: 1a9f3368-b321-4bfb-8448-c9ae4995f8b4
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:27:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "26"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:28:10
+  allow_pings: "0"
+  guid: 64ecfe5a-7346-4feb-90ef-faa419788644
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:28:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "27"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:28:40
+  allow_pings: "0"
+  guid: bd9947e6-fdf0-4081-9da5-d73f77c810f7
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:28:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "28"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:29:10
+  allow_pings: "0"
+  guid: 24aa7344-4e88-48ad-873a-ede249a6e297
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:29:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "29"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:29:40
+  allow_pings: "0"
+  guid: 4e261446-c318-41c5-932b-6cd26f5cc441
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:29:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "30"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:30:10
+  allow_pings: "0"
+  guid: 5d0df936-25b9-4e1d-b832-48ee4543eba6
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:30:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "31"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:30:40
+  allow_pings: "0"
+  guid: 7bba5103-4d6c-4414-b286-731d8c41aa27
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:30:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "32"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:31:10
+  allow_pings: "0"
+  guid: a7f65c0b-4fff-4d16-afc4-f23f571ad4b5
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:31:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "33"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:31:40
+  allow_pings: "0"
+  guid: 1a384378-394a-4e65-b44e-72078d75c50e
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:31:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "34"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:32:10
+  allow_pings: "0"
+  guid: 253baf94-2176-4e12-91f0-6d407cb35957
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:32:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "35"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:32:40
+  allow_pings: "0"
+  guid: 222cef93-c57c-471c-87a8-3664cc3ad2a2
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:32:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "36"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:33:10
+  allow_pings: "0"
+  guid: 56c36651-ef86-423c-b354-6cc22a5ec78c
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:33:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "37"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:33:40
+  allow_pings: "0"
+  guid: d7fb6f76-e37b-49b3-840e-c44a2b8e0e2d
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:33:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "38"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:34:10
+  allow_pings: "0"
+  guid: 8d0c312e-7470-4f68-9b8f-20bc895d8e4b
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:34:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "39"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:34:40
+  allow_pings: "0"
+  guid: 77fb3e60-7258-469d-8b62-fd2cfee141c2
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:34:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "40"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:35:10
+  allow_pings: "0"
+  guid: 2a9ff7e9-1244-49e9-85ec-abf6dfc073e4
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:35:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "41"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:35:40
+  allow_pings: "0"
+  guid: a55e4bad-8264-4b62-8cdf-2e4b2ccc7510
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:35:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "42"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:36:10
+  allow_pings: "0"
+  guid: 009138a7-c7fb-4182-882d-85893ff0c0fa
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:36:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "43"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:36:40
+  allow_pings: "0"
+  guid: 40a3fc93-bc8b-4dfa-aa59-30bcddf863eb
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:36:40
+  excerpt: ""
+  text_filter_id: "1"
+  id: "44"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:37:10
+  allow_pings: "0"
+  guid: 1ec93dc9-b0eb-4720-82a8-ae7c1f653d68
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:37:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "45"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:37:41
+  allow_pings: "0"
+  guid: eb572292-eba5-467f-bafd-621669609eb7
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:37:41
+  excerpt: ""
+  text_filter_id: "1"
+  id: "46"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: article-3
+  allow_comments: "1"
+  created_at: 2010-03-10 18:38:10
+  allow_pings: "0"
+  guid: 1bd77d66-c272-481c-86cf-6d368c437207
+  body: Toto
+  author: admin
+  title: article-3
+  published: "0"
+  updated_at: 2010-03-10 18:38:10
+  excerpt: ""
+  text_filter_id: "1"
+  id: "47"
+  user_id: "1"
+  type: Article
+  parent_id: "8"
+  whiteboard: 
+  extended: ""
+  published_at: 
+  state: draft
+  keywords: ""
+- name: 
+  permalink: lorem-ipsum
+  allow_comments: "1"
+  created_at: 2010-03-11 11:09:53
+  allow_pings: "0"
+  guid: a858f6d2-b518-4e52-9d64-0ef452e2f006
+  body: |
+    <p>
+    	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce gravida, dui non molestie dictum, odio justo rhoncus ipsum, eu luctus mi est vitae magna. Mauris ornare dolor eget dui egestas varius. Vivamus vitae est in tellus ultrices gravida. Phasellus volutpat nisl quis est tempus interdum. Donec quis ligula est, a sollicitudin massa. Nullam fringilla, lacus id congue cursus, arcu turpis elementum elit, et porta elit lectus quis est. Etiam semper pretium commodo. Donec vitae sodales mauris. Phasellus volutpat sagittis nisi, id sagittis risus lacinia ut. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean venenatis lectus ante, in molestie lorem. Cras et feugiat mi. Ut in ultrices justo. Integer in tellus urna, nec sollicitudin augue. Quisque sed turpis eu nisl accumsan accumsan at non ipsum. Ut vel posuere diam. In hac habitasse platea dictumst. Sed non magna nulla. Proin laoreet lectus dolor. Mauris sed justo id dui condimentum euismod eget sed lacus. Donec hendrerit, dolor vel pharetra rhoncus, mauris nisi laoreet nunc, sed auctor nulla nulla egestas turpis. Nullam rhoncus blandit dolor, sit amet pulvinar libero pellentesque semper. Sed malesuada semper eleifend. Sed fringilla vehicula magna egestas sollicitudin. Etiam id enim a urna euismod blandit. Etiam id massa dui. Suspendisse sagittis laoreet augue a elementum. Aliquam erat volutpat. Aenean pulvinar nibh eget ligula auctor adipiscing. Nunc eu sapien a dui auctor sagittis non in dolor. Phasellus quis mauris quis arcu consequat pellentesque. Sed lorem felis, fringilla et dapibus in, lobortis a diam. Morbi ut sapien sit amet sapien mollis varius nec in augue. Proin molestie accumsan leo, id condimentum ante rutrum et. Suspendisse a erat quam. Maecenas elementum rhoncus dapibus. Cras enim metus, cursus nec lobortis eget, sodales id quam. Sed turpis velit, tristique mattis tincidunt quis, faucibus sit amet quam. Nam eget aliquet velit. Phasellus vel lectus id nisi iaculis auctor. Praesent non nisi odio, mollis rhoncus elit. Duis interdum semper libero, ac faucibus sem fringilla eu. Nullam tempus risus purus, sed feugiat tellus. Phasellus tincidunt vestibulum turpis. Cras lacinia dui non urna scelerisque vitae auctor lacus convallis. Quisque dui sapien, scelerisque ut pellentesque et, sollicitudin non odio. Nullam est tortor, interdum ut placerat at, mollis ut quam.</p>
+
+  author: admin
+  title: Lorem ipsum
+  published: "1"
+  updated_at: 2010-03-11 12:35:12
+  excerpt: ""
+  text_filter_id: "1"
+  id: "48"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2010-03-11 11:09:00
+  state: published
+  keywords: Ruby, Rails, Open source
+- name: 
+  permalink: sync-test
+  allow_comments: "1"
+  created_at: 2010-03-29 17:18:08
+  allow_pings: "0"
+  guid: 9040165c-0092-460f-97d6-246929c94184
+  body: |
+    <p>
+    	Success!</p>
+
+  author: admin
+  title: Sync test
+  published: "1"
+  updated_at: 2010-03-29 17:18:08
+  excerpt: ""
+  text_filter_id: "1"
+  id: "49"
+  user_id: "1"
+  type: Article
+  parent_id: 
+  whiteboard: 
+  extended: ""
+  published_at: 2010-03-29 17:17:00
+  state: published
+  keywords: ""
+categories: 
+- permalink: articles
+  position: "1"
+  name: Articles
+  id: "1"
+  parent_id: 
+  description: Description of articles category
+  keywords: articles
+- permalink: tips-and-tricks
+  position: "2"
+  name: Tips and tricks
+  id: "2"
+  parent_id: 
+  description: ""
+  keywords: ""
+text_filters: 
+- name: none
+  id: "1"
+  filters: |+
+    --- []
+    
+  params: |+
+    --- {}
+    
+  markup: none
+  description: None
+- name: markdown
+  id: "2"
+  filters: |+
+    --- []
+    
+  params: |+
+    --- {}
+    
+  markup: markdown
+  description: Markdown
+- name: smartypants
+  id: "3"
+  filters: |
+    --- 
+    - :smartypants
+
+  params: |+
+    --- {}
+    
+  markup: none
+  description: SmartyPants
+- name: markdown smartypants
+  id: "4"
+  filters: |
+    --- 
+    - :smartypants
+
+  params: |+
+    --- {}
+    
+  markup: markdown
+  description: Markdown with SmartyPants
+- name: textile
+  id: "5"
+  filters: |+
+    --- []
+    
+  params: |+
+    --- {}
+    
+  markup: textile
+  description: Textile
+articles_tags: 
+- tag_id: "5"
+  article_id: "4"
+- tag_id: "3"
+  article_id: "3"
+- tag_id: "5"
+  article_id: "3"
+- tag_id: "5"
+  article_id: "6"
+- tag_id: "1"
+  article_id: "6"
+- tag_id: "6"
+  article_id: "6"
+- tag_id: "5"
+  article_id: "5"
+- tag_id: "3"
+  article_id: "48"
+- tag_id: "5"
+  article_id: "48"
+- tag_id: "8"
+  article_id: "48"
+- tag_id: "9"
+  article_id: "48"
+categorizations: 
+- id: "5"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "8"
+  category_id: "2"
+  article_id: "2"
+  is_primary: 
+- id: "9"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "10"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "11"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "12"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "13"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "14"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "15"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "16"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "17"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "18"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "19"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "20"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "21"
+  category_id: "2"
+  article_id: "4"
+  is_primary: 
+- id: "22"
+  category_id: "1"
+  article_id: "3"
+  is_primary: 
+- id: "23"
+  category_id: "1"
+  article_id: 
+  is_primary: 
+- id: "24"
+  category_id: "1"
+  article_id: "1"
+  is_primary: 
+- id: "25"
+  category_id: "1"
+  article_id: "48"
+  is_primary: 
+blogs: 
+- base_url: http://localhost:3000
+  id: "1"
+  settings: |
+    --- 
+    robots: ""
+    blog_subtitle: description here
+    blog_name: HTML5 blog
+    theme: ims
+    show_extended_on_rss: true
+    allow_signup: 1
+    admin_display_elements: 10
+    lang: en_US
+    canonical_server_url: ""
+    limit_article_display: 10
+    limit_rss_display: 10
+    feedburner_url: ""
+

@@ -1,34 +1,47 @@
-<!--
-<rdf:RDF
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"
-  xmlns:dc="http://purl.org/dc/elements/1.1/">
-<rdf:Description
-  rdf:about=""
-  trackback:ping="<%= @article.trackback_url %>"
-  dc:title="<%=h @article.title.gsub(/-+/, '-') %>"
-  dc:identifier="<%= @article.permalink_url %>"
-  dc:description="<%=h (@article.html.strip_html[0..255]).gsub(/-+/, '-') %>"
-  dc:creator="<%= h @article.author %>"
-  dc:date="<%= @article.updated_at.xmlschema %>" />
-</rdf:RDF>
--->
 <div class="section" id="read">
-  <%= render :partial => 'article', :object => @article %>
+  <article class="post" id="article-<%= @article.id %>">
+    <header>
+      <h1 class="title"><%= link_to_permalink(@article,@article.title) %></h1>
+      <span>
+        <%= _("Posted by") %> <%= author_link(@article) %>, <time datetime="<%= display_gregorian_time(@article.published_at) %>" pubdate><%= _('Date') %> <%= display_article_time(@article.published_at) %></time>
+      </span>
+      <% unless @article.tags.empty? %>
+        <div class="tags"><%= tag_links(@article) %></div>
+      <% end %>
+    </header>
 
-  <% if @article.allow_pings? -%>
-    <aside class="trackbacks">
-      <h1><a name="trackbacks"><%= _("Trackbacks")%></a></h1>
-      <p>
-        <%= _("Use the following link to trackback from your own site")%>:
-        <%= @article.trackback_url %>
-      </p>
+    <%= @article.html(:body) %>
+    <%= @article.html(:extended) %>
 
-      <% unless @article.published_trackbacks.blank? -%>
-        <ol id="trackbacks" class="trackbacks">
-          <%= render(:partial => "trackback", :collection => @article.published_trackbacks) %>
-        </ol>
-      <% end -%>
+    <aside>
+      <h1 class="hidden"><%= _("Social links") %></h1>
+      <ul class="social-links">
+        <li><%= link_to image_tag('theme/social/digg.png'),'http://digg.com/submit?url=' + @article.permalink_url + '&amp;title=' + URI.escape(@article.title) %></li>
+        <li><a href="http://delicious.com/save" onclick="window.open('http://delicious.com/save?v=5&amp;noui&amp;jump=close&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title), 'delicious','toolbar=no,width=550,height=550'); return false;"><%= image_tag('theme/social/delicious.png') %></a></li>
+        <li><%= link_to image_tag('theme/social/facebook.png'), 'http://www.facebook.com/sharer.php?u=' + @article.permalink_url %></li>
+        <li><%= link_to image_tag('theme/social/rss.png'),@auto_discovery_url_atom %></li>
+      </ul>
     </aside>
-  <% end -%>
+
+    <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
+      <section class="comments">
+        <h1><%= display_comments_counter(@article) %></h1>
+        <p><a href="#commentform"><%= _("Leave a response")%></a></p>
+        <%= render :partial => "/articles/comment_list" %>
+      </section>
+    <% end -%>
+
+    <%= render :partial => 'comment_form' if @article.allow_comments? %>
+
+    <% if @article.allow_pings? -%>
+      <aside class="trackbacks">
+        <h1><a href="#trackbacks"><%= _("Trackbacks for ") %> <%= @article.title %></a></h1>
+        <% unless @article.published_trackbacks.blank? -%>
+          <ol id="trackbacks" class="trackbacks">
+            <%= render(:partial => "/articles/trackback", :collection => @article.published_trackbacks) %>
+          </ol>
+        <% end -%>
+      </aside>
+    <% end -%>
+  </article>
 </div>

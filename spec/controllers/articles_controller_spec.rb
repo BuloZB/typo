@@ -146,6 +146,33 @@ describe ArticlesController do
 
 end
 
+describe ArticlesController, "nosettings" do
+  before(:each) do
+    Blog.delete_all
+    @blog = Blog.new.save
+  end
+
+  it 'redirects to setup' do
+    get 'index'
+    response.should redirect_to(:controller => 'setup', :action => 'index')
+  end
+  
+end
+
+describe ArticlesController, "nousers" do
+  before(:each) do
+    User.stub!(:count).and_return(0)
+    @user = mock("user")
+    @user.stub!(:reload).and_return(@user)
+    User.stub!(:new).and_return(@user)
+  end
+
+  it 'redirects to signup' do
+    get 'index'
+    response.should redirect_to(:controller => 'accounts', :action => 'signup')
+  end
+end
+
 describe ArticlesController, "feeds" do
   
   integrate_views
@@ -200,5 +227,214 @@ describe ArticlesController, "the index" do
     request.env["HTTP_ACCEPT"] = "application/atom+xml"
     get "index"
     response.should_not render_template("_atom_feed")
+  end
+end
+
+describe ArticlesController, "previewing" do
+  integrate_views
+
+  describe 'with non logged user' do
+    before :each do
+      @request.session = {}
+      get :preview, :id => Factory(:article).id
+    end
+
+    it 'should be redirect to login' do
+      response.should redirect_to(:controller => "accounts/login", :action => :index)
+    end
+  end
+  describe 'with logged user' do
+    before :each do
+      @request.session = {:user => users(:tobi).id}
+      @article = Factory(:article)
+    end
+
+    with_each_theme do |theme, view_path|
+      it "should render template #{view_path}/articles/read" do
+        this_blog.theme = theme if theme
+        get :preview, :id => @article.id
+        response.should render_template('articles/read.html.erb')
+      end
+    end
+
+    it 'should assigns article define with id' do
+      get :preview, :id => @article.id
+      assigns[:article].should == @article
+    end
+
+    it 'should assigns last article with id like parent_id' do
+      draft = Factory(:article, :parent_id => @article.id)
+      get :preview, :id => @article.id
+      assigns[:article].should == draft
+    end
+
+  end
+end
+
+describe ArticlesController, "redirecting" do
+  before do
+    ActionController::Base.relative_url_root = nil # avoid failures if environment.rb defines a relative URL root
+  end
+
+  it 'should split routing path' do
+    assert_routing "foo/bar/baz", {
+      :from => ["foo", "bar", "baz"],
+      :controller => 'articles', :action => 'redirect'}
+  end
+
+  it 'should redirect from articles_routing' do
+    assert_routing "articles", {
+      :from => ["articles"],
+      :controller => 'articles', :action => 'redirect'}
+    assert_routing "articles/foo", {
+      :from => ["articles", "foo"],
+      :controller => 'articles', :action => 'redirect'}
+    assert_routing "articles/foo/bar", {
+      :from => ["articles", "foo", "bar"],
+      :controller => 'articles', :action => 'redirect'}
+    assert_routing "articles/foo/bar/baz", {
+      :from => ["articles", "foo", "bar", "baz"],
+      :controller => 'articles', :action => 'redirect'}
+  end
+
+
+  it 'should redirect' do
+    get :redirect, :from => ["foo", "bar"]
+    assert_response 301
+    assert_redirected_to "http://test.host/someplace/else"
+  end
+
+  it 'should redirect with url_root' do
+    ActionController::Base.relative_url_root = "/blog"
+    get :redirect, :from => ["foo", "bar"]
+    assert_response 301
+    assert_redirected_to "http://test.host/blog/someplace/else"
+
+    get :redirect, :from => ["bar", "foo"]
+    assert_response 301
+    assert_redirected_to "http://test.host/blog/someplace/else"
+  end
+
+  it 'should no redirect' do
+    get :redirect, :from => ["something/that/isnt/there"]
+    assert_response 404
+  end
+
+  it 'should redirect to article' do
+    get :redirect, :from => ["articles", "2004", "04", "01", "second-blog-article"]
+    assert_response 301
+    assert_redirected_to "http://myblog.net/2004/04/01/second-blog-article"
+  end
+
+  it 'should redirect to article with url_root' do
+    b = blogs(:default)
+    b.base_url = "http://test.host/blog"
+    b.save
+    get :redirect, :from => ["articles", "2004", "04", "01", "second-blog-article"]
+    assert_response 301
+    assert_redirected_to "http://test.host/blog/2004/04/01/second-blog-article"
+  end
+
+  it 'should redirect to article when url_root is articles' do
+    b = blogs(:default)
+    b.base_url = "http://test.host/articles"
+    b.save
+    get :redirect, :from => ["articles", "2004", "04", "01", "second-blog-article"]
+    assert_response 301
+    assert_redirected_to "http://test.host/articles/2004/04/01/second-blog-article"
+  end
+
+  it 'should redirect to article with articles in url_root' do
+    b = blogs(:default)
+    b.base_url = "http://test.host/aaa/articles/bbb"
+    b.save
+
+    get :redirect, :from => ["articles", "2004", "04", "01", "second-blog-article"]
+    assert_response 301
+    assert_redirected_to "http://test.host/aaa/articles/bbb/2004/04/01/second-blog-article"
+  end
+
+  describe 'with permalink_format like %title%.html' do
+
+    integrate_views
+
+    before(:each) do
+      b = blogs(:default)
+      b.permalink_format = '/%title%.html'
+      b.save
+    end
+    describe 'render article' do
+
+      integrate_views
+
+      before(:each) do
+        get :redirect, :from => ["#{contents(:article1).permalink}.html"]
+      end
+
+      it 'should render template read to article' do
+        response.should render_template('articles/read.html.erb')
+      end
+
+      it 'should assign article1 to @article' do
+	assigns(:article).should == contents(:article1)
+      end
+
+      it 'should have good rss feed link' do
+        response.should have_tag('head>link[href=?]', "http://myblog.net/#{contents(:article1).permalink}.html.rss")
+      end
+
+      it 'should have good atom feed link' do
+        response.should have_tag('head>link[href=?]', "http://myblog.net/#{contents(:article1).permalink}.html.atom")
+      end
+
+    end
+
+    it 'should get good article with utf8 slug' do
+      get :redirect, :from => ['2004', '06', '02', 'ルビー']
+      assigns(:article).should == contents(:utf8_article)
+    end
+
+    describe 'rendering as atom feed' do
+      before(:each) do
+        get :redirect, :from => ["#{contents(:article1).permalink}.html.atom"]
+      end
+
+      it 'should render atom partial' do
+        response.should render_template('articles/_atom_feed.atom.builder')
+      end
+
+      it 'should render a valid feed' do
+        assert_feedvalidator response.body
+      end
+    end
+
+    describe 'rendering as rss feed' do
+      before(:each) do
+        get :redirect, :from => ["#{contents(:article1).permalink}.html.rss"]
+      end
+
+      it 'should render rss20 partial' do
+        response.should render_template('articles/_rss20_feed.rss.builder')
+      end
+
+      it 'should render a valid feed' do
+        assert_feedvalidator response.body
+      end
+    end
+
+    describe 'rendering comment feed with problematic characters' do
+      before(:each) do
+        @comment = contents(:article1).comments.first
+        @comment.body = "&eacute;coute! 4 < 2, non?"
+        @comment.save!
+        get :redirect, :from => ["#{contents(:article1).permalink}.html.atom"]
+      end
+
+      it 'should result in a valid atom feed' do
+        assigns(:article).should == contents(:article1)
+        assert_feedvalidator response.body
+      end
+    end
+
   end
 end

@@ -2,7 +2,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Article do
 
-
   before do
     @articles = []
   end
@@ -15,11 +14,19 @@ describe Article do
     it 'should second_article factory valid' do
       Factory(:second_article).should be_valid
       Factory.build(:second_article).should be_valid
-
     end
     it 'should article_with_accent_in_html' do
       Factory(:article_with_accent_in_html).should be_valid
       Factory.build(:article_with_accent_in_html).should be_valid
+    end
+    it 'should store user too' do
+      a = Factory(:article)
+      a.user.should be_valid
+      Article.find(a.id).user.should_not be_nil
+    end
+    it 'should create multiple valid articles' do
+      Factory(:article).should be_valid
+      Factory(:article).should be_valid
     end
   end
 
@@ -35,8 +42,12 @@ describe Article do
     assert_equal [:body, :extended], a.content_fields
   end
 
-  it "test_permalink_url" do
-    assert_equal 'http://myblog.net/2004/06/01/article-3', contents(:article3).permalink_url(anchor=nil, only_path=true)
+  it "test_permalink_url with hostname" do
+    assert_equal 'http://myblog.net/2004/06/01/article-3', contents(:article3).permalink_url(anchor=nil, only_path=false)
+  end
+
+  it "test_permalink_url only path" do
+    assert_equal '/2004/06/01/article-3', contents(:article3).permalink_url(anchor=nil, only_path=true)
   end
 
   it "test_edit_url" do
@@ -108,9 +119,39 @@ describe Article do
     assert_equal '%E3%83%AB%E3%83%93%E3%83%BC', a.permalink
   end
 
-  it "test_urls" do
-    urls = contents(:article4).html_urls
-    assert_equal ["http://www.example.com/public"], urls
+  describe "the html_urls method" do
+    it "test_urls" do
+      urls = contents(:article4).html_urls
+      assert_equal ["http://www.example.com/public"], urls
+    end
+
+    it "should only match the href attribute" do
+      a = Factory.create :article
+      a.body = '<a href="http://a/b">a</a> <a fhref="wrong">wrong</a>'
+      urls = a.html_urls
+      assert_equal ["http://a/b"], urls
+    end
+
+    it "should match across newlines" do
+      a = Factory.create :article
+      a.body = "<a\nhref=\"http://foo/bar\">foo</a>"
+      urls = a.html_urls
+      assert_equal ["http://foo/bar"], urls
+    end
+
+    it "should match with single quotes" do
+      a = Factory.create :article
+      a.body = "<a href='http://foo/bar'>foo</a>"
+      urls = a.html_urls
+      assert_equal ["http://foo/bar"], urls
+    end
+
+    it "should match with no quotes" do
+      a = Factory.create :article
+      a.body = "<a href=http://foo/bar>foo</a>"
+      urls = a.html_urls
+      assert_equal ["http://foo/bar"], urls
+    end
   end
 
   ### XXX: Should we have a test here?
@@ -259,6 +300,9 @@ describe Article do
   end
 
   it 'should notify' do
+    [:randomuser, :bob].each do |tag|
+      u = users(tag); u.notify_on_new_articles = true; u.save!
+    end
     a = Article.new(:title => 'New Article', :body => 'Foo', :author => 'Tobi', :user => users(:tobi))
     assert a.save
 
@@ -307,7 +351,7 @@ describe Article do
   end
 
   describe 'body_and_extended' do
-    before :each do 
+    before :each do
       @article = contents(:article1)
     end
 
@@ -358,7 +402,7 @@ describe Article do
   end
 
   describe 'body_and_extended=' do
-    before :each do 
+    before :each do
       @article = contents(:article1)
     end
 
@@ -367,7 +411,7 @@ describe Article do
       @article.body.should == 'foo'
       @article.extended.should == 'bar'
     end
-    
+
     it 'should remove newlines around <!--more-->' do
       @article.body_and_extended = "foo\n<!--more-->\nbar"
       @article.body.should == 'foo'
@@ -421,25 +465,51 @@ describe Article do
 
   describe '#published_at_like' do
     before do
-      @article_last_month = Factory(:article, :published_at => 1.month.ago)
-      @article_2_last_month = Factory(:article, :published_at => 1.month.ago)
-
+      # Note: these choices of times depend on no other articles within
+      # these timeframes existing in test/fixtures/contents.yaml.
+      # In particular, all articles there are from 2005 or earlier, which
+      # is now more than two years ago, except for two, which are from
+      # yesterday and the day before. The existence of those two makes
+      # 1.month.ago not suitable, because yesterday can be last month.
       @article_two_month_ago = Factory(:article, :published_at => 2.month.ago)
-      @article_2_two_month_ago = Factory(:article, :published_at => (2.month.ago - 1.day))
+
+      @article_four_months_ago = Factory(:article, :published_at => 4.month.ago)
+      @article_2_four_months_ago = Factory(:article, :published_at => 4.month.ago)
+
       @article_two_year_ago = Factory(:article, :published_at => 2.year.ago)
       @article_2_two_year_ago = Factory(:article, :published_at => 2.year.ago)
     end
 
-    it 'should return all content on this year if year send' do
+    it 'should return all content for the year if only year sent' do
       Article.published_at_like(2.year.ago.strftime('%Y')).map(&:id).sort.should == [@article_two_year_ago.id, @article_2_two_year_ago.id].sort
     end
 
-    it 'should return all content on this month if month send' do
-      Article.published_at_like(1.month.ago.strftime('%Y-%m')).map(&:id).sort.should == [@article_last_month.id, @article_2_last_month.id].sort
+    it 'should return all content for the month if year and month sent' do
+      Article.published_at_like(4.month.ago.strftime('%Y-%m')).map(&:id).sort.should == [@article_four_months_ago.id, @article_2_four_months_ago.id].sort
     end
 
     it 'should return all content on this date if date send' do
       Article.published_at_like(2.month.ago.strftime('%Y-%m-%d')).map(&:id).sort.should == [@article_two_month_ago.id].sort
+    end
+  end
+
+  describe '#has_child?' do
+    it 'should be true if article has one to link it by parent_id' do
+      Factory(:article, :parent_id => contents(:article1).id)
+      contents(:article1).should be_has_child
+    end
+    it 'should be false if article has no article to link it by parent_id' do
+      contents(:article1).should_not be_has_child
+    end
+  end
+
+  describe 'self#last_draft(id)' do
+    it 'should return article if no draft associated' do
+      Article.last_draft(contents(:article1).id).should == contents(:article1)
+    end
+    it 'should return draft associated to this article if there are one' do
+      draft = Factory(:article, :parent_id => contents(:article1).id, :state => 'draft')
+      Article.last_draft(contents(:article1).id).should == draft
     end
   end
 end

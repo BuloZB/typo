@@ -27,10 +27,6 @@
 
       <p>
         <label>
-          <%= _("Comments")%>:
-          <%= content_tag('small', link_to(_("Textile enabled"), "http://hobix.com/textile/")) if this_blog.comment_text_filter.include? 'textile' %>
-          <%= content_tag('small', link_to(_("Markdown enabled"), "http://daringfireball.net/projects/markdown/")) if this_blog.comment_text_filter.include? 'markdown' %>
-          <br />
           <%= text_area 'comment', 'body', :rows => 10 %>
         </label>
       </p>

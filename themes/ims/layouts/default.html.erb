@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title><%=h page_title %></title>
-    <%= page_header %>
-    <%= stylesheet_link_tag '/stylesheets/theme/application.css', :media => 'all' %>
     <link rel='index' title='<%= this_blog.blog_name %>' href='<%= this_blog.base_url %>'>
+    <%= page_header %>
+    <%= stylesheet_link_tag '/stylesheets/theme/style', :media => 'all' %>
     <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -18,7 +18,7 @@
     </hgroup>
     <section id="date">
       <h1 class="hidden">Actual date</h1>
-      <%= _('Today is') %> <%= Date.today.to_s%>
+      <%= _('Today is') %> <%= Date.today.strftime('%d. %m. %Y') %>
     </section>
   </header>
   <div id="wrapper">
@@ -33,6 +33,9 @@
         </li>
         <li>
           <%= link_to _("About"), this_blog.base_url + "/pages/about", :rel => 'author' %>
+        </li>
+        <li>
+          <%= link_to _("Offline version"), this_blog.base_url + "/offline/typosphere.html" %>
         </li>
       </ul>
     </nav>
@@ -50,9 +53,8 @@
   <footer id="footer">
     <section id="about-author">
       <h1>About author</h1>
-      <p>Something about author.</p>
-      <address><%= link_to _('CONTACT'), this_blog.base_url + '/contact' %></address>
-      <span><%= link_to _('LICENCE'), this_blog.base_url + '/license', :rel => 'license' %></span>
+      <p>Tibor Pino is a student at <%= link_to "VSB TU Ostrava" , "http://www.vsb.cz" %> and currently living in Cadca and working in <%= link_to "Galileo Agency", "http://www.galileoagency.sk" %>.</p>
+      <address><%= mail_to "tibor.pino@gmail.com" %></address>
     </section>
     <section id="subscribe">
       <h1>RSS</h1>
@@ -63,7 +65,7 @@
     </section>
     <section id="copyright">
       <h1 class="hidden">Made by</h1>
-      Made by <%= link_to "Tibor Pino", "http://blueweb.rockretail.com",{:target => :new} %>, Icons by <%= link_to "Profimgazin.cz", "http://www.profimagazin.cz/ikony/dalsi-sada-socialnich-ikon-ke-stazeni-zdarma",{:target => :new} %>
+      Made by <%= link_to "Tibor Pino", "http://blueweb.rockretail.com",{:target => :new} %>
     </section>
   </footer>
 </body>

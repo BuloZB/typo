@@ -9,7 +9,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :syncsidebars, :as => 'sync/sidebars', :controller => 'sync/sidebars'
   map.resources :synctags, :as => 'sync/tags', :controller => 'sync/tags'
   map.resources :syncarticlestags, :as =>'sync/articles_tags', :controller => 'sync/articlestags'
-
   map.connect 'manifest', :controller => 'manifest', :action => 'index'
   
   # default
@@ -31,7 +30,6 @@ ActionController::Routing::Routes.draw do |map|
   map.atom 'articles.atom', :controller => 'articles', :action => 'index', :format => 'atom'
   
   map.with_options :controller => 'xml', :path_prefix => 'xml' do |controller|
-    controller.xml 'itunes/feed.xml', :action => 'itunes'
     controller.xml 'articlerss/:id/feed.xml', :action => 'articlerss'
     controller.xml 'commentrss/feed.xml', :action => 'commentrss'
     controller.xml 'trackbackrss/feed.xml', :action => 'trackbackrss'
@@ -44,7 +42,7 @@ ActionController::Routing::Routes.draw do |map|
       action.xml ':format/:type/:id/feed.xml'
     end
   end
-
+  
 
   map.resources :comments, :name_prefix => 'admin_', :collection => [:preview]
   map.resources :trackbacks
@@ -53,7 +51,9 @@ ActionController::Routing::Routes.draw do |map|
   map.search '/search/:q.:format', :controller => "articles", :action => "search"
   map.search_base '/search/', :controller => "articles", :action => "search"
   map.connect '/archives/', :controller => "articles", :action => "archives"
-
+  map.connect '/setup', :controller => 'setup', :action => 'index'
+  map.connect '/setup/confirm', :controller => 'setup', :action => 'confirm'
+  
   # I thinks it's useless. More investigating
   map.connect "trackbacks/:id/:day/:month/:year",
     :controller => 'trackbacks', :action => 'create', :conditions => {:method => :post}
@@ -97,7 +97,7 @@ ActionController::Routing::Routes.draw do |map|
       :controller => 'textfilter', :action => 'public_action'
   end
 
-  map.connect 'previews/:id', :controller => 'previews', :action => 'index'
+  map.connect 'previews/:id', :controller => 'articles', :action => 'preview'
 
   # Work around the Bad URI bug
   %w{ accounts backend files sidebar textfilter xml }.each do |i|
@@ -106,13 +106,13 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "#{i}/:action/:id", :controller => i, :id => nil
   end
 
-  %w{advanced blacklist cache categories comments content profiles feedback general pages
+  %w{advanced cache categories comments content profiles feedback general pages
      resources sidebar textfilters themes trackbacks users settings tags }.each do |i|
     map.connect "/admin/#{i}", :controller => "admin/#{i}", :action => 'index'
     map.connect "/admin/#{i}/:action/:id", :controller => "admin/#{i}", :action => nil, :id => nil
   end
 
-  map.connect '*from', :controller => 'redirect', :action => 'redirect'
+  map.connect '*from', :controller => 'articles', :action => 'redirect'
 
   map.connect(':controller/:action/:id') do |default_route|
     class << default_route

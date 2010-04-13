@@ -35,7 +35,7 @@ class Feedback < Content
     article
   end
 
-  def permalink_url(anchor=:ignored, only_path=true)
+  def permalink_url(anchor=:ignored, only_path=false)
     article.permalink_url("#{self.class.to_s.downcase}-#{id}",only_path)
   end
 
@@ -89,6 +89,7 @@ class Feedback < Content
 
   def classify
     begin
+      return :ham if self.user_id
       return :spam if blog.default_moderate_comments
       return :ham unless blog.sp_global
     rescue NoMethodError

@@ -8,6 +8,7 @@ class Content < ActiveRecord::Base
     :source => 'notify_user',
     :uniq => true
 
+
   def notify_users=(collection)
     return notify_users.clear if collection.empty?
     self.class.transaction do
@@ -46,6 +47,9 @@ class Content < ActiveRecord::Base
     {:conditions => ['state = ? AND ' + (['(LOWER(body) LIKE ? OR LOWER(extended) LIKE ? OR LOWER(title) LIKE ?)']*tokens.size).join(' AND '),
                         "published", *tokens.collect{ |token| [token] * 3 }.flatten]}
   }
+  named_scope :already_published, lambda { {:conditions => ['published = ? AND published_at < ?', true, Time.now],
+    :order => default_order,
+    }}
 
   serialize :whiteboard
 
@@ -66,7 +70,7 @@ class Content < ActiveRecord::Base
   end
 
   class << self
-    # Quite a bit of this isn't needed anymore.
+    # FIXME: Quite a bit of this isn't needed anymore.
     def content_fields(*attribs)
       @@content_fields[self] = ((@@content_fields[self]||[]) + attribs).uniq
       @@html_map[self] = nil
@@ -122,27 +126,27 @@ class Content < ActiveRecord::Base
         find_published(what, options)
       end
     end
-    
+
     def find_by_published_at(column_name = :published_at)
       from_where = "FROM #{self.table_name} WHERE #{column_name} is not NULL AND type='#{self.name}'"
 
       # Implement adapter-specific groupings below, or allow us to fall through to the generic ruby-side grouping
-      
+
       if defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter) && self.connection.is_a?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
         # MySQL uses date_format
         find_by_sql("SELECT date_format(#{column_name}, '%Y-%m') AS publication #{from_where} GROUP BY publication ORDER BY publication DESC")
-        
+
       elsif defined?(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) && self.connection.is_a?(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
         # PostgreSQL uses to_char
         find_by_sql("SELECT to_char(#{column_name}, 'YYYY-MM') AS publication #{from_where} GROUP BY publication ORDER BY publication DESC")
-        
+
       else
         # If we don't have an adapter-safe conversion from date -> YYYY-MM,
         # we'll do the GROUP BY server-side. There won't be very many objects
         # in this array anyway.
         date_map = {}
         dates = find_by_sql("SELECT #{column_name} AS publication #{from_where}")
-    
+
         dates.map! do |d|
           d.publication = Time.parse(d.publication).strftime('%Y-%m')
           d.freeze
@@ -153,7 +157,7 @@ class Content < ActiveRecord::Base
         end
         dates.reject!{|d| d.blank? || d.publication.blank?}
         dates.sort!{|a,b| b.publication <=> a.publication}
-        
+
         dates
       end
     end
@@ -164,8 +168,8 @@ class Content < ActiveRecord::Base
         search_hash = {}
       end
 
-      if search_hash[:searchstring]
-        list_function << 'searchstring(search_hash[:searchstring])'
+      if search_hash[:searchstring] 
+        list_function << 'searchstring(search_hash[:searchstring])' unless search_hash[:searchstring].to_s.empty?
       end
 
       if search_hash[:published_at] and %r{(\d\d\d\d)-(\d\d)} =~ search_hash[:published_at]
@@ -176,10 +180,11 @@ class Content < ActiveRecord::Base
         list_function << 'user_id(search_hash[:user_id])'
       end
 
-      if search_hash[:published]
+      if search_hash[:published]      
         list_function << 'published' if search_hash[:published].to_s == '1'
         list_function << 'not_published' if search_hash[:published].to_s == '0'
       end
+      
       list_function
     end
   end
@@ -264,7 +269,7 @@ class Content < ActiveRecord::Base
   end
 
   def blog
-    Blog.default
+    @blog ||= Blog.default
   end
 
   def publish!
@@ -314,8 +319,7 @@ class Content < ActiveRecord::Base
       rss_groupings(xml)
       rss_enclosure(xml)
       rss_trackback(xml)
-      # TODO: Perhaps permalink_url should produce valid URI's instead of IRI's
-      xml.link Addressable::URI.parse(permalink_url).normalize
+      xml.link normalized_permalink_url
     end
   end
 
@@ -323,13 +327,16 @@ class Content < ActiveRecord::Base
   end
 
   def rss_description(xml)
-    if respond_to?(:user) && self.user && self.user.name
-      rss_desc = "<hr /><p><small>#{_('Original article writen by')} #{self.user.name} #{_('and published on')} <a href='#{blog.base_url}'>#{blog.blog_name}</a> | <a href='#{self.permalink_url}'>#{_('direct link to this article')}</a> | #{_('If you are reading this article elsewhere than')} <a href='#{blog.base_url}'>#{blog.blog_name}</a>, #{_('it has been illegally reproduced and without proper authorization')}.</small></p>"
-    else
-      rss_desc = ""
-    end
     post = html(blog.show_extended_on_rss ? :all : :body)
-    xml.description(blog.rss_description ? post + rss_desc : post)
+    if blog.rss_description
+      if respond_to?(:user) && self.user && self.user.name
+        rss_desc = "<hr /><p><small>#{_('Original article writen by')} #{self.user.name} #{_('and published on')} <a href='#{blog.base_url}'>#{blog.blog_name}</a> | <a href='#{self.permalink_url}'>#{_('direct link to this article')}</a> | #{_('If you are reading this article elsewhere than')} <a href='#{blog.base_url}'>#{blog.blog_name}</a>, #{_('it has been illegally reproduced and without proper authorization')}.</small></p>"
+      else
+        rss_desc = ""
+      end
+      post = post + rss_desc
+    end
+    xml.description(post)
   end
 
   def rss_groupings(xml)
@@ -349,6 +356,11 @@ class Content < ActiveRecord::Base
 
   def atom_content(entry)
     entry.content(html(:all), :type => 'html')
+  end
+
+  # TODO: Perhaps permalink_url should produce valid URI's instead of IRI's
+  def normalized_permalink_url
+    @normalized_permalink_url ||= Addressable::URI.parse(permalink_url).normalize
   end
 end
 
