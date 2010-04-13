@@ -4,7 +4,7 @@
     <h1 style="display: none">Comment #<%= comment.id %></h1>
     <%= content_tag(:div, gravatar_tag(comment.email)) if this_blog.use_gravatar and comment.email %>
     <cite><%= (comment.url.blank?) ? h(comment.author) : link_to(h(comment.author), comment.url) %></cite>
-    <time datetime="<%= comment.created_at.strftime('%Y-%m-%dT%H:%M') %>" pubdate><%= distance_of_time_in_words comment.created_at, Time.now %> <%= _("later")%>:</time>
+    <time datetime="<%= display_gregorian_time(comment.created_at) %>" pubdate><%= distance_of_time_in_words comment.created_at, Time.now %> <%= _("later")%>:</time>
   </header>
   <%= comment.html %>
   <% unless comment.published -%>

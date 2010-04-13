@@ -16,7 +16,8 @@ class Admin::ResourcesController < Admin::BaseController
           @up = Resource.create(:filename => file.original_filename, :mime => mime, :created_at => Time.now)
 
           @up.write_to_disk(file)
-
+          @up.create_thumbnail
+          
           @message = _('File uploaded: ')+ file.size.to_s
           finish_upload_status "'#{@message}'"
       end
@@ -27,28 +28,10 @@ class Admin::ResourcesController < Admin::BaseController
     end
   end
 
-  def remove_itunes_metadata
-    @resource = Resource.find(params[:id])
-    @resource.itunes_metadata = false
-    @resource.save(false)
-    flash[:notice] = _('Metadata was successfully removed.')
-    redirect_to :action => 'index'
-  end
-
   def update
     @resource = Resource.find(params[:resource][:id])
     @resource.attributes = params[:resource]
 
-    unless params[:itunes_category].nil?
-      itunes_categories = params[:itunes_category]
-      itunes_category_pre = Hash.new {|h, k| h[k] = [] }
-      itunes_categories.each do |cat|
-        cat_split = cat.split('-')
-        itunes_category_pre[cat_split[0]] << cat_split[1] unless
-        itunes_category_pre[cat_split[0]].include?(cat_split[0])
-      end
-      @resource.itunes_category = itunes_category_pre
-    end
     if request.post? and @resource.save
       flash[:notice] = _('Metadata was successfully updated.')
     else
@@ -77,17 +60,34 @@ class Admin::ResourcesController < Admin::BaseController
 
   def index
     @r = Resource.new
-    @itunes_category_list = @r.get_itunes_categories
-    @resources = Resource.paginate :page => params[:page], :conditions => @conditions, :order => 'created_at DESC', :per_page => this_blog.admin_display_elements
+    @resources = Resource.paginate :page => params[:page], :conditions => "mime NOT LIKE '%image%'", :order => 'created_at DESC', :per_page => this_blog.admin_display_elements
   end
-
+  
+  def images
+    @resources = Resource.paginate :page => params[:page], :conditions => "mime LIKE '%image%'", :order => 'created_at DESC', :per_page => this_blog.admin_display_elements
+  end
+  
+  def get_thumbnails
+    position = params[:position].to_i
+    
+    @resources = Resource.find(:all, :conditions => "mime LIKE '%image%'", :order => 'created_at DESC', :limit => "#{position}, 10")
+    
+    render 'get_thumbnails', :layout => false
+    
+  end
+  
   def destroy
     begin
       @file = Resource.find(params[:id])
+      mime = @file.mime
       case request.method
         when :post
           @file.destroy
-          redirect_to :action => 'index'
+          if mime =~ /image/
+            redirect_to :action => 'images'
+          else
+            redirect_to :action => 'index'
+          end
       end
     rescue
       raise

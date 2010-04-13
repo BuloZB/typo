@@ -63,17 +63,6 @@ describe Admin::CategoriesController do
     assert_equal categories(:hardware), Category.find(:first, :order => :position)
   end
 
-  it "test_category_container" do
-    get :category_container
-    assert_response :success
-    assert_template "_categories"
-    assert_tag :tag => "table",
-      :children => { :count => Category.count + 1,
-        :only => { :tag => "tr",
-          :children => { :count => 2,
-            :only => { :tag => /t[dh]/ } } } }
-  end
-
   it "test_reorder" do
     get :reorder
     assert_response :success

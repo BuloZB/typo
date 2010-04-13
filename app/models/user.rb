@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
     find(:first,
          :conditions => ["login = ? AND password = ? AND state = ?", login, sha1(pass), 'active'])
   end
-
+  
   def update_connection_time
     self.last_venue = last_connection
     self.last_connection = Time.now
@@ -163,8 +163,9 @@ class User < ActiveRecord::Base
   def crypt_unless_empty
     if password(true).empty?
       user = self.class.find(self.id)
-      self.password = user.password
+      write_attribute "password", user.password
     else
+      send_create_notification
       write_attribute "password", self.class.sha1(password(true))
       @password = nil
     end

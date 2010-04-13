@@ -1,5 +1,5 @@
 <section class="section" id="posts">
   <h1 class="hidden">List of articles</h1>
-  <%= render :partial => 'articles/article', :collection => @articles %>
+  <%= render :partial => '/articles/article', :collection => @articles %>
   <p class="pagination"><%= will_paginate @articles %></p>
 </section>

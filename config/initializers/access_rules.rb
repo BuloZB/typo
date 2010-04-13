@@ -47,7 +47,11 @@ AccessControl.map :require => [ :admin, :publisher, :contributor ]  do |map|
   map.permission "admin/cache"
   map.permission "admin/dashboard"
   map.permission "admin/textfilters"
+  # FIXME: For previews, during production 'previews' is needed, during
+  # test, 'articles' is needed. Proposed solution: move previews to
+  # ArticlesController
   map.permission "previews"
+  map.permission "articles"
 
   map.project_module :write, nil do |project|
     project.menu    "Write",            { :controller => "admin/content",    :action => "new" }
@@ -61,7 +65,8 @@ AccessControl.map :require => [ :admin, :publisher, :contributor ]  do |map|
     project.submenu "Comments",         { :controller => "admin/feedback" }
 	  project.submenu "Pages",            { :controller => "admin/pages",      :action => "index" }
 	  project.submenu "Categories",       { :controller => "admin/categories", :action => "index" }
-	  project.submenu "Uploads",          { :controller => "admin/resources",  :action => "index" }
+	  project.submenu "Files",            { :controller => "admin/resources",  :action => "index" }
+	  project.submenu "Images",           { :controller => "admin/resources",  :action => "images"}
 	  project.submenu "Tags",             { :controller => "admin/tags",       :action => "index" }
 	  project.submenu "",                      { :controller => "admin/comments", :action => "show" }
     project.submenu "",                      { :controller => "admin/comments", :action => "new" }
@@ -87,7 +92,6 @@ AccessControl.map :require => [ :admin, :publisher, :contributor ]  do |map|
     project.submenu "Write",                 { :controller => "admin/settings", :action => "write" }
     project.submenu "Feedback",              { :controller => "admin/settings", :action => "feedback" }			
     project.submenu "SEO",                   { :controller => "admin/settings", :action => "seo" }
-    project.submenu "Blacklist",             { :controller => "admin/blacklist", :action => "index" }
     project.submenu "Users",                 { :controller => "admin/users", :action => "index" }
     project.submenu "",                 { :controller => "admin/users", :action => "show" }
     project.submenu "",                 { :controller => "admin/users", :action => "new" }

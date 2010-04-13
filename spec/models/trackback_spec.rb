@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe 'With the various trackback filters loaded and DNS mocked out appropriately' do
+describe Trackback, 'With the various trackback filters loaded and DNS mocked out appropriately' do
   before(:each) do
     IPSocket.stub!(:getaddress).and_return { raise SocketError.new("getaddrinfo: Name or service not known") }
     @blog = Blog.default
@@ -41,14 +41,6 @@ describe 'With the various trackback filters loaded and DNS mocked out appropria
     add_spam_ip('212.42.230.207')
     tb = Trackback.new(ham_params.merge(:ip => '212.42.230.207'))
     tb.should be_spam
-  end
-
-  it 'Trackbacks with a blacklisted pattern in the excerpt should be rejected' do
-    BlacklistPattern.should_receive(:find).with(:all).at_least(:once)\
-      .and_return([StringPattern.new(:pattern => 'poker'),
-                   RegexPattern.new(:pattern => '^Texas')])
-    Trackback.new(ham_params.merge(:excerpt => 'Mmm... come to my shiny poker site')).should be_spam
-    Trackback.new(ham_params.merge(:excerpt => 'Texas hold-em rules!')).should be_spam
   end
 
   def add_spam_domain(domain = 'chinaircatering.com')
