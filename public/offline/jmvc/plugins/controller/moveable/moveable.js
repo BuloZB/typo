@@ -152,7 +152,7 @@ jQuery.Class.extend("jQuery.Move",{
         if(this._cancelled == true) return;
         //if they set something else as the element
         
-        this.startPosition = startElement != this.movingElement ? this.movingElement.offsetv() : this.currentDelta();
+        this.startPosition = !( this.movingElement.compare(startElement) & 16 ) ? this.movingElement.offsetv() : this.currentDelta();
 
         this.movingElement.makePositioned();
         this.movingElement.css('zIndex',1000);
@@ -208,7 +208,7 @@ jQuery.Class.extend("jQuery.Move",{
 	 */
     cleanup : function(){
         this.movingElement.css({zIndex: ""})
-		if (this.movingElement != this.element)
+		if (this.movingElement != this.element && !( this.movingElement.compare(this.element) & 16 ))
             this.movingElement.css({ display: 'none' });
         if(this._removeMovingElement)
             this.movingElement.remove();
@@ -252,12 +252,16 @@ jQuery.Class.extend("jQuery.Move",{
         var p = this.mouseStartPosition;
 
         this.movingElement = jQuery(element);
-        this.movingElement.css({
-            top: (p.y() - this._offsetY) + "px",
-            left: (p.x() - this._offsetX) + "px",
-            display: 'block',
-			position: 'absolute'
-        }).show();
+		
+        if(this.movingElement.compare(this.element) & 16){
+			
+		}else
+			this.movingElement.css({
+	            top: (p.y() - this._offsetY) + "px",
+	            left: (p.x() - this._offsetX) + "px",
+	            display: 'block',
+				position: 'absolute'
+	        }).show();
 
         this.mouseElementPosition = new jQuery.Vector(this._offsetX, this._offsetY)
     },

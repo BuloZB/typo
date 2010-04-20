@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Offline demo</title>
-        <link href="resources/themes/ims/stylesheets/application.css" media="all" rel="stylesheet">
+        <link href="resources/themes/ims/stylesheets/style.css" media="all" rel="stylesheet">
         <link href="resources/jquery-ui-1-2/css/ui-lightness/jquery-ui-1.7.2.custom.css" media="all" rel="stylesheet">
         <!--[if IE]>
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,15 +25,15 @@
     <div id="wrapper">
         <nav id="navigation">
             <h1 class="hidden">Navigation</h1>
-            <ul id="link">
+            <ul>
                 <li>
-                    <a href="javascript: void(0)" id="home-page">Home</a>
+                    <a href="#menu-home">Home</a>
                 </li>
                 <li>
-                    <a href="javascript: void(0)" rel="archives" id="archive"> Archives</a>
+                    <a href="#menu-archives" rel="archive">Archives</a>
                 </li>
                 <li>
-                    <a href="javascript: void(0)" rel="author" class="page" id="about">About</a>
+                    <a href="#menu-about" rel="author">About</a>
                 </li>
             </ul>
         </nav>
@@ -45,8 +45,8 @@
                     </script>
                 </div>
             </div>
-            <aside id="boxes">
-                <h1 class="hidden">Sideboxes</h1>
+            <aside id="sidebar">
+                <h1 class="hidden">Boxes</h1>
             </aside>
         </div>
     </div>

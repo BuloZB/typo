@@ -133,7 +133,7 @@ $.extend($.Model, {
     */
    validatesLengthOf: function(attrNames, min, max, options) {
       _addValidation.call(this, attrNames, options, function(value) {
-         if((typeof value != 'undefined' && min > 0) || value.length < min)
+         if((typeof value == 'undefined' && min > 0) || value.length < min)
             return "is too short (min=" + min + ")";
          else if(typeof value != 'undefined' && value.length > max)
             return "is too long (max=" + max + ")";

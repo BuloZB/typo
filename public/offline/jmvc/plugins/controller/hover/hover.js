@@ -45,7 +45,7 @@ jQuery.Controller.Action.Event.extend("jQuery.Controller.Action.EnterLeave",
 			selector, 
 			this.event == 'mouseenter' ? 'mouseover' : 'mouseout', 
 			function(event) {
-				var compare = $(this).compare(event.relatedTarget);
+				var compare = jQuery(this).compare(event.relatedTarget);
                 if(compare===0 || compare & 17  ) return;
                 callback(jQuery(this), event);
 			}, element);
@@ -118,7 +118,7 @@ include.plugins('controller/hover')
             this.called = false;
             //set a timeout and compare position
             //if(this.event_type == "hoverenter"){
-            var compare = $(el).compare(ev.relatedTarget);
+            var compare = jQuery(el).compare(ev.relatedTarget);
             if(compare===0 || compare & 17  ) return;
 
     		
@@ -143,7 +143,7 @@ include.plugins('controller/hover')
          * @param {Object} params
          */
         mouseout : function(el, ev){
-            var compare = $(el).compare(ev.relatedTarget);
+            var compare = jQuery(el).compare(ev.relatedTarget);
             if(compare===0 || compare & 17  ) return;
             clearTimeout(this.timer);
             if(this.element) this.element.unbind("mousemove", this.mousemove_function);
@@ -203,10 +203,10 @@ jQuery.Controller.Action.Event.extend("jQuery.Controller.Action.Hover",
     setDelegates : function(hover, element){
         var selector = this.selCSS
         hover.mouseover_delegate = new jQuery.Delegator(selector, 'mouseover',function(ev){
-            hover.mouseover.call(hover,$(this), ev )
+            hover.mouseover.call(hover,jQuery(this), ev )
         }, element);
         hover.mouseout_delegate = new jQuery.Delegator(selector, 'mouseout', function(ev){
-            hover.mouseout.call(hover,$(this), ev )
+            hover.mouseout.call(hover,jQuery(this), ev )
         }, element);
     },
     destroy : function(element){

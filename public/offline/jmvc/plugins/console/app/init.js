@@ -11,7 +11,7 @@ jQuery(window).load(function(){
 	jQuery("#console").tab_controller({tabs: [
 		{controller: console, title: "console"},
 		{controller: unit, title: "unit" },
-		{controller: func, title: "funtional"}
+		{controller: func, title: "functional"}
 	]})
 
 	pfc.windowresize();

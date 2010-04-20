@@ -13,14 +13,18 @@
                 <% if(i>0){%></aside><% } %>
                 <h3 class="archivemonth"><%= month_names[articles[i].published_at_month()-1] %> <%= articles[i].published_at_year() %></h3>
                 <% }%>
-            <div class="archivepost <%= articles[i].identity() %>">
+            <div class="archivepost">
             <%= articles[i].published_at_mday() %> -
-            <a href="javascript:void(0)" class="view"><%= articles[i].title %></a>
-            <% if (articles[i].category.name){ %> posted in
-                <span id="category" class="category_<%= articles[i].category.id %>"><a href="javascript:void(0)" class="view"><%= articles[i].category.name %></a></span>
-                <% } %>
+            <a href="#article&amp;view=<%= articles[i].permalink %>" class="view"><%= articles[i].title %></a>
+            <% console.log(articles[i].categories) %>
+            <% if(articles[i].categories != undefined && articles[i].categories.length > 0) { %>
+                posted in
+                <% for(var j=0;j<articles[i].categories.length;j++) {%>
+                    <span><a href='#category&amp;view=<%= articles[i].categories[j].permalink %>'><%= articles[i].categories[j].name %></a></span>
+                    <% } %>
+                <%}%>
             </div>
             <%
         }
-        } %>
+} %>
     </section>

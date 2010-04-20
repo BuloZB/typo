@@ -15,10 +15,13 @@ $.Model.extend('Blog',
                         var row = rs.rows.item(0)
                         var settings = row['settings'].split('\n')
                         var result = new Array()
+                        var data
+
                         //we start from index 1 because first row is only '---' string
                         for(var i=1;i<settings.length;i++) {
-                            var data = settings[i].split(':')
+                            data = settings[i].split(':')
                             result[data[0]] = data[1]
+                            data = null
                         }
                         return success(result)
                     }

@@ -48,6 +48,15 @@
  */
 (function($) {
 
+function formatHash(hash) {
+   if (!hash)
+      hash = '#';
+   else if (hash.charAt(0) != '#')
+      hash = '#' + hash;
+
+   return hash;
+}
+   
 $.fn.extend({
    hashchange: function(callback) { return this.bind('hashchange', callback) },
    openOnClick: function(href) {
@@ -66,9 +75,25 @@ $.fn.extend({
       });
    }
 });
-
-// IE 8 introduces the hashchange event natively - so nothing more to do
-if ($.browser.msie && document.documentMode && document.documentMode >= 8) {
+   
+function isHashchangeEventSupported() {
+   var el = window;
+   var eventName = 'onhashchange';
+   var isSupported = (eventName in el);
+   if (!isSupported) {
+      try {
+         el.setAttribute(eventName, 'return;');
+         isSupported = typeof el[eventName] == 'function';
+      } catch(e) {}
+   }
+   el = null;
+   return isSupported;
+}
+$.support.hashchange = isHashchangeEventSupported();
+   
+// For browsers that support hashchange natively, we don't have to poll for hash changes
+if ($.support.hashchange) {
+   $.support.hashchange = true
    $.extend({
       History : {
          fireInitialChange: true,
@@ -78,11 +103,12 @@ if ($.browser.msie && document.documentMode && document.documentMode >= 8) {
          },
          
          add: function(hash) {
-            if (!hash)
-               hash = '#';
-            else if (hash.charAt(0) != '#')
-               hash = '#' + hash;
-            location.hash = hash;
+            location.hash = formatHash(hash);
+         },
+
+         replace: function(hash) {
+            var path = location.href.split('#')[0] + formatHash(hash);
+            location.replace(path);
          }
       }
    });
@@ -120,12 +146,7 @@ $.extend({
          if (curHash === undefined)
             return;
 
-         if (!hash)
-            hash = '#';
-         else if (hash.charAt(0) != '#')
-            hash = '#' + hash;
-
-         location.hash = hash;
+         location.hash = formatHash(hash);
          
          //if (curHash == hash)  let it detect this itself because location.hash might not equal hash
          //   return;
@@ -135,6 +156,11 @@ $.extend({
          //   updateIEFrame(hash);
          
          //$.event.trigger('hashchange');  Removed, 
+      },
+
+      replace: function(hash) {
+         var path = location.href.split('#')[0] + formatHash(hash);
+         location.replace(path);
       }
    }
 });

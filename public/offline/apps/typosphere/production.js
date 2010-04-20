@@ -2787,7 +2787,7 @@ return this[0]==_1?document.compatMode=="CSS1Compat"&&document.documentElement["
 })();
 ;
 include.setPath('apps/typosphere');
-include.plugins("model","view","controller","dom/form_params","model/validation","view/helpers");
+include.plugins("model","view","controller","dom/form_params","model/validation","view/helpers","controller/history");
 include.resources("jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min");
 include(function(){
 Modernizr.addTest("sqlstorage",function(){
@@ -2809,9 +2809,9 @@ _1+="</div>";
 $("#dialog-message").html(_1);
 $("#dialog-message").dialog("open");
 }
-include.resources("sqlite_driver","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min");
-include.models("article","category","tag","sidebar","comment","blog","synchronization");
-include.controllers("main","article","category","tag","sidebar");
+include.resources("strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
+include.models("main_model","article","category","tag","sidebar","comment","blog","synchronization");
+include.controllers("main","article","category","tag","sidebar","navigation");
 include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show");
 });
 ;
@@ -3156,9 +3156,13 @@ if(_e.constructor==Array){
 return "array";
 }
 return typeof _e;
-}
+}else{
 if(_e==""){
 return "string";
+}
+if(_e.match(/^\s+$/)){
+return "string";
+}
 }
 if(_e=="true"||_e=="false"){
 return "boolean";
@@ -4022,7 +4026,7 @@ return -1;
 }
 return _11;
 },events:{},onload_called:false,fastHasClass:function(s,f){
-return s.indexOf(f)==-1?false:(s.length==f.length||s.indexOf(f+" ")==0||s.lastIndexOf(" "+f)==s.length-f.length-1||s.indexOf(" "+f+" ")!=-1);
+return typeof s=="string"&&(s.indexOf(f)==-1?false:(s.length==f.length||s.indexOf(f+" ")==0||s.lastIndexOf(" "+f)==s.length-f.length-1||s.indexOf(" "+f+" ")!=-1));
 }});
 jQuery.extend(jQuery.Delegator.prototype,{event:function(){
 if(jQuery.browser.msie){
@@ -4633,7 +4637,7 @@ return "is not a valid option (perhaps out of range)";
 });
 },validatesLengthOf:function(_19,min,max,_1c){
 _2.call(this,_19,_1c,function(_1d){
-if((typeof _1d!="undefined"&&min>0)||_1d.length<min){
+if((typeof _1d=="undefined"&&min>0)||_1d.length<min){
 return "is too short (min="+min+")";
 }else{
 if(typeof _1d!="undefined"&&_1d.length>max){
@@ -4735,7 +4739,7 @@ return this.input_field_tag(_22,_23,"hidden",_24);
 },input_field_tag:function(_25,_26,_27,_28){
 _28=_28||{};
 _28.id=_28.id||_25;
-_28.value=_26||"";
+_28.value=(_26==null)?"":_26;
 _28.type=_27||"text";
 _28.name=_25;
 return this.single_tag_for("input",_28);
@@ -4879,35 +4883,290 @@ return $.View.Helpers.get_data(el);
 })(jQuery);
 ;
 include.setPath('jmvc/plugins/view/helpers');
-$.extend($.View.Helpers.prototype,{pagination:function(_1,_2,id){
-var _4=parseInt(_1.current_page);
-var _5=Math.ceil(parseInt(_1.count)/parseInt(localStorage["limit_article_display"]));
-var _6=((_4-1)<1?"":_4-1);
-var _7=((_4+1)>_5?"":_4+1);
+$.extend($.View.Helpers.prototype,{pagination:function(_1,_2){
+var _3=parseInt(_2.current_page);
+var _4=Math.ceil(parseInt(_2.count)/parseInt(localStorage["limit_article_display"]));
+var _5=((_3-1)<1?"":_3-1);
+var _6=((_3+1)>_4?"":_3+1);
+var _7="";
 var _8="";
-var _9="";
-var _a="";
-if(isNaN(_5)){
+if(isNaN(_4)){
 return;
 }
-if(typeof _1.action=="undefined"){
-_1.action=_2;
-}
-if(typeof id!="undefined"){
-_a=_2+"_"+id.toString();
+if(_5!=""){
+_7="<span><a href=\""+_1+"&amp;page="+_5+"\">« newer</a></span>";
 }
 if(_6!=""){
-_8="<span><a href=\"javascript:void(0)\" id=\""+_6+"\" class=\""+_1.action+"_paginate\"><< newer</a></span>";
+_8="<span><a href=\""+_1+"&amp;page="+_6+"\">older »</a></span>";
 }
-if(_7!=""){
-_9="<span><a href=\"javascript:void(0)\" id=\""+_7+"\" class=\""+_1.action+"_paginate\">older >></a></span>";
-}
-if(_8==""&&_9==""){
+if(_7==""&&_8==""){
 return "";
 }else{
-return "<div id=\""+_2+"\" class=\"pagination "+_a+"\">"+_8+" | "+_9+"</div>";
+return "<div class=\"pagination\">"+_7+_8+"</div>";
 }
 }});
+;
+include.setPath('jmvc/plugins/controller/history');
+include.plugins("controller","dom/history");
+include("controller_history");
+;
+include.setPath('jmvc/plugins/dom/history');
+include.plugins("lang/openajax");
+include("jquery.hashchange");
+(function($){
+$.Path=function(_2){
+this.path=_2;
+};
+$.Path.prototype={domain:function(){
+var _3=this.path.split("#")[0];
+return "/"+_3.split("/").slice(3).join("/");
+},folder:function(){
+var _4=this.path.indexOf("#");
+if(_4==-1){
+return null;
+}
+var _5=this.path.substring(_4+1);
+var _6=_5.indexOf("&");
+if(_6==-1){
+return _5.indexOf("=")!=-1?null:_5;
+}
+return _5.substring(0,_6);
+},params:function(){
+var _7=this.path.indexOf("#");
+if(_7==-1){
+return null;
+}
+var _8=this.path.substring(_7+1);
+var _9=_8.indexOf("&");
+if(_9==-1){
+return _8.indexOf("=")!=-1?_8:null;
+}
+return (_8.substring(0,_9).indexOf("=")==-1?_8.substring(_9+1):_8);
+}};
+$.Path.get_data=function(_a){
+var _b=_a.params();
+if(!_b||!_b.match(/([^?#]*)(#.*)?$/)){
+return {};
+}
+_b=_b.replace(/\+/g,"%20");
+var _c={};
+var _d=_b.split("&");
+for(var i=0;i<_d.length;i++){
+var _f=_d[i].split("=");
+if(_f.length!=2){
+continue;
+}
+var key=decodeURIComponent(_f[0]),_11=decodeURIComponent(_f[1]);
+var _12=jQuery.String.rsplit(key,/\[[^\]]*\]/);
+if(_12.length>1){
+var _13=_12.length-1;
+var _14=_12[0].toString();
+if(!_c[_14]){
+_c[_14]={};
+}
+var _15=_c[_14];
+for(var k=1;k<_13;k++){
+_14=_12[k].substring(1,_12[k].length-1);
+if(!_15[_14]){
+_15[_14]={};
+}
+_15=_15[_14];
+}
+_15[_12[_13].substring(1,_12[_13].length-1)]=_11;
+}else{
+if(key in _c){
+if(typeof _c[key]=="string"){
+_c[key]=[_c[key]];
+}
+_c[key].push(_11);
+}else{
+_c[key]=_11;
+}
+}
+}
+return _c;
+};
+})(jQuery);
+jQuery(function($){
+$(window).hashchange(function(){
+var _18=new $.Path(location.href);
+var _19=$.Path.get_data(_18);
+var _1a=_18.folder()||"index";
+var _1b=(_1a.indexOf("/")!=-1);
+if(!_1b){
+if(_1a!="index"){
+_1a+="/index";
+}
+}
+OpenAjax.hub.publish("history."+_1a.replace("/","."),_19);
+});
+$.History.init();
+});
+;
+include.setPath('jmvc/plugins/dom/history');
+(function($){
+function _2(_3){
+if(!_3){
+_3="#";
+}else{
+if(_3.charAt(0)!="#"){
+_3="#"+_3;
+}
+}
+return _3;
+};
+$.fn.extend({hashchange:function(_4){
+return this.bind("hashchange",_4);
+},openOnClick:function(_5){
+if(_5===undefined||_5.length==0){
+_5="#";
+}
+return this.click(function(ev){
+if(_5&&_5.charAt(0)=="#"){
+window.setTimeout(function(){
+$.History.add(_5);
+},0);
+}else{
+window.location(_5);
+}
+ev.stopPropagation();
+return false;
+});
+}});
+function _7(){
+var el=window;
+var _9="onhashchange";
+var _a=(_9 in el);
+if(!_a){
+try{
+el.setAttribute(_9,"return;");
+_a=typeof el[_9]=="function";
+}
+catch(e){
+}
+}
+el=null;
+return _a;
+};
+$.support.hashchange=_7();
+if($.support.hashchange){
+$.support.hashchange=true;
+$.extend({History:{fireInitialChange:true,init:function(){
+if($.History.fireInitialChange){
+$.event.trigger("hashchange");
+}
+},add:function(_b){
+location.hash=_2(_b);
+},replace:function(_c){
+var _d=location.href.split("#")[0]+_2(_c);
+location.replace(_d);
+}}});
+return;
+}
+var _e;
+var _f;
+$.extend({History:{fireInitialChange:true,init:function(){
+_e=location.hash;
+if($.browser.msie){
+if(_e==""){
+_e="#";
+}
+_f=$("<iframe />").hide().get(0);
+$("body").prepend(_f);
+_10(location.hash);
+setInterval(_11,100);
+}else{
+if(!$.browser.rhino){
+setInterval(_12,100);
+}
+}
+if($.History.fireInitialChange){
+$.event.trigger("hashchange");
+}
+},add:function(_13){
+if(_e===undefined){
+return;
+}
+location.hash=_2(_13);
+},replace:function(_14){
+var _15=location.href.split("#")[0]+_2(_14);
+location.replace(_15);
+}}});
+$(window).unload(function(){
+_f=null;
+});
+function _12(){
+var _16=location.hash;
+if(_16!=_e){
+_e=_16;
+$.event.trigger("hashchange");
+}
+};
+function _11(){
+var _17=location.hash;
+if(_17!=_e){
+_10(_17);
+_e=_17;
+$.event.trigger("hashchange");
+return;
+}
+var _18=_f.contentDocument||_f.contentWindow.document;
+var _17=_18.location.hash;
+if(_17==""){
+_17="#";
+}
+if(_17!=_e){
+if(location.hash!=_17){
+location.hash=_17;
+}
+_e=_17;
+$.event.trigger("hashchange");
+}
+};
+function _10(_19){
+if(_19=="#"){
+_19="";
+}
+var _1a=_f.contentDocument||_f.contentWindow.document;
+_1a.open();
+_1a.close();
+if(_1a.location.hash!=_19){
+_1a.location.hash=_19;
+}
+};
+})(jQuery);
+;
+include.setPath('jmvc/plugins/controller/history');
+(function($){
+$.extend($.Controller.prototype,{redirectTo:function(_2){
+var _3=this._get_history_point(_2);
+$.History.add(_3);
+},replaceWith:function(_4){
+var _5=this._get_history_point(_4);
+$.History.replace(_5);
+},history_add:function(_6,_7){
+var _8=this._get_history_point(_6);
+$.History.add(_8);
+},_get_history_point:function(_9){
+var _a=_9.controller||this.Class.underscoreName;
+var _b=_9.action||"index";
+if(_9.controller){
+delete _9.controller;
+}
+if(_9.action){
+delete _9.action;
+}
+var _c=(_9)?$.param(_9):"";
+if(_c.length){
+_c="&"+_c;
+}
+return "#"+_a+"/"+_b+_c;
+},path:function(){
+return new $.Path(location.href);
+},path_data:function(){
+return $.Path.get_data(this.path());
+}});
+})(jQuery);
 ;
 include.setPath('resources/jquery-ui-1-2');
 jQuery.ui||(function(c){
@@ -6633,41 +6892,6 @@ return J;
 ;
 include.next_function();
 include.setPath('resources');
-jQuery.Class.extend("Sqlite",{},{init:function(){
-this.name="Typo";
-this.version="1.0";
-this.size="10485760";
-this.description="Offline database for Typosphere";
-},open:function(){
-this.con=openDatabase(this.name,this.version,this.description,this.size);
-this.create_db();
-},create_db:function(){
-this.con.transaction(function(tx){
-tx.executeSql("CREATE TABLE IF NOT EXISTS contents (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, extended TEXT, excerpt TEXT, keywords TEXT, created_at TEXT, updated_at TEXT, user_id INTEGER, permalink TEXT, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, name TEXT, published INTEGER, allow_pings INTEGER, allow_comments INTEGER, published_at TEXT, state TEXT)");
-tx.executeSql("CREATE INDEX IF NOT EXISTS index_contents_on_published ON contents (published)");
-tx.executeSql("CREATE INDEX IF NOT EXISTS index_contents_on_text_filter_id ON contents (text_filter_id)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id INTEGER)");
-tx.executeSql("CREATE INDEX IF NOT EXISTS index_categories_on_permalink ON categories (permalink)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS categorizations (id INTEGER PRIMARY KEY, article_id INTEGER, category_id INTEGER, is_primary INTEGER)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at TEXT, display_name TEXT)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS articles_tags (article_id INTEGER, tag_id INTEGER)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, excerpt TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, user_id INTEGER, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, article_id INTEGER, email TEXT, url TEXT, ip TEXT, blog_name TEXT, published INTEGER, published_at TEXT, state TEXT, status_confirmed INTEGER)");
-tx.executeSql("CREATE INDEX IF NOT EXISTS index_feedback_on_article_id ON feedback (article_id)");
-tx.executeSql("CREATE INDEX IF NOT EXISTS index_feedback_on_text_filter_id ON feedback (text_filter_id)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS sidebars (id INTEGER PRIMARY KEY, active_position INTEGER, config TEXT, staged_position INTEGER, type TEXT)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS blogs (id INTEGER PRIMARY KEY, settings TEXT, base_url TEXT)");
-tx.executeSql("CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, action TEXT)");
-});
-},get_instance:function(){
-return this.con;
-},error:function(_2){
-Notification.msg("Database error: "+_2.message);
-}});
-var db_con=new Sqlite();
-db_con.open();
-var db=db_con.get_instance();
-;
-include.setPath('resources');
 Number.prototype.pad=function(n,p){
 var s=""+this;
 p=p||"0";
@@ -6795,26 +7019,118 @@ _4+=i+" - "+_6+"\n";
 alert(_4);
 }},{});
 ;
+include.setPath('resources/database');
+jQuery.Class.extend("Driver",{},{init:function(_1,_2,_3,_4){
+if(this.Class.caller!=DatabaseCreator.create){
+throw new Error("There is no public constructor for "+this.Class.className);
+return;
+}
+this.name=_1;
+this.version=_2;
+this.size=_3;
+this.description=_4;
+this.connection=openDatabase(this.name,this.version,this.description,this.size);
+},create_tables:function(_5){
+var _6=this;
+jQuery.each(_5,function(i,_8){
+_6.connection.transaction(function(tx){
+tx.executeSql(_8);
+});
+});
+},get_connection:function(){
+return this.connection;
+},});
+;
+include.setPath('resources/database');
+Driver.extend("SqliteDriver",{},{init:function(){
+this._super("SqliteTypo","1.0","10485760","Offline database for Typosphere");
+},create_tables:function(){
+var _1=["CREATE TABLE IF NOT EXISTS contents (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, extended TEXT, excerpt TEXT, keywords TEXT, created_at TEXT, updated_at TEXT, user_id INTEGER, permalink TEXT, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, name TEXT, published INTEGER, allow_pings INTEGER, allow_comments INTEGER, published_at TEXT, state TEXT)","CREATE INDEX IF NOT EXISTS index_contents_on_published ON contents (published)","CREATE INDEX IF NOT EXISTS index_contents_on_text_filter_id ON contents (text_filter_id)","CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id INTEGER)","CREATE INDEX IF NOT EXISTS index_categories_on_permalink ON categories (permalink)","CREATE TABLE IF NOT EXISTS categorizations (id INTEGER PRIMARY KEY, article_id INTEGER, category_id INTEGER, is_primary INTEGER)","CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at TEXT, display_name TEXT)","CREATE TABLE IF NOT EXISTS articles_tags (article_id INTEGER, tag_id INTEGER)","CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, excerpt TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, user_id INTEGER, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, article_id INTEGER, email TEXT, url TEXT, ip TEXT, blog_name TEXT, published INTEGER, published_at TEXT, state TEXT, status_confirmed INTEGER)","CREATE INDEX IF NOT EXISTS index_feedback_on_article_id ON feedback (article_id)","CREATE INDEX IF NOT EXISTS index_feedback_on_text_filter_id ON feedback (text_filter_id)","CREATE TABLE IF NOT EXISTS sidebars (id INTEGER PRIMARY KEY, active_position INTEGER, config TEXT, staged_position INTEGER, type TEXT)","CREATE TABLE IF NOT EXISTS blogs (id INTEGER PRIMARY KEY, settings TEXT, base_url TEXT)","CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, action TEXT)"];
+this._super(_1);
+}});
+;
+include.setPath('resources/database');
+jQuery.Class.extend("Creator",{create:function(_1){
+}},{});
+;
+include.setPath('resources/database');
+Creator.extend("DatabaseCreator",{create:function(_1){
+switch(_1){
+case "sqlite":
+return new SqliteDriver();
+break;
+default:
+throw new Error("There is no db engine called "+_1);
+break;
+}
+}},{});
+;
+include.setPath('resources/database');
+var database=DatabaseCreator.create("sqlite");
+database.create_tables();
+var db=database.get_connection();
+;
 include.setPath('models');
-$.Model.extend("Article",{find_all:function(_1,_2,_3){
+$.Model.extend("MainModel",{parse_result:function(rs){
+var _2=new Array;
+var _3=new Array;
+var _4=new Array;
+for(var i=0;i<rs.rows.length;i++){
+_3=rs.rows.item(i);
+for(var _6 in _3){
+_4[_6]=_3[_6];
+}
+_2[i]=_4;
+_4=new Array;
+_3=new Array;
+}
+return this.wrapMany(_2);
+}},{});
+;
+include.setPath('models');
+MainModel.extend("Article",{find_all:function(_1,_2,_3){
 var _4=this;
-var _5=parseInt(_1.current_page);
-var _6=parseInt(localStorage["limit_article_display"]);
+var _5=0;
+var _6=0;
+var _7=0;
+var _8="";
+var _9="";
+var _a=new Array;
+var _b="";
+if(_1.category!=undefined){
+_8+=" LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id ";
+_9+=" AND (c2.category_id="+_1.category+") ";
+}
+if(_1.tag!=undefined){
+_8+=" INNER JOIN articles_tags a1 ON c1.id = a1.article_id ";
+_9+=" AND (a1.tag_id ="+_1.tag+") ";
+}
+if(_1.date!=undefined){
+_9+=" AND (c1.published_at BETWEEN \""+_1.date.year+"-"+_1.date.month+"-1"+" 00:00:00\" AND \""+_1.date.year+"-"+_1.date.month+"-31 23:59:59\") ";
+}
+if(_1.current_page){
+_5=parseInt(_1.current_page);
+_6=parseInt(localStorage["limit_article_display"]);
 if(isNaN(_6)){
 _6=10;
 }
-var _7=parseInt((_5<2?_5-1:((_5-1)*_6)));
-var _8=(typeof _1.category!="undefined"?"LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id ":"");
-var _9=(typeof _1.category!="undefined"?"AND (c2.category_id="+_1.category+")":"");
-var _a=(typeof _1.tag!="undefined"?"INNER JOIN articles_tags a1 ON c1.id = a1.article_id ":"");
-var _b=(typeof _1.tag!="undefined"?" AND (a1.tag_id ="+_1.tag+")":"");
-var _c=(typeof _1.date!="undefined"?" AND (c1.published_at BETWEEN \""+_1.date.year+"-"+_1.date.month+"-1"+" 00:00:00\" AND \""+_1.date.year+"-"+_1.date.month+"-31 23:59:59\")":"");
+_7=(_5<2?_5-1:((_5-1)*_6));
+_a=[_6,_7];
+_b=" LIMIT ? OFFSET ? ";
+}
 db.transaction(function(tx){
-tx.executeSql("SELECT c1 . * "+"FROM contents c1 "+_8+_a+"WHERE (( c1.published=1 ) AND ( c1.type =  'Article' ) "+_9+" "+_b+" "+_c+" ) ORDER BY c1.published_at DESC LIMIT ? OFFSET ?",[_6,_7],function(tx,_f){
-tx.executeSql("SELECT count(*) as count "+"FROM contents c1 "+_8+_a+"WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+_9+" "+_b+" "+_c+" )",[],function(tx,rs){
-var row=rs.rows.item(0);
-_1.count=row.count;
-return _2(_4.parse_result(_f),_1);
+tx.executeSql("SELECT c1 . * "+"FROM contents c1 "+_8+"WHERE (( c1.published=1 ) AND ( c1.type =  'Article' ) "+_9+" ) "+"ORDER BY c1.published_at DESC "+_b,_a,function(tx,rs){
+tx.executeSql("SELECT count(*) as count "+"FROM contents c1 "+_8+"WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+_9+" )",[],function(tx,rs2){
+_1.count=rs2.rows.item(0).count;
+var _11=_4.parse_result(rs);
+for(var i=0;i<_11.length;i++){
+Category.find_by_article_id(_11[i].id,i,function(_13,_14){
+_11[_14].categories=_13;
+if(_14==_11.length-1){
+return _2(_11,_1);
+}
+},_3);
+}
 },function(tx,err){
 return _3(err);
 });
@@ -6822,126 +7138,76 @@ return _3(err);
 return _3(err);
 });
 });
-},find_by_id:function(id,_18,_19){
-var _1a=this.get_id(id);
+},find_by_permalink:function(_19,_1a,_1b){
 var obj=this;
 db.transaction(function(tx){
-tx.executeSql("SELECT * FROM contents WHERE id = ?",[_1a],function(tx,_1e){
-tx.executeSql("SELECT * FROM feedback WHERE article_id = ? and type = ?",[_1a,"Comment"],function(tx,_20){
-tx.executeSql("SELECT tags.* FROM tags tags JOIN articles_tags at ON tags.id=at.tag_id JOIN contents contents on contents.id = at.article_id WHERE contents.id=?",[_1a],function(tx,_22){
-return _18(obj.parse_result(_1e,_20,_22));
+tx.executeSql("SELECT * FROM contents WHERE permalink = ? AND published=1 AND type=\"Article\"",[_19],function(tx,rs){
+var _20=obj.parse_result(rs)[0];
+Comment.find_by_article_id(_20.id,function(_21){
+_20.comments=_21;
+Tag.find_by_article_id(_20.id,function(_22){
+_20.tags=_22;
+return _1a(_20);
+},_1b);
+},_1b);
 },function(tx,err){
-return _19(err);
-});
-},function(tx,err){
-return _19(err);
-});
-},function(tx,err){
-return _19(err);
+return _1b(err);
 });
 });
-},find_archive:function(_29,_2a,_2b){
+},find_page:function(_25,_26,_27){
 var obj=this;
 db.transaction(function(tx){
-tx.executeSql("SELECT * FROM contents WHERE ( (contents.published = 1) AND (contents.type = 'Article' ) ) ORDER BY published_at DESC",[],function(tx,rs){
-return _2a(obj.parse_result(rs));
+tx.executeSql("SELECT * FROM contents WHERE (contents.name = ?) AND ( (contents.type = 'Page' ) ) LIMIT 1",[_25],function(tx,rs){
+return _26(obj.parse_result(rs)[0]);
 },function(tx,err){
-return _2b(err);
+return _27(err);
 });
 });
-},find_page:function(_32,_33,_34){
-var obj=this;
-db.transaction(function(tx){
-tx.executeSql("SELECT * FROM contents WHERE (contents.name = ?) AND ( (contents.type = 'Page' ) ) LIMIT 1",[_32],function(tx,rs){
-return _33(obj.parse_result(rs));
-},function(tx,err){
-return _34(err);
-});
-});
-},find_by_category_id:function(_3b,_3c,_3d){
-this.find_all(_3b,_3c,_3d);
-},find_by_tag_id:function(_3e,_3f,_40){
-this.find_all(_3e,_3f,_40);
-},find_by_published_at:function(_41,_42,_43){
-_41.date={year:_41.date.split("_")[0],month:_41.date.split("_")[1]};
-this.find_all(_41,_42,_43);
-},sidebar:function(_44,_45,_46){
+},find_by_category_id:function(_2e,_2f,_30){
+this.find_all(_2e,_2f,_30);
+},find_by_tag_id:function(_31,_32,_33){
+this.find_all(_31,_32,_33);
+},find_by_published_at:function(_34,_35,_36){
+this.find_all(_34,_35,_36);
+},archives_box:function(_37,_38,_39){
 var obj=this;
 db.transaction(function(tx){
 tx.executeSql("select count(*) as count, strftime('%Y', published_at) as year, strftime('%m', published_at) as month from contents where type='Article' and published = ? and published_at < ? group by year,month order by year desc,month desc",[1,"date('now')"],function(tx,rs){
-var _4b=[];
+var _3e=[];
 for(var i=0;i<rs.rows.length;i++){
 var row=rs.rows.item(i);
-_4b[i]={year:row["year"],month:row["month"],count:row["count"]};
+_3e[i]={year:row["year"],month:row["month"],count:row["count"]};
 }
-return _45(_4b);
+return _38(_3e);
 },function(tx,err){
-return _46(err);
+return _39(err);
 });
 });
-},sidebar_page:function(_50,_51,_52){
+},page_box:function(_43,_44,_45){
 var obj=this;
 db.transaction(function(tx){
 tx.executeSql("SELECT * FROM `contents` WHERE ( (`contents`.`type` = 'Page' ) )",[],function(tx,rs){
-return _51(obj.parse_result(rs));
+return _44(obj.parse_result(rs));
 },function(tx,err){
-return _52(err);
+return _45(err);
 });
 });
-},parse_result:function(_59,_5a,_5b){
-var _5c=[];
-var _5d="";
-var _5e="";
-var row="";
-var _60=0;
-var _61=-1;
-if(typeof _5a=="object"){
-_5d=[];
-for(var i=0;i<_5a.rows.length;i++){
-row=_5a.rows.item(i);
-_5d[i]={id:row["id"],title:row["title"],author:row["author"],body:row["body"],created_at:row["created_at"],url:row["url"]};
-}
-}
-if(typeof _5b=="object"){
-_5e=[];
-for(var i=0;i<_5b.rows.length;i++){
-row=_5b.rows.item(i);
-_5e[i]={id:row["id"],name:row["name"],display_name:row["display_name"]};
-}
-}
-for(var i=0;i<_59.rows.length;i++){
-row=_59.rows.item(i);
-if(i>0){
-if(_5c[_61].id==row["id"]){
-_5c[_61].category.push({id:row["category_id"],name:row["category_name"]});
-}
-}
-if(_60!=row["id"]){
-_5c[_61+1]={id:row["id"],title:row["title"],name:row["name"],body:row["body"],author:row["author"],published_at:row["published_at"],extended:row["extended"],keywords:row["keywords"],excerpt:row["excerpt"],allow_comments:row["allow_comments"],state:row["state"],category:[{id:row["category_id"],name:row["category_name"]}],comments:_5d,tags:_5e,};
-_60=row["id"];
-_61=i;
-}
-}
-return this.wrapMany(_5c);
-},get_id:function(id){
-var _64=id.split("_");
-return _64[1];
 },},{published_at_month:function(){
-var _65=this.published_at.split(" ");
-var _66=_65[0].split("-");
-return _66[1];
+var _4c=this.published_at.split(" ");
+var _4d=_4c[0].split("-");
+return _4d[1];
 },published_at_year:function(){
-var _67=this.published_at.split(" ");
-var _68=_67[0].split("-");
-return _68[0];
+var _4e=this.published_at.split(" ");
+var _4f=_4e[0].split("-");
+return _4f[0];
 },published_at_mday:function(){
-var _69=this.published_at.split(" ");
-var _6a=_69[0].split("-");
-return _6a[2];
-}});
+var _50=this.published_at.split(" ");
+var _51=_50[0].split("-");
+return _51[2];
+},});
 ;
 include.setPath('models');
-$.Model.extend("Category",{sidebar:function(_1,_2,_3){
+MainModel.extend("Category",{box:function(_1,_2,_3){
 var _4=this;
 db.transaction(function(tx){
 tx.executeSql("SELECT categories.id, categories.name, categories.permalink, categories.position, COUNT(articles.id) AS article_counter "+"FROM categories categories "+"LEFT OUTER JOIN categorizations articles_categories "+"ON articles_categories.category_id = categories.id "+"LEFT OUTER JOIN contents articles "+"ON (articles_categories.article_id = articles.id AND articles.published = 1) "+"GROUP BY categories.id, categories.name, categories.position, categories.permalink "+"ORDER BY position",[],function(tx,rs){
@@ -6950,17 +7216,31 @@ return _2(_4.parse_result(rs));
 alert(_9.message);
 });
 });
-},parse_result:function(rs){
-var _b=[];
-for(var i=0;i<rs.rows.length;i++){
-var _d=rs.rows.item(i);
-_b[i]={id:_d["id"],name:_d["name"],permalink:_d["permalink"],position:_d["position"],article_counter:_d["article_counter"],};
-}
-return this.wrapMany(_b);
+},find_by_permalink:function(_a,_b,_c){
+var _d=this;
+db.transaction(function(tx){
+tx.executeSql("SELECT * FROM categories WHERE permalink = ?",[_a.category],function(tx,rs){
+var _11=_d.parse_result(rs)[0];
+_a.category=_11.id;
+Article.find_by_category_id(_a,function(_12){
+_11.articles=_12;
+return _b(_11,_a);
+},_c);
+},function(tx,err){
+return _c(err);
+});
+});
+},find_by_article_id:function(_15,_16,_17,_18){
+var obj=this;
+db.transaction(function(tx){
+tx.executeSql("SELECT * FROM categories c1 JOIN categorizations c2 ON c1.id = c2.category_id WHERE c2.article_id=?",[_15],function(tx,rs){
+return _17(obj.parse_result(rs),_16);
+});
+});
 }},{});
 ;
 include.setPath('models');
-$.Model.extend("Tag",{sidebar:function(_1,_2,_3){
+MainModel.extend("Tag",{box:function(_1,_2,_3){
 var _4=this;
 db.transaction(function(tx){
 tx.executeSql("SELECT tags.id, tags.name, tags.display_name, COUNT( articles_tags.article_id ) AS article_counter "+"FROM tags tags "+"LEFT OUTER JOIN articles_tags articles_tags ON articles_tags.tag_id = tags.id "+"LEFT OUTER JOIN contents articles ON articles_tags.article_id = articles.id "+"WHERE articles.published =1 "+"GROUP BY tags.id, tags.name, tags.display_name "+"ORDER BY tags.name",[],function(tx,rs){
@@ -6969,26 +7249,40 @@ return _2(_4.parse_result(rs));
 return _3(_9);
 });
 });
-},parse_result:function(rs){
-var _b=[];
-for(var i=0;i<rs.rows.length;i++){
-var _d=rs.rows.item(i);
-_b[i]={id:_d["id"],name:_d["name"],display_name:_d["display_name"],article_counter:_d["article_counter"],};
-}
-return this.wrapMany(_b);
-}},{font_size:function(_e){
-var _f=0;
-jQuery.each(_e,function(i,_11){
-_f+=parseInt(_11.article_counter);
+},find_by_name:function(_a,_b,_c){
+var _d=this;
+db.transaction(function(tx){
+tx.executeSql("SELECT * FROM tags WHERE name = ?",[_a.tag],function(tx,rs){
+var tag=_d.parse_result(rs)[0];
+_a.tag=tag.id;
+Article.find_by_tag_id(_a,function(_12){
+tag.articles=_12;
+return _b(tag,_a);
+},_c);
+},function(tx,err){
+return _c(err);
 });
-var _12=parseFloat(_f)/parseFloat(_e.length);
-var _13=parseFloat(this.article_counter)/_12;
-var _14=Math.min(Math.max(2/3,_13),2)*100;
-return _14;
+});
+},find_by_article_id:function(_15,_16,_17){
+var obj=this;
+db.transaction(function(tx){
+tx.executeSql("SELECT tags.* FROM tags tags JOIN articles_tags at ON tags.id=at.tag_id JOIN contents contents on contents.id = at.article_id WHERE contents.id=?",[_15],function(tx,rs){
+return _16(obj.parse_result(rs));
+});
+});
+}},{font_size:function(_1c){
+var _1d=0;
+jQuery.each(_1c,function(i,_1f){
+_1d+=parseInt(_1f.article_counter);
+});
+var _20=parseFloat(_1d)/parseFloat(_1c.length);
+var _21=parseFloat(this.article_counter)/_20;
+var _22=Math.min(Math.max(2/3,_21),2)*100;
+return _22;
 }});
 ;
 include.setPath('models');
-$.Model.extend("Sidebar",{find_all:function(_1,_2,_3){
+MainModel.extend("Sidebar",{find_all:function(_1,_2,_3){
 var _4=this;
 db.transaction(function(tx){
 tx.executeSql("SELECT * FROM sidebars ORDER BY active_position ASC",[],function(tx,rs){
@@ -6997,17 +7291,10 @@ return _2(_4.parse_result(rs));
 return _3(_9);
 });
 });
-},parse_result:function(rs){
-var _b=[];
-for(var i=0;i<rs.rows.length;i++){
-var _d=rs.rows.item(i);
-_b[i]={type:_d["type"],};
-}
-return this.wrapMany(_b);
 },},{});
 ;
 include.setPath('models');
-$.Model.extend("Comment",{init:function(){
+MainModel.extend("Comment",{init:function(){
 this._super();
 this.validatesPresenceOf(["author"],{message:"must be supplied"});
 this.validatesPresenceOf(["body"],{message:"must be supplied"});
@@ -7018,12 +7305,27 @@ tx.executeSql("INSERT INTO feedback (type,author,body,article_id,email,url,ip,pu
 tx.executeSql("INSERT INTO sync (table_name,row_id,action) VALUES (?,?,?)",["feedback",rs.insertId,"post"],function(rs,tx){
 var _a=new Date();
 _1["created_at"]=_a.strftime("%Y-%m-%d %H:%M:%S");
+_1["published"]=1;
 return _2(_1);
 },function(tx,_c){
 return _3(_c);
 });
 },function(tx,_e){
 return _3(_e);
+});
+});
+},find_by_article_id:function(_f,_10,_11){
+var obj=this;
+db.transaction(function(tx){
+tx.executeSql("SELECT * FROM feedback WHERE article_id = ? and type = \"Comment\"",[_f],function(tx,rs){
+return _10(obj.parse_result(rs));
+});
+});
+},count:function(_16,_17){
+var obj=this;
+db.transaction(function(tx){
+tx.executeSql("SELECT count(*) FROM feedback WHERE article_id = ? and type = \"Comment\"",[_16],function(tx,rs){
+return _17(obj.parse_result(rs));
 });
 });
 }},{});
@@ -7036,9 +7338,11 @@ if(rs.rows.length>0){
 var _7=rs.rows.item(0);
 var _8=_7["settings"].split("\n");
 var _9=new Array();
+var _a;
 for(var i=1;i<_8.length;i++){
-var _b=_8[i].split(":");
-_9[_b[0]]=_b[1];
+_a=_8[i].split(":");
+_9[_a[0]]=_a[1];
+_a=null;
 }
 return _2(_9);
 }
@@ -7224,7 +7528,7 @@ Notification.msg(_73.message);
 include.setPath('controllers');
 jQuery.Controller.extend("MainController",{onDocument:true},{load:function(){
 this.time();
-Blog.settings([],this.callback("load_settings"),this.callback(db_con.error));
+Blog.settings([],this.callback("load_settings"),this.callback(Notification.msg));
 $(window).bind("online",this.callback("is_online"));
 $(window).bind("offline",this.callback("is_online"));
 $("#dialog-message").dialog({modal:true,autoOpen:false,show:"clip"});
@@ -7232,26 +7536,21 @@ this.initial_syncing();
 },time:function(){
 var _1=new Date();
 $("#date > span").html(_1.toLocaleDateString());
-},article_list:function(_2,_3){
-$("#article").html(this.view("article/init",{articles:_2,params:_3,}));
 },offline_msg:function(){
 Notification.msg("This function is not available in offline mode");
-},show_page:function(_4){
-$("#article").html(this.view("article/show",_4[0]));
-},archive:function(_5){
-$("#article").html(this.view("article/archive",{articles:_5,}));
-},load_settings:function(_6){
-$("#logo > hgroup > h1").html(_6["blog_name"]);
-$("#logo > hgroup > h2").html(_6["blog_subtitle"]);
-if(parseInt(localStorage["limit_article_display"])!=parseInt(_6["limit_article_display"])){
-localStorage["limit_article_display"]=_6["limit_article_display"];
+},load_settings:function(_2){
+$("#logo > hgroup > h1").html(_2["blog_name"]);
+$("#logo > hgroup > h2").html(_2["blog_subtitle"]);
+if(parseInt(localStorage["limit_article_display"])!=parseInt(_2["limit_article_display"])){
+localStorage["limit_article_display"]=_2["limit_article_display"];
 }
+localStorage["limit_article_display"]=2;
 },is_online:function(){
-var _7=navigator.onLine?"online":"offline";
+var _3=navigator.onLine?"online":"offline";
 var el=$("#status");
-el.attr("class",_7+"-status");
-el.html(_7);
-Notification.msg("You are now "+_7);
+el.attr("class",_3+"-status");
+el.html(_3);
+Notification.msg("You are now "+_3);
 },initial_syncing:function(){
 if(typeof localStorage["last_sync"]=="undefined"){
 if(navigator.onLine){
@@ -7260,13 +7559,13 @@ this.syncing_dialog("<p>It seems you are here for the first time. Before you con
 Notification.msg("Sync error: you must be online.");
 }
 }
-},syncing_dialog:function(_9){
-$("#dialog-message").html(_9);
-var _a=this;
+},syncing_dialog:function(_5){
+$("#dialog-message").html(_5);
+var _6=this;
 $("#dialog-message").dialog("option","title","Syncing process");
 $("#dialog-message").dialog("option","buttons",{sync:function(){
 Synchronization.start();
-$("#dialog-message").dialog("option","buttons",{done:function(){
+$("#dialog-message").dialog("option","buttons",{close:function(){
 window.location.reload();
 }});
 $("#dialog-message").html("Syncing done succesfully. Click on done button.");
@@ -7275,128 +7574,123 @@ $("#dialog-message").dialog("open");
 $("#dialog-message").dialog("open");
 },"#searchform submit":function(el){
 this.offline_msg();
-},"#home-page click":function(el){
-Article.find_all({current_page:1},this.callback("article_list"),this.callback(db_con.error));
 },".offline click":function(el){
 this.offline_msg();
-},".page click":function(el){
-Article.find_page($(el).attr("id"),this.callback("show_page"),this.callback(db_con.error));
-},"#archive click":function(el){
-Article.find_archive({},this.callback("archive"),this.callback(db_con.error));
 },"#synchronize click":function(){
 if(navigator.onLine){
 this.syncing_dialog("To start syncing please click on sync button.");
 }else{
 Notification.msg("Sync error: you must be online.");
 }
-}});
+},});
 ;
 include.setPath('controllers');
-jQuery.Controller.extend("ArticleController",{onDocument:true},{load:function(){
-if(!$("#article").length){
-$(".section").attr("id","article");
-}
-Article.find_all({current_page:1},this.callback("list"),this.callback(db_con.error));
-},list:function(_1,_2){
+jQuery.Controller.extend("ArticleController",{onDocument:true},{list:function(_1,_2){
 $(".section").html(this.view("init",{articles:_1,params:_2}));
-},list_archive:function(_3,_4){
+},display_archive:function(_3,_4){
 $(".section").html(this.view("init_archive",{articles:_3,params:_4}));
 },show:function(_5){
-$(".section").html(this.view("show",_5[0]));
-},paginate:function(el,ev){
-Article.find_all({current_page:$(el).attr("id")},this.callback("list"),this.callback(db_con.error));
-},".view click":function(el){
-var _9=el.parents().model().identity();
-Article.find_by_id(_9,this.callback("show"),this.callback(db_con.error));
+$(".section").html(this.view("show",_5));
+},"history.index subscribe":function(_6,_7){
+var _8=(_7.page!=null&&_7.page>0)?_7.page:1;
+Article.find_all({current_page:_8},this.callback("list"),this.callback(Notification.msg));
+},"history.page.index subscribe":function(_9,_a){
+var _b=_a.view;
+Article.find_page(_b,this.callback("show"),this.callback(Notification.msg));
+},"history.article.index subscribe":function(_c,_d){
+var _e=_d.view;
+var _f=(_d.page!=null&&_d.page>0)?_d.page:1;
+Article.find_by_permalink(_e,this.callback("show"),this.callback(Notification.msg));
+},"history.archive.index subscribe":function(_10,_11){
+var _12=(_11.page!=null&&_11.page>0)?_11.page:1;
+Article.find_by_published_at({current_page:_12,date:{month:_11.month,year:_11.year}},this.callback("display_archive"),this.callback(Notification.msg));
 },"form submit":function(el,ev){
 ev.preventDefault();
-var _c=new Comment(el.formParams());
-if(!_c.save()){
-Notification.validation_errors(_c.errors);
+var _15=new Comment(el.formParams());
+if(!_15.save()){
+Notification.validation_errors(_15.errors);
 }
-},"comment.created subscribe":function(_d,_e){
-$("#commentList").append(this.view("comment",_e));
+},"comment.created subscribe":function(_16,_17){
+$("#commentList").append(this.view("comment",_17));
 jQuery("#article form input[type=text]").val("");
 jQuery("#article form textarea").val("");
-},"#form-preview-button click":function(el){
-},".archive click":function(el){
-Article.find_by_published_at({current_page:1,date:$(el).attr("id"),action:"archive"},this.callback("list_archive"),this.callback(db_con.error));
-},".article_paginate click":function(el,ev){
-this.paginate(el,ev);
-},".archive_paginate click":function(el,ev){
-Article.find_by_published_at({current_page:$(el).attr("id"),date:date},this.callback("list_archive"),this.callback(db_con.error));
-}});
+},});
 ;
 include.setPath('controllers');
 jQuery.Controller.extend("CategoryController",{onDocument:true},{show:function(_1,_2){
-$(".section").html(this.view("init",{articles:_1,params:_2,id:_2.category}));
-},click:function(el,ev){
-var _5=el.parents().model().identity().split("_")[1];
-Article.find_by_category_id({current_page:1,category:_5},this.callback("show"),this.callback(db_con.error));
-ev.stopDelegation();
-ev.stopPropagation();
-},".view click":function(el,ev){
-this.click(el,ev);
-},".category_view click":function(el,ev){
-this.click(el,ev);
-},".category_paginate click":function(el,ev){
-var _c=el.parents().model().identity().split("_")[1];
-Article.find_by_category_id({current_page:$(el).attr("id"),category:_c},this.callback("show"),this.callback(db_con.error));
-}});
+$(".section").html(this.view("init",{category:_1,params:_2,}));
+},"history.category.index subscribe":function(_3,_4){
+var _5=_4.view;
+var _6=(_4.page!=null&&_4.page>0)?_4.page:1;
+Category.find_by_permalink({current_page:_6,category:_5},this.callback("show"),this.callback(Notification.msg));
+},});
 ;
 include.setPath('controllers');
 jQuery.Controller.extend("TagController",{onDocument:true},{show:function(_1,_2){
-$(".section").html(this.view("init",{articles:_1,params:_2,id:_2.tag}));
-},".view click":function(el){
-var _4=el.model().identity().split("_")[1];
-Article.find_by_tag_id({current_page:1,tag:_4},this.callback("show"),this.callback(db_con.error));
-},".tag_paginate click":function(el,ev){
-var _7=el.parents().model().identity().split("_")[1];
-Article.find_by_tag_id({current_page:$(el).attr("id"),tag:_7},this.callback("show"),this.callback(db_con.error));
+$(".section").html(this.view("init",{tag:_1,params:_2,}));
+},"history.tag.index subscribe":function(_3,_4){
+var _5=_4.view;
+var _6=(_4.page!=null&&_4.page>0)?_4.page:1;
+Tag.find_by_name({current_page:_6,tag:_5},this.callback("show"),this.callback(Notification.msg));
+},});
+;
+include.setPath('controllers');
+jQuery.Controller.extend("SidebarController",{onDocument:true},{load:function(){
+this.status_box();
+this.search_box();
+Category.box([],this.callback("categories_box"));
+Tag.box([],this.callback("tags_box"),this.callback(Notification.msg));
+Article.archives_box([],this.callback("archives_box"),this.callback(Notification.msg));
+Article.page_box([],this.callback("page_box"),this.callback(Notification.msg));
+},search_box:function(){
+if(!$("#search-box").length){
+$("#sidebar").append($(document.createElement("section")).attr("id","search-box"));
+}
+$("#search-box").html(this.view("sidebar/search",{}));
+},categories_box:function(_1){
+if(!$("#categories-box").length){
+$("#sidebar").append($(document.createElement("section")).attr("id","categories-box"));
+}
+$("#categories-box").html(this.view("sidebar/category",{categories:_1}));
+},tags_box:function(_2){
+if(!$("#tags-box").length){
+$("#sidebar").append($(document.createElement("section")).attr("id","tags-box"));
+}
+$("#tags-box").html(this.view("sidebar/tag",{tags:_2}));
+},archives_box:function(_3){
+if(!$("#archives-box").length){
+$("#sidebar").append($(document.createElement("section")).attr("id","archives-box"));
+}
+$("#archives-box").html(this.view("sidebar/archive",{articles:_3}));
+},page_box:function(_4){
+if(!$("#page-box").length){
+$("#sidebar").append($(document.createElement("section")).attr("id","page-box"));
+}
+$("#page-box").html(this.view("sidebar/page",{pages:_4}));
+},status_box:function(){
+if(!$("#status-box").length){
+$("#sidebar").append($(document.createElement("section")).attr("id","status-box"));
+}
+var _5=navigator.onLine?"online":"offline";
+var _6=localStorage["last_sync"];
+$("#status-box").html(this.view("sidebar/status",{status:_5,last_sync:_6}));
+},"#synchronize click":function(){
+this.load();
 }});
 ;
 include.setPath('controllers');
-jQuery.Controller.extend("SidebarController",{onDocument:true},{load:function(_1){
-this.sidebar_status();
-this.sidebar_search();
-Category.sidebar([],this.callback("sidebar_category"));
-Tag.sidebar([],this.callback("sidebar_tag"),this.callback(db_con.error));
-Article.sidebar([],this.callback("sidebar_archive"),this.callback(db_con.error));
-Article.sidebar_page([],this.callback("sidebar_page"),this.callback(db_con.error));
-},sidebar_search:function(){
-if(!$("#SearchSidebar").length){
-$("#boxes").append($(document.createElement("section")).attr("id","SearchSidebar"));
-}
-$("#SearchSidebar").html(this.view("sidebar/search",{}));
-},sidebar_category:function(_2){
-if(!$("#CategorySidebar").length){
-$("#boxes").append($(document.createElement("section")).attr("id","CategorySidebar"));
-}
-$("#CategorySidebar").html(this.view("sidebar/category",{categories:_2}));
-},sidebar_tag:function(_3){
-if(!$("#TagSidebar").length){
-$("#boxes").append($(document.createElement("section")).attr("id","TagSidebar"));
-}
-$("#TagSidebar").html(this.view("sidebar/tag",{tags:_3}));
-},sidebar_archive:function(_4){
-if(!$("#ArchivesSidebar").length){
-$("#boxes").append($(document.createElement("section")).attr("id","ArchivesSidebar"));
-}
-$("#ArchivesSidebar").html(this.view("sidebar/archive",{articles:_4}));
-},sidebar_page:function(_5){
-if(!$("#PageSidebar").length){
-$("#boxes").append($(document.createElement("section")).attr("id","PageSidebar"));
-}
-$("#PageSidebar").html(this.view("sidebar/page",{pages:_5}));
-},sidebar_status:function(){
-if(!$("#StatusSidebar").length){
-$("#boxes").append($(document.createElement("section")).attr("id","StatusSidebar"));
-}
-var _6=navigator.onLine?"online":"offline";
-var _7=localStorage["last_sync"];
-$("#StatusSidebar").html(this.view("sidebar/status",{status:_6,last_sync:_7}));
-},"#synchronize click":function(){
-this.load();
+jQuery.Controller.extend("NavigationController",{onDocument:true},{display_article_list:function(_1,_2){
+$(".section").html(this.view("article/init",{articles:_1,params:_2,}));
+},display_page:function(_3){
+$(".section").html(this.view("article/show",_3));
+},display_archive:function(_4){
+$(".section").html(this.view("article/archive",{articles:_4,}));
+},"history.menu-home.index subscribe":function(el,ev){
+Article.find_all({current_page:1},this.callback("display_article_list"),this.callback(Notification.msg));
+},"history.menu-archives.index subscribe":function(el,ev){
+Article.find_all({},this.callback("display_archive"),this.callback(Notification.msg));
+},"history.menu-about.index subscribe":function(el,ev){
+Article.find_page("about",this.callback("display_page"),this.callback(Notification.msg));
 }});
 ;
 include.setPath('views/article');
@@ -7406,14 +7700,14 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <article class=\"post ");
-_4.push((jQuery.View.Scanner.to_text(this.identity())));
-_4.push("\">\n");
+_4.push("    <article class=\"post\">\n");
 _4.push("    <header>\n");
 _4.push("    ");
 if(this.name==null){
 _4.push("\n");
-_4.push("        <h1 class=\"title\"><a href='javascript: void(0)' class=\"view\">");
+_4.push("        <h1 class=\"title\"><a href='#article&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(this.permalink)));
+_4.push("'>");
 _4.push((jQuery.View.Scanner.to_text(this.title)));
 _4.push("</a></h1>\n");
 _4.push("        <span>\n");
@@ -7435,18 +7729,18 @@ _4.push("        ");
 }
 _4.push("\n");
 _4.push("    ");
-if(typeof this.tags=="object"){
+if(this.tags!=undefined){
 _4.push("\n");
 _4.push("        ");
 if(this.tags.length>0){
 _4.push("\n");
-_4.push("            <div class=\"tags\" id=\"tag\">\n");
+_4.push("            <div class=\"tags\">\n");
 _4.push("            ");
 for(var i=0;i<this.tags.length;i++){
 _4.push("\n");
-_4.push("                <a href=\"javascript:void(0)\" rel=\"tag\" class=\"");
-_4.push((jQuery.View.Scanner.to_text("tag_"+this.tags[i].id)));
-_4.push(" view\">");
+_4.push("                <a href=\"#tag&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(this.tags[i].name)));
+_4.push("\" rel=\"tag\">");
 _4.push((jQuery.View.Scanner.to_text(this.tags[i].display_name)));
 _4.push("</a>\n");
 _4.push("                ");
@@ -7465,47 +7759,48 @@ _4.push("    ");
 _4.push((jQuery.View.Scanner.to_text(this.body)));
 _4.push("\n");
 _4.push("    </div>\n");
+_4.push("    \n");
+_4.push("    <footer class=\"postmetadata\">\n");
 _4.push("    ");
-if(typeof this.category[0].name!="undefined"){
+if(this.categories!=undefined&&this.categories.length>0){
 _4.push("\n");
-_4.push("        <footer class=\"postmetadata\">\n");
 _4.push("        Posted in:\n");
 _4.push("        ");
-for(var j=0;j<this.category.length;j++){
+for(var j=0;j<this.categories.length;j++){
 _4.push("\n");
-_4.push("            <span id=\"category\" class=\"category_");
-_4.push((jQuery.View.Scanner.to_text(this.category[j].id)));
-_4.push("\"><a href='javascript:void(0)' class=\"category_view\">");
-_4.push((jQuery.View.Scanner.to_text(this.category[j].name)));
+_4.push("            <span><a href='#category&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(this.categories[j].permalink)));
+_4.push("'>");
+_4.push((jQuery.View.Scanner.to_text(this.categories[j].name)));
 _4.push("</a></span>\n");
 _4.push("            ");
 }
 _4.push("\n");
-_4.push("        </footer>\n");
 _4.push("        ");
 }
 _4.push("\n");
+_4.push("    </footer>\n");
 _4.push("    ");
-if(typeof this.comments=="object"){
+if(this.comments!=undefined){
 _4.push("\n");
 _4.push("        <aside class=\"social-links\">\n");
 _4.push("        <ul>\n");
-_4.push("        <li><a href=\"http://digg.com/submit?url='");
-_4.push((jQuery.View.Scanner.to_text(this.permalink_url+"&amp;title="+this.title)));
+_4.push("        <li><a href=\"http://digg.com/submit?url=");
+_4.push((jQuery.View.Scanner.to_text(this.permalink+"&amp;title="+this.title)));
 _4.push("\" onclick=\"javascript:void(0); return false\" class=\"offline\"><img src='resources/themes/ims/images/social/digg.png' alt=\"Digg.com export\" /></a></li>\n");
-_4.push("        <li><a href=\"http://delicious.com/save\" onclick=\"void(0); return false;\" class=\"offline\"><img src='resources/themes/ims/images/social/delicious.png' alt=\"Delicious.com export\" /></a></li>\n");
+_4.push("        <li><a href=\"http://delicious.com/save\" onclick=\"javascript:void(0); return false;\" class=\"offline\"><img src='resources/themes/ims/images/social/delicious.png' alt=\"Delicious.com export\" /></a></li>\n");
 _4.push("        <li><a href=\"'http://www.facebook.com/sharer.php?u='");
-_4.push((jQuery.View.Scanner.to_text(this.permalink_url)));
-_4.push("\" onclick=\"void(0); return false;\" class=\"offline\"><img src='resources/themes/ims/images/social/facebook.png' alt=\"Facebook.com export\" /></li>\n");
+_4.push((jQuery.View.Scanner.to_text(this.permalink)));
+_4.push("\" onclick=\"javascript:void(0); return false;\" class=\"offline\"><img src='resources/themes/ims/images/social/facebook.png' alt=\"Facebook.com export\" /></li>\n");
 _4.push("        <li><a href=\"javascript:void(0)\" class=\"offline\"><img src='resources/themes/ims/images/social/rss.png' alt=\"Rss export\" /></a></li>\n");
 _4.push("        </ul>\n");
 _4.push("        </aside>\n");
 _4.push("        <section class=\"comments\">\n");
 _4.push("        <h1>Comments</h1>\n");
+_4.push("        <ol id=\"commentList\">\n");
 _4.push("        ");
 if(this.comments.length>0){
 _4.push("\n");
-_4.push("            <ol id=\"commentList\">\n");
 _4.push("            ");
 for(var i=0;i<this.comments.length;i++){
 _4.push("\n");
@@ -7515,14 +7810,14 @@ _4.push("\n");
 _4.push("                ");
 }
 _4.push("\n");
-_4.push("            </ol>\n");
-_4.push("        ");
+_4.push("            ");
 }else{
 _4.push("\n");
-_4.push("            <p>No comments</p>\n");
-_4.push("        ");
+_4.push("            <li>No comments</li>\n");
+_4.push("            ");
 }
 _4.push("\n");
+_4.push("        </ol>\n");
 _4.push("        </section>\n");
 _4.push("        ");
 if(this.allow_comments){
@@ -7583,23 +7878,33 @@ _4.push("</h3>\n");
 _4.push("                ");
 }
 _4.push("\n");
-_4.push("            <div class=\"archivepost ");
-_4.push((jQuery.View.Scanner.to_text(articles[i].identity())));
-_4.push("\">\n");
+_4.push("            <div class=\"archivepost\">\n");
 _4.push("            ");
 _4.push((jQuery.View.Scanner.to_text(articles[i].published_at_mday())));
 _4.push(" -\n");
-_4.push("            <a href=\"javascript:void(0)\" class=\"view\">");
+_4.push("            <a href=\"#article&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(articles[i].permalink)));
+_4.push("\" class=\"view\">");
 _4.push((jQuery.View.Scanner.to_text(articles[i].title)));
 _4.push("</a>\n");
 _4.push("            ");
-if(articles[i].category.name){
-_4.push(" posted in\n");
-_4.push("                <span id=\"category\" class=\"category_");
-_4.push((jQuery.View.Scanner.to_text(articles[i].category.id)));
-_4.push("\"><a href=\"javascript:void(0)\" class=\"view\">");
-_4.push((jQuery.View.Scanner.to_text(articles[i].category.name)));
+console.log(articles[i].categories);
+_4.push("\n");
+_4.push("            ");
+if(articles[i].categories!=undefined&&articles[i].categories.length>0){
+_4.push("\n");
+_4.push("                posted in\n");
+_4.push("                ");
+for(var j=0;j<articles[i].categories.length;j++){
+_4.push("\n");
+_4.push("                    <span><a href='#category&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(articles[i].categories[j].permalink)));
+_4.push("'>");
+_4.push((jQuery.View.Scanner.to_text(articles[i].categories[j].name)));
 _4.push("</a></span>\n");
+_4.push("                    ");
+}
+_4.push("\n");
 _4.push("                ");
 }
 _4.push("\n");
@@ -7631,8 +7936,7 @@ _4.push("    ");
 _4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:articles}))));
 _4.push("\n");
 _4.push("    ");
-_4.push((jQuery.View.Scanner.to_text(pagination(params,"article"))));
-_4.push("\n");
+_4.push((jQuery.View.Scanner.to_text(pagination("#",params))));
 _4.push("\n");
 _4.push("\n");
 return _4.join("");
@@ -7657,7 +7961,7 @@ _4.push("    ");
 _4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:articles}))));
 _4.push("\n");
 _4.push("    ");
-_4.push((jQuery.View.Scanner.to_text(pagination(params,"article",1))));
+_4.push((jQuery.View.Scanner.to_text(pagination("#archive&amp;month="+params.date.month+"&amp;year="+params.date.year,params))));
 return _4.join("");
 }
 }
@@ -7709,7 +8013,7 @@ _4.push((jQuery.View.Scanner.to_text(this.created_at)));
 _4.push("</time>\n");
 _4.push("    </header>\n");
 _4.push("    ");
-if(typeof this.published!="undefined"){
+if(!this.published){
 _4.push("\n");
 _4.push("        <div class=\"spamwarning\">This comment has been flagged for moderator approval.</div>\n");
 _4.push("    ");
@@ -7829,10 +8133,10 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("<li class='");
-_4.push((jQuery.View.Scanner.to_text(this.identity())));
-_4.push("'>\n");
-_4.push("<a href=\"javascript:void(0)\" class=\"view\">");
+_4.push("<li>\n");
+_4.push("<a href=\"#category&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(this.permalink)));
+_4.push("\">");
 _4.push((jQuery.View.Scanner.to_text(this.name)));
 _4.push("</a>\n");
 _4.push("</li>");
@@ -7854,11 +8158,10 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    ");
-_4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:articles}))));
+console.log(category.articles);
 _4.push("\n");
 _4.push("    ");
-_4.push((jQuery.View.Scanner.to_text(pagination(params,"category",id))));
+_4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:category.articles}))));
 _4.push("\n");
 return _4.join("");
 }
@@ -7879,14 +8182,16 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    <h1>Archives</h1>\n");
-_4.push("    <ul id=\"article\">\n");
+_4.push("    <ul>\n");
 _4.push("    ");
 for(var i=0;i<articles.length;i++){
 _4.push("\n");
-_4.push("        <li><a href=\"javascript:void(0)\" id=\"");
-_4.push((jQuery.View.Scanner.to_text(articles[i].year+"_"+articles[i].month)));
-_4.push("\" class=\"archive\">");
-_4.push((jQuery.View.Scanner.to_text(month_names[(parseInt(articles[i].month)-1)]+" "+articles[i].year)));
+_4.push("        <li><a href=\"#archive&amp;month=");
+_4.push((jQuery.View.Scanner.to_text(articles[i].month)));
+_4.push("&amp;year=");
+_4.push((jQuery.View.Scanner.to_text(articles[i].year)));
+_4.push("\">");
+_4.push((jQuery.View.Scanner.to_text(month_names[articles[i].month-1]+" "+articles[i].year)));
 _4.push("</a></li>\n");
 _4.push("        ");
 }
@@ -7911,7 +8216,7 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    <h1>Categories</h1>\n");
-_4.push("    <ul id=\"category\">\n");
+_4.push("    <ul>\n");
 _4.push("    ");
 for(var i=0;i<categories.length;i++){
 _4.push("\n");
@@ -7948,7 +8253,7 @@ _4.push("        <ul>\n");
 _4.push("        ");
 for(var i=0;i<pages.length;i++){
 _4.push("\n");
-_4.push("            <li><a href=\"javascript:void(0)\" class=\"page\" id=\"");
+_4.push("            <li><a href=\"#page&amp;view=");
 _4.push((jQuery.View.Scanner.to_text(pages[i].name)));
 _4.push("\">");
 _4.push((jQuery.View.Scanner.to_text(pages[i].title)));
@@ -7978,7 +8283,7 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    <h1>Tags</h1>\n");
-_4.push("    <ul id=\"tag\">\n");
+_4.push("    <ul>\n");
 _4.push("    <p style=\"overflow:hidden\">\n");
 _4.push("    ");
 for(var i=0;i<tags.length;i++){
@@ -7993,7 +8298,7 @@ _4.push("    ");
 if(!tags.length){
 _4.push("\n");
 _4.push("        No tags\n");
-_4.push("    ");
+_4.push("        ");
 }
 _4.push("\n");
 _4.push("    </p>\n");
@@ -8075,11 +8380,10 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    ");
-_4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:articles}))));
+_4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:tag.articles}))));
 _4.push("\n");
 _4.push("    ");
-_4.push((jQuery.View.Scanner.to_text(pagination(params,"tag",id))));
-_4.push("\n");
+_4.push((jQuery.View.Scanner.to_text(pagination("#tag&amp;view="+tag.name,params))));
 return _4.join("");
 }
 }
@@ -8098,11 +8402,11 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("<span id=\"tag\" style=\"font-size:");
+_4.push("    <span style=\"font-size:");
 _4.push((jQuery.View.Scanner.to_text(tag.font_size(tags))));
-_4.push("%\"><a href=\"javascript:void(0)\" rel=\"tag\" class=\"");
-_4.push((jQuery.View.Scanner.to_text(tag.identity())));
-_4.push(" view\">");
+_4.push("%\"><a href=\"#tag&amp;view=");
+_4.push((jQuery.View.Scanner.to_text(tag.name)));
+_4.push("\" rel=\"tag\">");
 _4.push((jQuery.View.Scanner.to_text(tag.display_name)));
 _4.push("</a></span>");
 return _4.join("");

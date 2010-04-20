@@ -1,305 +1,222 @@
-$.Model.extend('Article',
-/* @Static */
-{
-    /**
-     * Retrieves articles.
-     * @param {Array} params - params that might refine your results.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    find_all: function(params, success, error){
-        var obj = this
+MainModel.extend('Article',
+    /* @Static */
+    {
+        /**
+        * Retrieves articles.
+        * @param {Array} params - params that might refine your results.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        find_all: function(params, success, error){
+            var obj = this
+            var current_page = 0
+            var limit = 0
+            var offset = 0
+            var join = ''
+            var where = ''
+            var args = new Array
+            var limit_offset = ''
 
-        //pagination
-        var current_page = parseInt(params.current_page)
-        var limit = parseInt(localStorage['limit_article_display'])
-        if(isNaN(limit)) limit = 10
-        var offset = parseInt((current_page < 2 ? current_page-1 : ((current_page-1)*limit)))
-        
-        //only if we need to display articles in certain category, call from find_by_category() method
-        var category_join = (typeof params.category != 'undefined' ? "LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id " : '')
-        var category_where = (typeof params.category != 'undefined' ? "AND (c2.category_id="+params.category+")" : "")
+            //only if we need to display articles in certain category, called from find_by_category() method
+            if(params.category != undefined) {
+                join += ' LEFT JOIN categorizations c2 ON c1.id = c2.article_id LEFT JOIN categories c3 ON c2.category_id = c3.id '
+                where += ' AND (c2.category_id='+params.category+') '
+            }
 
-        //only if we need to display articles in certain tag, call from find_byt_tag_id() method
-        var tag_join = (typeof params.tag != 'undefined' ? 'INNER JOIN articles_tags a1 ON c1.id = a1.article_id ' : '')
-        var tag_where = (typeof params.tag != 'undefined' ? ' AND (a1.tag_id ='+params.tag+')' : '')
+            //only if we need to display articles in certain tag, called from find_byt_tag_id() method
+            if(params.tag != undefined) {
+                join += ' INNER JOIN articles_tags a1 ON c1.id = a1.article_id '
+                where += ' AND (a1.tag_id ='+params.tag+') '
+            }
+            
+            //only if we need to display articles published at certain time, called from find_by_published_at() method
+            if(params.date != undefined) {
+                where += ' AND (c1.published_at BETWEEN "'+params.date.year+'-'+params.date.month+'-1'+' 00:00:00" AND "'+params.date.year+'-'+params.date.month+'-31 23:59:59") '
+            }
 
-        //only if we need to display articles published at certain time
-        var date_where = (typeof params.date != 'undefined' ? ' AND (c1.published_at BETWEEN "'+params.date.year+'-'+params.date.month+'-1'+' 00:00:00" AND "'+params.date.year+'-'+params.date.month+'-31 23:59:59")' : '')
+            //pagination
+            if(params.current_page) {
+                current_page = parseInt(params.current_page)
+                limit = parseInt(localStorage['limit_article_display'])
+                if(isNaN(limit)) limit = 10
+                offset = (current_page < 2 ? current_page-1 : ((current_page-1)*limit))
+                args = [limit,offset]
+                limit_offset = " LIMIT ? OFFSET ? "
+            }
 
-        db.transaction(function(tx) {
-            tx.executeSql("SELECT c1 . * " +
-                "FROM contents c1 " +
-                category_join +
-                tag_join +
-                "WHERE (( c1.published=1 ) AND ( c1.type =  'Article' ) "+category_where+" "+tag_where+" "+date_where+" ) ORDER BY c1.published_at DESC LIMIT ? OFFSET ?", [limit,offset],
-                function(tx, articles) {
-                    tx.executeSql("SELECT count(*) as count " +
-                        "FROM contents c1 " +
-                        category_join +
-                        tag_join +
-                        "WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+category_where+" "+tag_where+" "+date_where+" )",[],
-                        function(tx,rs) {
-                            var row = rs.rows.item(0)
-                            params.count = row.count
-                            return success(obj.parse_result(articles),params)
-                        },
-                        function(tx,err) {
-                            return error(err)
-                        }
-                        )
-                },
-                function(tx, err) {
-                    return error(err)
-                })
-        })
-    },
+            db.transaction(function(tx) {
+                tx.executeSql("SELECT c1 . * " +
+                    "FROM contents c1 " +
+                    join +
+                    "WHERE (( c1.published=1 ) AND ( c1.type =  'Article' ) "+where+" ) " +
+                    "ORDER BY c1.published_at DESC " +
+                    limit_offset, args,
+                    function(tx, rs) {
+                        tx.executeSql("SELECT count(*) as count " +
+                            "FROM contents c1 " +
+                            join +
+                            "WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+where+" )",[],
+                            function(tx,rs2) {
+                                params.count = rs2.rows.item(0).count
+                                var articles = obj.parse_result(rs)
 
-    /**
-     * Finds article by id.
-     * @param {Integer} id - unique id representing your content.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    find_by_id: function(id, success, error) {
-        var article_id = this.get_id(id)
-        var obj = this
-        db.transaction(function(tx) {
-            tx.executeSql('SELECT * FROM contents WHERE id = ?', [article_id],function(tx, article) {
-                tx.executeSql('SELECT * FROM feedback WHERE article_id = ? and type = ?',[article_id,'Comment'],function(tx,comments){
-                    tx.executeSql('SELECT tags.* FROM tags tags JOIN articles_tags at ON tags.id=at.tag_id JOIN contents contents on contents.id = at.article_id WHERE contents.id=?',[article_id],
-                        function(tx,tags){
-                            return success(obj.parse_result(article,comments,tags))
-                        },
-                        function(tx,err){
-                            return error(err)
-                        })
+                                //we need categories info
+                                for(var i=0;i<articles.length;i++) {
+                                    Category.find_by_article_id(articles[i].id,i,function(categories,step){
+                                        articles[step].categories = categories
+                                        //we are at the end must return array
+                                        if(step == articles.length-1) {
+                                            return success(articles,params)
+                                        }
+                                    },error)
+                                }
+                            },
+                            function(tx,err) {
+                                return error(err)
+                            }
+                            )
+                    },
+                    function(tx, err) {
+                        return error(err)
+                    })
+            })
+        },
+
+        /**
+        * Finds article by id.
+        * @param {String} permalink - unique permalink representing your content.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        find_by_permalink: function(permalink, success, error) {
+            var obj = this
+            db.transaction(function(tx) {
+                tx.executeSql('SELECT * FROM contents WHERE permalink = ? AND published=1 AND type="Article"', [permalink],function(tx, rs) {
+                    var article = obj.parse_result(rs)[0]
+                    //query comments
+                    Comment.find_by_article_id(article.id,function(comments){
+                        article.comments = comments
+                        //query tags
+                        Tag.find_by_article_id(article.id, function(tags){
+                            article.tags = tags
+                            return success(article)
+                        },error)
+                    },error)
                 },
                 function(tx,err){
                     return error(err)
                 })
-            },
-            function(tx,err){
-                return error(err)
             })
-        })
-    },
+        },
 
-    /**
-     * Finds the archive of articles.
-     * @param {Array} params - params that might refine your results.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    find_archive: function(params, success, error) {
-        var obj = this
-        db.transaction(function(tx) {
-            tx.executeSql("SELECT * FROM contents WHERE ( (contents.published = 1) AND (contents.type = 'Article' ) ) ORDER BY published_at DESC", [],
-                function(tx, rs) {
-                    return success(obj.parse_result(rs))
-                },function(tx,err){
-                    return error(err)
-                })
-        })
-    },
-
-    /**
-     * Finds a page by name.
-     * @param {String} page - the name of a page.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    find_page: function(page, success, error) {
-        var obj = this
-        db.transaction(function(tx) {
-            tx.executeSql("SELECT * FROM contents WHERE (contents.name = ?) AND ( (contents.type = 'Page' ) ) LIMIT 1", [page],
-                function(tx, rs) {
-                    return success(obj.parse_result(rs))
-                },function(tx,err){
-                    return error(err)
-                })
-        })
-    },
-
-    /**
-     * Finds articles by catetegory id.
-     * @param {Array} params - params that might refine your results.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    find_by_category_id: function(params, success, error ){
-        this.find_all(params,success,error)
-    },
-
-    /**
-     * Finds articles by tag id.
-     * @param {Array} params - params that might refine your results.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    find_by_tag_id: function(params, success, error ){
-        this.find_all(params,success,error)
-    },
-
-    /**
-     * Finds articles by published date.
-     * @param {Array} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped article objects.
-     * @param {Function} error a callback function for an error.
-     */
-    find_by_published_at: function(params, success, error) {
-        //set date of articles in format "year_month"
-        params.date = {year:params.date.split("_")[0],month:params.date.split("_")[1]}
-        this.find_all(params,success,error)
-    },
-
-    /**
-     * Finds articles for article sidebar.
-     * @param {Array} params - params that might refine your results.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    sidebar: function(params, success, error ){
-        var obj = this
-        db.transaction(function(tx) {
-            tx.executeSql("select count(*) as count, strftime('%Y', published_at) as year, strftime('%m', published_at) as month from contents where type='Article' and published = ? and published_at < ? group by year,month order by year desc,month desc", [1,"date('now')"],
-                function(tx, rs) {
-                    var result = []
-                    for(var i=0;i<rs.rows.length;i++){
-                        var row = rs.rows.item(i)
-                        result[i] = {
-                            year: row['year'],
-                            month: row['month'],
-                            count: row['count']
-                        }
-                    }
-                    return success(result)
-                },function(tx,err){
-                    return error(err)
-                })
-        })
-    },
-
-    /**
-     * Finds pages for page sidebar.
-     * @param {Array} params - params that might refine your results.
-     * @param {Function} success - a callback function that returns wrapped article objects.
-     * @param {Function} error - a callback function for an error.
-     */
-    sidebar_page: function(params, success, error ){
-        var obj = this
-        db.transaction(function(tx) {
-            tx.executeSql("SELECT * FROM `contents` WHERE ( (`contents`.`type` = 'Page' ) )", [],
-                function(tx, rs) {
-                    return success(obj.parse_result(rs))
-                },function(tx,err){
-                    return error(err)
-                })
-        })
-    },
-
-    /**
-     * Parses result of sql.
-     * @param {Object} article_rs - sql result.
-     * @param {Object} comments_rs - sql result.
-     * @param {Object} tags_rs - sql result.
-     */
-    parse_result: function(article_rs,comments_rs,tags_rs) {
-        var result = []
-        var comments = ''
-        var tags = ''
-        var row = ''
-        var last_saved_id = 0
-        var last_index = -1
-
-        if(typeof comments_rs == 'object') {
-            comments = []
-            for(var i=0; i<comments_rs.rows.length; i++) {
-                row = comments_rs.rows.item(i)
-                comments[i] = {
-                    id: row['id'],
-                    title: row['title'],
-                    author: row['author'],
-                    body: row['body'],
-                    created_at: row['created_at'],
-                    url: row['url']
-                }
-            }
-        }
-        if(typeof tags_rs == 'object') {
-            tags = []
-            for(var i=0;i<tags_rs.rows.length;i++) {
-                row = tags_rs.rows.item(i)
-                tags[i] = {
-                    id: row['id'],
-                    name: row['name'],
-                    display_name: row['display_name']
-                }
-            }
-        }
-        for(var i=0; i<article_rs.rows.length; i++) {
-            row = article_rs.rows.item(i)
-            //category must by array, because article has many categories
-            if(i>0){
-                if(result[last_index].id == row['id']) {
-                    result[last_index].category.push({
-                        id:row['category_id'],
-                        name:row['category_name']
+        /**
+        * Finds a page by name.
+        * @param {String} page - the name of a page.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        find_page: function(page, success, error) {
+            var obj = this
+            db.transaction(function(tx) {
+                tx.executeSql("SELECT * FROM contents WHERE (contents.name = ?) AND ( (contents.type = 'Page' ) ) LIMIT 1", [page],
+                    function(tx, rs) {
+                        return success(obj.parse_result(rs)[0])
+                    },function(tx,err){
+                        return error(err)
                     })
-                }
-            }
-            if(last_saved_id != row['id']) {
-                result[last_index + 1] = {
-                    id: row['id'],
-                    title: row['title'],
-                    name: row['name'],
-                    body: row['body'],
-                    author: row['author'],
-                    published_at: row['published_at'],
-                    extended: row['extended'],
-                    keywords: row['keywords'],
-                    excerpt: row['excerpt'],
-                    allow_comments: row['allow_comments'],
-                    state: row['state'],
-                    category: [{
-                        id: row['category_id'],
-                        name: row['category_name']
-                    }],
-                    comments: comments,
-                    tags: tags,
-                }
-                //we saved last index and id because article has many categories
-                last_saved_id = row['id']
-                last_index = i
-            }
-        }
-        return this.wrapMany(result)
-    },
+            })
+        },
 
-    /**
-     * Returns id of a record.
-     * @param {Integer} id -  id of a record.
-     */
-    get_id: function(id) {
-        var record_id = id.split('_')
-        return record_id[1]
+        /**
+        * Finds articles by catetegory id.
+        * @param {Array} params - params that might refine your results.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        find_by_category_id: function(params, success, error ){
+            this.find_all(params,success,error)
+        },
+
+        /**
+        * Finds articles by tag id.
+        * @param {Array} params - params that might refine your results.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        find_by_tag_id: function(params, success, error ){
+            this.find_all(params,success,error)
+        },
+
+        /**
+        * Finds articles by published date.
+        * @param {Array} params params that might refine your results.
+        * @param {Function} success a callback function that returns wrapped article objects.
+        * @param {Function} error a callback function for an error.
+        */
+        find_by_published_at: function(params, success, error) {
+            this.find_all(params,success,error)
+        },
+
+        /**
+        * Finds articles for article sidebar.
+        * @param {Array} params - params that might refine your results.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        archives_box: function(params, success, error ){
+            var obj = this
+            db.transaction(function(tx) {
+                tx.executeSql("select count(*) as count, strftime('%Y', published_at) as year, strftime('%m', published_at) as month from contents where type='Article' and published = ? and published_at < ? group by year,month order by year desc,month desc", [1,"date('now')"],
+                    function(tx, rs) {
+                        var result = []
+                        for(var i=0;i<rs.rows.length;i++){
+                            var row = rs.rows.item(i)
+                            result[i] = {
+                                year: row['year'],
+                                month: row['month'],
+                                count: row['count']
+                            }
+                        }
+                        return success(result)
+                    },function(tx,err){
+                        return error(err)
+                    })
+            })
+        },
+
+        /**
+        * Finds pages for page sidebar.
+        * @param {Array} params - params that might refine your results.
+        * @param {Function} success - a callback function that returns wrapped article objects.
+        * @param {Function} error - a callback function for an error.
+        */
+        page_box: function(params, success, error ){
+            var obj = this
+            db.transaction(function(tx) {
+                tx.executeSql("SELECT * FROM `contents` WHERE ( (`contents`.`type` = 'Page' ) )", [],
+                    function(tx, rs) {
+                        return success(obj.parse_result(rs))
+                    },function(tx,err){
+                        return error(err)
+                    })
+            })
+        },
     },
-},
-/* @Prototype */
-{
-    published_at_month: function() {
-        var date = this.published_at.split(" ")
-        var month = date[0].split("-")
-        return month[1]
-    },
-    published_at_year: function() {
-        var date = this.published_at.split(" ")
-        var year = date[0].split("-")
-        return year[0]
-    },
-    published_at_mday: function() {
-        var date = this.published_at.split(" ")
-        var mday = date[0].split("-")
-        return mday[2]
-    }
-})
+    /* @Prototype */
+    {
+        published_at_month: function() {
+            var date = this.published_at.split(" ")
+            var month = date[0].split("-")
+            return month[1]
+        },
+        published_at_year: function() {
+            var date = this.published_at.split(" ")
+            var year = date[0].split("-")
+            return year[0]
+        },
+        published_at_mday: function() {
+            var date = this.published_at.split(" ")
+            var mday = date[0].split("-")
+            return mday[2]
+        },
+    })

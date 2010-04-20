@@ -1,18 +1,18 @@
-    <article class="post <%= this.identity()%>">
+    <article class="post">
     <header>
     <% if(this.name == null) { %>
-        <h1 class="title"><a href='javascript: void(0)' class="view"><%= this.title %></a></h1>
+        <h1 class="title"><a href='#article&amp;view=<%= this.permalink %>'><%= this.title %></a></h1>
         <span>
         Posted by <%= this.author %>, <time datetime="<%= this.published_at.replace(' ','T') %>" pubdate>Date <%= this.published_at %></time>
         </span>
         <% } else { %>
         <h1 class="title"><%= this.title %></h1>
         <% } %>
-    <% if(typeof this.tags == 'object'){%>
+    <% if(this.tags != undefined){%>
         <% if(this.tags.length>0){%>
-            <div class="tags" id="tag">
+            <div class="tags">
             <%for(var i=0;i<this.tags.length;i++){%>
-                <a href="javascript:void(0)" rel="tag" class="<%='tag_'+this.tags[i].id%> view"><%= this.tags[i].display_name%></a>
+                <a href="#tag&amp;view=<%= this.tags[i].name %>" rel="tag"><%= this.tags[i].display_name%></a>
                 <%}%>
             </div>
             <%}%>
@@ -21,34 +21,35 @@
     <div class="post-body">
     <%= this.body %>
     </div>
-    <% if(typeof this.category[0].name != 'undefined') { %>
-        <footer class="postmetadata">
+    
+    <footer class="postmetadata">
+    <% if(this.categories != undefined && this.categories.length > 0) { %>
         Posted in:
-        <% for(var j=0;j<this.category.length;j++) {%>
-            <span id="category" class="category_<%= this.category[j].id %>"><a href='javascript:void(0)' class="category_view"><%= this.category[j].name %></a></span>
+        <% for(var j=0;j<this.categories.length;j++) {%>
+            <span><a href='#category&amp;view=<%= this.categories[j].permalink %>'><%= this.categories[j].name %></a></span>
             <% } %>
-        </footer>
         <%}%>
-    <% if(typeof this.comments == 'object') {%>
+    </footer>
+    <% if(this.comments != undefined) {%>
         <aside class="social-links">
         <ul>
-        <li><a href="http://digg.com/submit?url='<%= this.permalink_url + '&amp;title=' + this.title%>" onclick="javascript:void(0); return false" class="offline"><img src='resources/themes/ims/images/social/digg.png' alt="Digg.com export" /></a></li>
-        <li><a href="http://delicious.com/save" onclick="void(0); return false;" class="offline"><img src='resources/themes/ims/images/social/delicious.png' alt="Delicious.com export" /></a></li>
-        <li><a href="'http://www.facebook.com/sharer.php?u='<%=this.permalink_url%>" onclick="void(0); return false;" class="offline"><img src='resources/themes/ims/images/social/facebook.png' alt="Facebook.com export" /></li>
+        <li><a href="http://digg.com/submit?url=<%= this.permalink + '&amp;title=' + this.title%>" onclick="javascript:void(0); return false" class="offline"><img src='resources/themes/ims/images/social/digg.png' alt="Digg.com export" /></a></li>
+        <li><a href="http://delicious.com/save" onclick="javascript:void(0); return false;" class="offline"><img src='resources/themes/ims/images/social/delicious.png' alt="Delicious.com export" /></a></li>
+        <li><a href="'http://www.facebook.com/sharer.php?u='<%=this.permalink %>" onclick="javascript:void(0); return false;" class="offline"><img src='resources/themes/ims/images/social/facebook.png' alt="Facebook.com export" /></li>
         <li><a href="javascript:void(0)" class="offline"><img src='resources/themes/ims/images/social/rss.png' alt="Rss export" /></a></li>
         </ul>
         </aside>
         <section class="comments">
         <h1>Comments</h1>
+        <ol id="commentList">
         <% if(this.comments.length > 0) {%>
-            <ol id="commentList">
             <% for(var i=0;i<this.comments.length;i++) {%>
                 <%= view('views/article/comment',this.comments[i]) %>
                 <%}%>
-            </ol>
-        <%} else {%>
-            <p>No comments</p>
-        <%}%>
+            <%} else {%>
+            <li>No comments</li>
+            <%}%>
+        </ol>
         </section>
         <% if(this.allow_comments){%>
             <%= view('views/article/comment_form',this) %>

@@ -5,87 +5,90 @@ jQuery.Controller.extend('SidebarController',
 },
 /* @Prototype */
 {
-    load: function(sidebars) {
-        this.sidebar_status()
-        this.sidebar_search()
-        Category.sidebar([],this.callback('sidebar_category'))
-        Tag.sidebar([],this.callback('sidebar_tag'),this.callback(Notification.msg))
-        Article.sidebar([],this.callback('sidebar_archive'),this.callback(Notification.msg))
-        Article.sidebar_page([],this.callback('sidebar_page'),this.callback(Notification.msg))
-    },
-
     /**
-     * Creates search sidebar.
+     * Loads all boxes
      */
-    sidebar_search: function() {
-        if(!$('#SearchSidebar').length) {
-            $('#boxes').append($(document.createElement('section')).attr('id','SearchSidebar'))
-        }
-        $("#SearchSidebar").html(this.view('sidebar/search',{}))
+    load: function() {
+        this.status_box()
+        this.search_box()
+        Category.box([],this.callback('categories_box'))
+        Tag.box([],this.callback('tags_box'),this.callback(Notification.msg))
+        Article.archives_box([],this.callback('archives_box'),this.callback(Notification.msg))
+        Article.page_box([],this.callback('page_box'),this.callback(Notification.msg))
     },
 
     /**
-     * Creates category sidebar.
+     * Creates search box.
+     */
+    search_box: function() {
+        if(!$('#search-box').length) {
+            $('#sidebar').append($(document.createElement('section')).attr('id','search-box'))
+        }
+        $("#search-box").html(this.view('sidebar/search',{}))
+    },
+
+    /**
+     * Creates categories box.
      * @param {Array} categories - a list of categories.
      */
-    sidebar_category: function(categories) {
-        if(!$('#CategorySidebar').length) {
-            $('#boxes').append($(document.createElement('section')).attr('id','CategorySidebar'))
+    categories_box: function(categories) {
+        if(!$('#categories-box').length) {
+            $('#sidebar').append($(document.createElement('section')).attr('id','categories-box'))
         }
-        $("#CategorySidebar").html(this.view('sidebar/category',{
+        $("#categories-box").html(this.view('sidebar/category',{
             categories:categories
         }))
     },
 
     /**
-     * Creates tag sidebar.
+     * Creates tags box.
      * @param {Array} tags - a list of tags.
      */
-    sidebar_tag: function(tags) {
-        if (!$('#TagSidebar').length) {
-            $('#boxes').append($(document.createElement('section')).attr('id','TagSidebar'))
+    tags_box: function(tags) {
+        if (!$('#tags-box').length) {
+            $('#sidebar').append($(document.createElement('section')).attr('id','tags-box'))
         }
-        $("#TagSidebar").html(this.view('sidebar/tag',{
+        $("#tags-box").html(this.view('sidebar/tag',{
             tags:tags
         }))
     },
 
     /**
-     * Creates archive sidebar.
+     * Creates archives box.
      * @param {Array} articles - a list of articles.
      */
-    sidebar_archive: function(articles) {
-        if (!$('#ArchivesSidebar').length) {
-            $('#boxes').append($(document.createElement('section')).attr('id','ArchivesSidebar'))
+    archives_box: function(articles) {
+        if (!$('#archives-box').length) {
+            $('#sidebar').append($(document.createElement('section')).attr('id','archives-box'))
         }
-        $("#ArchivesSidebar").html(this.view('sidebar/archive',{
+        $("#archives-box").html(this.view('sidebar/archive',{
             articles:articles
         }))
     },
 
     /**
-     * Creates page sidebar.
+     * Creates page box.
      * @param {Array} pages - a list of pages.
      */
-    sidebar_page: function(pages) {
-        if (!$('#PageSidebar').length) {
-            $('#boxes').append($(document.createElement('section')).attr('id','PageSidebar'))
+    page_box: function(pages) {
+        if (!$('#page-box').length) {
+            $('#sidebar').append($(document.createElement('section')).attr('id','page-box'))
         }
-        $("#PageSidebar").html(this.view('sidebar/page',{
+        $("#page-box").html(this.view('sidebar/page',{
             pages:pages
         }))
     },
 
     /**
-     * Creates status sidebar.
+     * Creates status box.
      */
-    sidebar_status: function() {
-        if (!$('#StatusSidebar').length) {
-            $('#boxes').append($(document.createElement('section')).attr('id','StatusSidebar'))
+    status_box: function() {
+        if (!$('#status-box').length) {
+            $('#sidebar').append($(document.createElement('section')).attr('id','status-box'))
         }
         var status = navigator.onLine ? 'online' : 'offline'
         var last_sync = localStorage['last_sync']
-        $("#StatusSidebar").html(this.view('sidebar/status',{
+        $("#status-box").html(this.view('sidebar/status',{
             status:status,
             last_sync:last_sync
         }))

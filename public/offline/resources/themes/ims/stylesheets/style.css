@@ -32,7 +32,7 @@ header, footer, section, aside, nav, article {
     float: left;
     background: white;
 }
-aside#boxes {
+aside#sidebar {
     width: 22.30em;
     float: right;
     color: white;
@@ -139,28 +139,28 @@ nav#navigation ul li a {
 }
 
 /* [] BOXES */
-#boxes section h1 {
+#sidebar section h1 {
     background: url(../images/box-header-bg.gif);
     font-size: 1.5em;
     padding: .5em;
     color: white;
 }
-#boxes section {
+#sidebar section {
     margin-bottom: 1em;
 }
-#boxes ul, #boxes form, #boxes p, #boxes #search-results {
+#sidebar ul, #sidebar form, #sidebar p, #sidebar #search-results {
     margin: 1em;
 }
-#boxes ul li {
+#sidebar ul li {
     margin-bottom: .5em;
 }
-#boxes .widget_tag_cloud div{
+#sidebar .widget_tag_cloud div{
     margin: 1em;
 }
-#boxes a, #boxes a:visited, #boxes a:active {
+#sidebar a, #sidebar a:visited, #sidebar a:active {
     color: #7dc8e1;
 }
-#boxes a:hover {
+#sidebar a:hover {
     text-decoration: none;
 }
 
@@ -327,9 +327,12 @@ article .social-links ul li {
 .comments time {
     font-weight: bold;
 }
-#commentList ul li {
-    list-style-type: decimal;
-    padding-left: 2em;
+ol#commentList {
+    margin: 0;
+}
+ol#commentList li {
+    list-style: none;
+    margin:0;
 }
 
 /* [] ERROR MESSAGE */
@@ -399,7 +402,7 @@ section#archives  h3.archivemonth {
 
 /* [] PAGINATION */
 .pagination {
-    margin: auto;
+    margin: 1em auto 1em auto;
     text-align: center;
 }
 .pagination span a {

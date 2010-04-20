@@ -35,40 +35,10 @@ jQuery.Controller.extend('MainController',
     },
 
     /**
-     * Displays a list of articles.
-     * @param {Array} articles - a list of articles.
-     * @param {Array} params - params that might refine your results.
-     */
-    article_list: function(articles,params){
-        $('#article').html(this.view('article/init', {
-            articles:articles,
-            params:params,
-        } ))
-    },
-
-    /**
      * Displays a message in offline mode.
      */
     offline_msg: function() {
         Notification.msg('This function is not available in offline mode')
-    },
-
-    /**
-     * Displays a page.
-     * @param {Object} page - a page to be displayed.
-     */
-    show_page: function(page) {
-        $('#article').html(this.view('article/show',page[0]))
-    },
-
-    /**
-     * Displays an archive of articles.
-     * @param {Array} articles - a list of articles.
-     */
-    archive: function(articles) {
-        $('#article').html(this.view('article/archive', {
-            articles:articles,
-        } ))
     },
 
     /**
@@ -84,6 +54,7 @@ jQuery.Controller.extend('MainController',
         if(parseInt(localStorage['limit_article_display']) != parseInt(settings['limit_article_display'])) {
             localStorage['limit_article_display'] = settings['limit_article_display']
         }
+        localStorage['limit_article_display'] = 2
     },
 
     /**
@@ -126,47 +97,26 @@ jQuery.Controller.extend('MainController',
                 Synchronization.start()
 
                 $('#dialog-message').dialog('option','buttons',{
-                    done: function() {
+                    close: function() {
 //                        $(this).dialog('close')
                         window.location.reload()
                     }
                 })
                 $('#dialog-message').html('Syncing done succesfully. Click on done button.')
                 $('#dialog-message').dialog('open')
-
-                //we must reload a page with new data
-//                Article.find_all({
-//                    current_page:1
-//                }, obj.callback('article_list'),obj.callback(Notification.msg))
-//
-//                Blog.settings([],obj.callback('load_settings'),obj.callback(Notification.msg))
             },
         })
         $('#dialog-message').dialog('open')
     },
-
+    
     //Events handlers
     
     '#searchform submit': function(el) {
         this.offline_msg()
     },
 
-    '#home-page click': function(el) {
-        Article.find_all({
-            current_page:1
-        }, this.callback('article_list'),this.callback(Notification.msg));
-    },
-
     '.offline click': function(el) {
         this.offline_msg()
-    },
-
-    '.page click': function(el) {
-        Article.find_page($(el).attr('id'), this.callback('show_page'),this.callback(Notification.msg));
-    },
-
-    '#archive click': function(el) {
-        Article.find_archive({},this.callback('archive'),this.callback(Notification.msg))
     },
 
     '#synchronize click': function() {
@@ -175,5 +125,5 @@ jQuery.Controller.extend('MainController',
         } else {
             Notification.msg("Sync error: you must be online.")
         }
-    }
+    },
 });

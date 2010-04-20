@@ -1,11 +1,11 @@
     <h1>Tags</h1>
-    <ul id="tag">
+    <ul>
     <p style="overflow:hidden">
-    <%for(var i = 0; i < tags.length ; i++){%>
+    <% for(var i = 0; i < tags.length ; i++){ %>
         <%= view('views/tag/show',{tag:tags[i],tags:tags})%>
         <%}%>
     <% if(!tags.length){ %>
         No tags
-    <%}%>
+        <%}%>
     </p>
     </ul>

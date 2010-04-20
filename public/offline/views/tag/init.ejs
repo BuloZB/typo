@@ -1,2 +1,2 @@
-    <%= view('views/article/list',{articles: articles})%>
-    <%= pagination(params,"tag",id) %>
+    <%= view('views/article/list',{articles: tag.articles})%>
+    <%= pagination("#tag&amp;view="+tag.name,params) %>

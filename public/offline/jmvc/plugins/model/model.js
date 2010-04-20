@@ -233,7 +233,11 @@ jQuery.Class.extend("jQuery.Model",
 	        if(object.constructor == Array) return 'array';
 	        return typeof object;
 	    }
-		if(object == "") return 'string';
+       else {
+          // Check for empty string or string with all spaces before calling isNaN()
+          if(object == '') return 'string';
+          if(object.match(/^\s+$/)) return 'string';
+       }
 	    //check if true or false
 	    if(object == 'true' || object == 'false') return 'boolean';
 	    if(!isNaN(object)) return 'number'

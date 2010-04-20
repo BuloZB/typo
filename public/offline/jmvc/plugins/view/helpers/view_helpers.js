@@ -110,7 +110,7 @@ $.extend($.View.Helpers.prototype, {
 	input_field_tag: function(name, value , inputType, html_options) {
 	    html_options = html_options || {};
 	    html_options.id  = html_options.id  || name;
-	    html_options.value = value || '';
+	    html_options.value = (value  == null) ? '' : value;
 	    html_options.type = inputType || 'text';
 	    html_options.name = name;
 	    return this.single_tag_for('input', html_options);

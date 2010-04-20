@@ -111,13 +111,13 @@ jQuery.extend(jQuery.Delegator,
     events: {},
     onload_called : false,
     fastHasClass : function(s,f){
-       return s.indexOf(f) == -1 ? false :
+       return typeof s == 'string' &&  (s.indexOf(f) == -1 ? false :
        (  
            s.length == f.length ||
            s.indexOf(f+" ") == 0 ||
            s.lastIndexOf(" "+f) == s.length - f.length - 1 || 
            s.indexOf(" "+f+" ") != -1
-       )
+       ))
 }
 })
 jQuery.extend(jQuery.Delegator.prototype,

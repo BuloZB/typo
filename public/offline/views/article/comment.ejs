@@ -10,7 +10,7 @@
         <%}%></cite>
     <time datetime="<%= this.created_at.replace(' ','T') %>" pubdate><%= this.created_at %></time>
     </header>
-    <% if(typeof this.published != 'undefined'){%>
+    <% if(!this.published){%>
         <div class="spamwarning">This comment has been flagged for moderator approval.</div>
     <%} else {%>
         <%= this.body %>

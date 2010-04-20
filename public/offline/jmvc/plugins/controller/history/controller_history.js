@@ -14,6 +14,16 @@ $.extend($.Controller.prototype, {
 //	   window.location = location + point;
    },
    /**
+    * Redirects to another page by replacing current URL with the given one.  This
+    * call will not create a new entry in the history.
+    * @plugin 'dom/history'
+    * @param {Object} options an object that will turned into a url like #controller/action&param1=value1
+    */
+   replaceWith: function(options){
+	   var point = this._get_history_point(options);
+      $.History.replace(point);
+   },
+   /**
     * Adds history point to browser history.
     * @plugin 'dom/history'
     * @param {Object} options an object that will turned into a url like #controller/action&param1=value1

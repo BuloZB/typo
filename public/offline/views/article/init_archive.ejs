@@ -1,2 +1,2 @@
     <%= view('views/article/list',{articles: articles})%>
-    <%= pagination(params,"article") %>
+    <%= pagination("#archive&amp;month="+params.date.month+"&amp;year="+params.date.year,params) %>

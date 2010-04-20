@@ -2,7 +2,7 @@
     <% if(pages.length > 0){ %>
         <ul>
         <% for(var i=0;i<pages.length;i++){ %>
-            <li><a href="javascript:void(0)" class="page" id="<%= pages[i].name%>"><%= pages[i].title %></a></li>
+            <li><a href="#page&amp;view=<%= pages[i].name %>"><%= pages[i].title %></a></li>
             <% } %>
         </ul>
         <% } %>

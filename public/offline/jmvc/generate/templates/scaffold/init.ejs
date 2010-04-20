@@ -16,7 +16,7 @@
 <h2>New <%= name %></h2>
 <form>
     <%% for(var attr in <%= name%>.attributes){ %>
-        <%% if(attr == 'id') continue;%>
+        <%% if(attr == <%= name%>.id) continue;%>
         <div>
             <label><%%= attr %> </label><br />
             <input type="text" value="" name="<%%= attr %>"/>

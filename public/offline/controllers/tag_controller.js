@@ -1,34 +1,30 @@
 jQuery.Controller.extend('TagController',
-/* @Static */
-{
-    onDocument: true
-},
-/* @Prototype */
-{
-    /**
-     * Displays articles in a tag.
-     * @param {Array} articles - a list of articles.
-     * @param {Array} params - params that might refine your results.
-     */
-    show: function(articles,params) {
-        $('.section').html(this.view('init', {
-            articles:articles,
-            params:params,
-            id:params.tag
-        } ))
+    /* @Static */
+    {
+        onDocument: true
     },
+    /* @Prototype */
+    {
+        /**
+        * Displays articles in a tag.
+        * @param {Array} articles - a list of articles.
+        * @param {Array} params - params that might refine your results.
+        */
+        show: function(tag,params) {
+            $('.section').html(this.view('init', {
+                tag:tag,
+                params:params,
+            } ))
+        },
 
-    //Events handlers
-    
-    '.view click': function(el,ev) {
-        var tag = el.model().identity().split('_')[1]
-        Article.find_by_tag_id({current_page:1,tag:tag},this.callback('show'),this.callback(Notification.msg))
-        //prevent Article->view action
-        el.preventDefault()
-    },
-    
-    '.tag_paginate click': function(el,ev) {
-        var tag = el.parents().model().identity().split('_')[1]
-        Article.find_by_tag_id({current_page:$(el).attr('id'),tag:tag},this.callback('show'),this.callback(Notification.msg))
-    }
-});
+        //Events handlers
+        "history.tag.index subscribe": function(called, data) {
+            var tag = data.view
+            var page = (data.page != null && data.page > 0) ? data.page : 1
+            
+            Tag.find_by_name({
+                current_page:page,
+                tag:tag
+            },this.callback('show'),this.callback(Notification.msg))
+        },
+    });
