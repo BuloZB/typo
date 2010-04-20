@@ -111,10 +111,6 @@ jQuery.Controller.extend('MainController',
     
     //Events handlers
     
-    '#searchform submit': function(el) {
-        this.offline_msg()
-    },
-
     '.offline click': function(el) {
         this.offline_msg()
     },

@@ -44,6 +44,13 @@ MainModel.extend('Article',
                 limit_offset = " LIMIT ? OFFSET ? "
             }
 
+            //perform search
+            if(params.search) {
+                where += ' AND title like ("%'+params.search+'%")'
+                //                args.unshift(params.search)
+                console.log(args)
+            }
+
             db.transaction(function(tx) {
                 tx.executeSql("SELECT c1 . * " +
                     "FROM contents c1 " +
@@ -157,6 +164,10 @@ MainModel.extend('Article',
             this.find_all(params,success,error)
         },
 
+        search: function(params, success, error) {
+            this.find_all(params,success,error)
+        },
+
         /**
         * Finds articles for article sidebar.
         * @param {Array} params - params that might refine your results.
@@ -219,4 +230,9 @@ MainModel.extend('Article',
             var mday = date[0].split("-")
             return mday[2]
         },
+        mark_search_term: function(term) {
+            jQuery.each(this,function(i,value) {
+                console.log("value: " + value)
+            })
+        }
     })

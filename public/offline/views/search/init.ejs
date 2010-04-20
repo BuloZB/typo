@@ -1,0 +1,5 @@
+    <h1>Search result for "<%= params.search %>"</h1>
+        <% mark_search_term(articles,params.search) %>
+    
+    <%= view('views/article/list',{articles: articles})%>
+    <%= pagination("#search",params) %>

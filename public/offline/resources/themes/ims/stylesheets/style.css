@@ -88,6 +88,10 @@ em {
 .hidden {
     display: none;
 }
+mark {
+    background: rgb(255,255,153);
+    padding: .1em;
+}
 
 /* [] HEADER */
 header#logo hgroup {
