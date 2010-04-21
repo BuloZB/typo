@@ -2804,15 +2804,15 @@ _1+="<dt>Application cache:</dt>"+"<dd> "+Modernizr.applicationcache+"</dd>";
 _1+="<dt>SQL storage:</dt>"+"<dd> "+Modernizr.sqlstorage+"</dd>";
 _1+="<dt>Local storage:</dt>"+"<dd> "+Modernizr.localstorage+"</dd>";
 _1+="</dl>";
-_1+="<p><strong>Only Safari and Chrome are supported.</strong></p>";
+_1+="<p><strong>Only Chrome is supported.</strong></p>";
 _1+="</div>";
 $("#dialog-message").html(_1);
 $("#dialog-message").dialog("open");
 }
-include.resources("strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
+include.resources("sync","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
 include.models("main_model","article","category","tag","sidebar","comment","blog","synchronization");
-include.controllers("main","article","category","tag","sidebar","navigation");
-include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show");
+include.controllers("main","article","category","tag","sidebar","navigation","search","synchronization");
+include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show","views/search/init");
 });
 ;
 include.setPath('jmvc/plugins/model');
@@ -4681,7 +4681,7 @@ return _2d;
 ;
 include.setPath('jmvc/plugins/view/helpers');
 include.plugins("view");
-include("view_helpers","pagination_helper");
+include("view_helpers","custom_helpers");
 ;
 include.setPath('jmvc/plugins/view/helpers');
 (function($){
@@ -4890,20 +4890,31 @@ var _5=((_3-1)<1?"":_3-1);
 var _6=((_3+1)>_4?"":_3+1);
 var _7="";
 var _8="";
+var _9="";
 if(isNaN(_4)){
 return;
 }
+if(_2.search!=undefined){
+_7="&amp;q="+_2.search;
+}
 if(_5!=""){
-_7="<span><a href=\""+_1+"&amp;page="+_5+"\">« newer</a></span>";
+_8="<span><a href=\""+_1+"&amp;page="+_5+_7+"\">« newer</a></span>";
 }
 if(_6!=""){
-_8="<span><a href=\""+_1+"&amp;page="+_6+"\">older »</a></span>";
+_9="<span><a href=\""+_1+"&amp;page="+_6+_7+"\">older »</a></span>";
 }
-if(_7==""&&_8==""){
+if(_8==""&&_9==""){
 return "";
 }else{
-return "<div class=\"pagination\">"+_7+_8+"</div>";
+return "<div class=\"pagination\">"+_8+_9+"</div>";
 }
+},mark_search_term:function(_a,_b){
+var _c=new RegExp(_b,"gi");
+$.each(_a,function(i,_e){
+_a[i].title=_e.title.replace(_c,function(_f){
+return "<mark>"+_f+"</mark>";
+});
+});
 }});
 ;
 include.setPath('jmvc/plugins/controller/history');
@@ -6892,6 +6903,28 @@ return J;
 ;
 include.next_function();
 include.setPath('resources');
+onmessage=function(_1){
+setTimeout(function(){
+postMessage("");
+},10000);
+var _2=_1.data.url;
+var _3=_1.data.method;
+var _4=null;
+var _5=new XMLHttpRequest();
+_5.open(_3,"/sync/"+_2,false);
+if(_3=="POST"){
+_4=_1.data.params;
+_5.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+}
+_5.send(_4);
+if(_5.status==200&&_3=="GET"){
+postMessage([_5.status,eval("("+_5.responseText+")")]);
+}else{
+postMessage(_5.status);
+}
+};
+;
+include.setPath('resources');
 Number.prototype.pad=function(n,p){
 var s=""+this;
 p=p||"0";
@@ -7045,7 +7078,7 @@ include.setPath('resources/database');
 Driver.extend("SqliteDriver",{},{init:function(){
 this._super("SqliteTypo","1.0","10485760","Offline database for Typosphere");
 },create_tables:function(){
-var _1=["CREATE TABLE IF NOT EXISTS contents (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, extended TEXT, excerpt TEXT, keywords TEXT, created_at TEXT, updated_at TEXT, user_id INTEGER, permalink TEXT, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, name TEXT, published INTEGER, allow_pings INTEGER, allow_comments INTEGER, published_at TEXT, state TEXT)","CREATE INDEX IF NOT EXISTS index_contents_on_published ON contents (published)","CREATE INDEX IF NOT EXISTS index_contents_on_text_filter_id ON contents (text_filter_id)","CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id INTEGER)","CREATE INDEX IF NOT EXISTS index_categories_on_permalink ON categories (permalink)","CREATE TABLE IF NOT EXISTS categorizations (id INTEGER PRIMARY KEY, article_id INTEGER, category_id INTEGER, is_primary INTEGER)","CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at TEXT, display_name TEXT)","CREATE TABLE IF NOT EXISTS articles_tags (article_id INTEGER, tag_id INTEGER)","CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, excerpt TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, user_id INTEGER, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, article_id INTEGER, email TEXT, url TEXT, ip TEXT, blog_name TEXT, published INTEGER, published_at TEXT, state TEXT, status_confirmed INTEGER)","CREATE INDEX IF NOT EXISTS index_feedback_on_article_id ON feedback (article_id)","CREATE INDEX IF NOT EXISTS index_feedback_on_text_filter_id ON feedback (text_filter_id)","CREATE TABLE IF NOT EXISTS sidebars (id INTEGER PRIMARY KEY, active_position INTEGER, config TEXT, staged_position INTEGER, type TEXT)","CREATE TABLE IF NOT EXISTS blogs (id INTEGER PRIMARY KEY, settings TEXT, base_url TEXT)","CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, action TEXT)"];
+var _1=["CREATE TABLE IF NOT EXISTS contents (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, extended TEXT, excerpt TEXT, keywords TEXT, created_at TEXT, updated_at TEXT, user_id INTEGER, permalink TEXT, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, name TEXT, published INTEGER, allow_pings INTEGER, allow_comments INTEGER, published_at TEXT, state TEXT)","CREATE INDEX IF NOT EXISTS index_contents_on_published ON contents (published)","CREATE INDEX IF NOT EXISTS index_contents_on_text_filter_id ON contents (text_filter_id)","CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT, position INTEGER, permalink TEXT, keywords TEXT, description TEXT, parent_id INTEGER)","CREATE INDEX IF NOT EXISTS index_categories_on_permalink ON categories (permalink)","CREATE TABLE IF NOT EXISTS categorizations (id INTEGER PRIMARY KEY, article_id INTEGER, category_id INTEGER, is_primary INTEGER)","CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY, name TEXT, created_at TEXT, updated_at TEXT, display_name TEXT)","CREATE TABLE IF NOT EXISTS articles_tags (article_id INTEGER, tag_id INTEGER)","CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY, type TEXT, title TEXT, author TEXT, body TEXT, excerpt TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, user_id INTEGER, guid TEXT, text_filter_id INTEGER, whiteboard TEXT, article_id INTEGER, email TEXT, url TEXT, ip TEXT, blog_name TEXT, published INTEGER, published_at TEXT, state TEXT, status_confirmed INTEGER)","CREATE INDEX IF NOT EXISTS index_feedback_on_article_id ON feedback (article_id)","CREATE INDEX IF NOT EXISTS index_feedback_on_text_filter_id ON feedback (text_filter_id)","CREATE TABLE IF NOT EXISTS sidebars (id INTEGER PRIMARY KEY, active_position INTEGER, config TEXT, staged_position INTEGER, type TEXT)","CREATE TABLE IF NOT EXISTS blogs (id INTEGER PRIMARY KEY, settings TEXT, base_url TEXT)","CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, method TEXT)"];
 this._super(_1);
 }});
 ;
@@ -7118,6 +7151,10 @@ _7=(_5<2?_5-1:((_5-1)*_6));
 _a=[_6,_7];
 _b=" LIMIT ? OFFSET ? ";
 }
+if(_1.search){
+_9+=" AND title like (\"%"+_1.search+"%\")";
+console.log(_a);
+}
 db.transaction(function(tx){
 tx.executeSql("SELECT c1 . * "+"FROM contents c1 "+_8+"WHERE (( c1.published=1 ) AND ( c1.type =  'Article' ) "+_9+" ) "+"ORDER BY c1.published_at DESC "+_b,_a,function(tx,rs){
 tx.executeSql("SELECT count(*) as count "+"FROM contents c1 "+_8+"WHERE (( c1.published =1 ) AND ( c1.type =  'Article' ) "+_9+" )",[],function(tx,rs2){
@@ -7169,42 +7206,48 @@ this.find_all(_2e,_2f,_30);
 this.find_all(_31,_32,_33);
 },find_by_published_at:function(_34,_35,_36){
 this.find_all(_34,_35,_36);
-},archives_box:function(_37,_38,_39){
+},search:function(_37,_38,_39){
+this.find_all(_37,_38,_39);
+},archives_box:function(_3a,_3b,_3c){
 var obj=this;
 db.transaction(function(tx){
 tx.executeSql("select count(*) as count, strftime('%Y', published_at) as year, strftime('%m', published_at) as month from contents where type='Article' and published = ? and published_at < ? group by year,month order by year desc,month desc",[1,"date('now')"],function(tx,rs){
-var _3e=[];
+var _41=[];
 for(var i=0;i<rs.rows.length;i++){
 var row=rs.rows.item(i);
-_3e[i]={year:row["year"],month:row["month"],count:row["count"]};
+_41[i]={year:row["year"],month:row["month"],count:row["count"]};
 }
-return _38(_3e);
+return _3b(_41);
 },function(tx,err){
-return _39(err);
+return _3c(err);
 });
 });
-},page_box:function(_43,_44,_45){
+},page_box:function(_46,_47,_48){
 var obj=this;
 db.transaction(function(tx){
 tx.executeSql("SELECT * FROM `contents` WHERE ( (`contents`.`type` = 'Page' ) )",[],function(tx,rs){
-return _44(obj.parse_result(rs));
+return _47(obj.parse_result(rs));
 },function(tx,err){
-return _45(err);
+return _48(err);
 });
 });
 },},{published_at_month:function(){
-var _4c=this.published_at.split(" ");
-var _4d=_4c[0].split("-");
-return _4d[1];
+var _4f=this.published_at.split(" ");
+var _50=_4f[0].split("-");
+return _50[1];
 },published_at_year:function(){
-var _4e=this.published_at.split(" ");
-var _4f=_4e[0].split("-");
-return _4f[0];
+var _51=this.published_at.split(" ");
+var _52=_51[0].split("-");
+return _52[0];
 },published_at_mday:function(){
-var _50=this.published_at.split(" ");
-var _51=_50[0].split("-");
-return _51[2];
-},});
+var _53=this.published_at.split(" ");
+var _54=_53[0].split("-");
+return _54[2];
+},mark_search_term:function(_55){
+jQuery.each(this,function(i,_57){
+console.log("value: "+_57);
+});
+}});
 ;
 include.setPath('models');
 MainModel.extend("Category",{box:function(_1,_2,_3){
@@ -7302,7 +7345,7 @@ this.validatesPresenceOf(["body"],{message:"must be supplied"});
 var _4=this;
 db.transaction(function(tx){
 tx.executeSql("INSERT INTO feedback (type,author,body,article_id,email,url,ip,published,state) VALUES (?,?,?,?,?,?,?,?,?)",["Comment",_1["author"],_1["body"],_1["article_id"],_1["email"],_1["url"],"",1,"presumed_ham"],function(tx,rs){
-tx.executeSql("INSERT INTO sync (table_name,row_id,action) VALUES (?,?,?)",["feedback",rs.insertId,"post"],function(rs,tx){
+tx.executeSql("INSERT INTO sync (table_name,row_id,method) VALUES (?,?,?)",["feedback",rs.insertId,"POST"],function(rs,tx){
 var _a=new Date();
 _1["created_at"]=_a.strftime("%Y-%m-%d %H:%M:%S");
 _1["published"]=1;
@@ -7354,176 +7397,131 @@ return _3(_d);
 ;
 include.setPath('models');
 $.Model.extend("Synchronization",{start:function(_1,_2){
-var _3=new Synchronization();
-_3.sync_remote_feedback_table();
-Synchronization.blog([],_3.sync_blog_table);
-Synchronization.articles_tags([],_3.sync_articles_tags_table);
-Synchronization.categories([],_3.sync_categories_table);
-Synchronization.categorizations([],_3.sync_categorizations_table);
-Synchronization.sidebars([],_3.sync_table_sidebars);
-Synchronization.tags([],_3.sync_table_tags);
-Synchronization.contents([],_3.sync_table_contents);
-Synchronization.feedback([],_3.sync_table_feedback);
-localStorage["last_sync"]=(new Date()).getTime();
-return _1;
-},blog:function(_4,_5,_6){
-$.ajax({url:"/sync/blog.json",type:"get",dataType:"json",data:_4,success:this.callback(["wrapMany",_5]),error:_6,async:false,fixture:false});
-},categories:function(_7,_8,_9){
-$.ajax({url:"/sync/categories.json",type:"get",dataType:"json",data:_7,success:this.callback(["wrapMany",_8]),error:_9,async:false,fixture:false});
-},categorizations:function(_a,_b,_c){
-$.ajax({url:"/sync/categorizations.json",type:"get",dataType:"json",data:_a,success:this.callback(["wrapMany",_b]),error:_c,async:false,fixture:false});
-},contents:function(_d,_e,_f){
-$.ajax({url:"/sync/contents.json",type:"get",dataType:"json",data:_d,success:this.callback(["wrapMany",_e]),error:_f,async:false,fixture:false});
-},feedback:function(_10,_11,_12){
-$.ajax({url:"/sync/feedback.json",type:"get",dataType:"json",data:_10,success:this.callback(["wrapMany",_11]),error:_12,async:false,fixture:false});
-},sidebars:function(_13,_14,_15){
-$.ajax({url:"/sync/sidebars.json",type:"get",dataType:"json",data:_13,success:this.callback(["wrapMany",_14]),error:_15,async:false,fixture:false});
-},tags:function(_16,_17,_18){
-$.ajax({url:"/sync/tags.json",type:"get",dataType:"json",data:_16,success:this.callback(["wrapMany",_17]),error:_18,async:false,fixture:false});
-},articles_tags:function(_19,_1a,_1b){
-$.ajax({url:"/sync/articles_tags.json",type:"get",dataType:"json",data:_19,success:this.callback(["wrapMany",_1a]),error:_1b,async:false,fixture:false});
-},update_feedback:function(_1c,_1d,_1e){
-$.ajax({url:"/sync/feedback",type:"post",success:_1d,error:_1e,data:_1c,async:false,fixture:false});
-}},{sync_remote_feedback_table:function(){
+var _3=new Worker("resources/sync.js");
+var _4=new Worker("resources/sync.js");
+var _5=new Array;
+var _6=this;
+_3.onmessage=function(_7){
+console.log("request: "+_7);
+if(_7.data[0]==200){
+_5.push(_7.data[1]);
+}else{
+_3.terminate();
+return _2();
+}
+$("#progressbar-status").width((_5.length*13)+"%");
+$("#progressbar-status").html((_5.length*13)+"%");
+if(_5.length==8){
+db.transaction(function(tx){
+tx.executeSql("DELETE FROM sync");
+var _9=_5[0];
+tx.executeSql("DELETE FROM blogs");
+jQuery.each(_9,function(i,_b){
+_b.settings=JSON.stringify(_b.settings).replace("{","").replace("}","").replace(/,/g,"\n").replace(/"/g,"");
+tx.executeSql("INSERT INTO blogs VALUES(?,?,?)",[_b.id,_b.settings,_b.base_url]);
+});
+var _c=_5[1];
+tx.executeSql("DELETE FROM articles_tags");
+jQuery.each(_c,function(i,_e){
+tx.executeSql("INSERT INTO articles_tags VALUES(?,?)",[_e.article_id,_e.tag_id]);
+});
+var _f=_5[2];
+tx.executeSql("DELETE FROM sidebars");
+jQuery.each(_f,function(i,_11){
+_11.config=JSON.stringify(_11.config).replace("{","").replace("}","").replace(/,/g,"\n").replace(/"/g,"");
+tx.executeSql("INSERT INTO sidebars VALUES(?,?,?,?,?)",[_11.id,_11.active_position,_11.config,_11.staged_position,_11.type]);
+});
+var _12=_5[3];
+tx.executeSql("DELETE FROM categories");
+jQuery.each(_12,function(i,_14){
+db.transaction(function(tx){
+tx.executeSql("INSERT INTO categories VALUES(?,?,?,?,?,?,?)",[_14.id,_14.name,_14.position,_14.permalink,_14.keywords,_14.description,_14.parent_id]);
+});
+});
+var _16=_5[4];
+tx.executeSql("DELETE FROM categorizations");
+jQuery.each(_16,function(i,_18){
+db.transaction(function(tx){
+tx.executeSql("INSERT INTO categorizations VALUES(?,?,?,?)",[_18.id,_18.article_id,_18.category_id,_18.is_primary]);
+});
+});
+var _1a=_5[5];
+tx.executeSql("DELETE FROM contents");
+jQuery.each(_1a,function(i,_1c){
+_1c.whiteboard=JSON.stringify(_1c.whiteboard);
+_1c.published=_1c.published==true?1:0;
+_1c.published_at=_6.parse_date_string(_1c.published_at);
+_1c.created_at=_6.parse_date_string(_1c.created_at);
+_1c.updated_at=_6.parse_date_string(_1c.updated_at);
+tx.executeSql("INSERT INTO contents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[_1c.id,_1c.type,_1c.title,_1c.author,_1c.body,_1c.extended,_1c.excerpt,_1c.keywords,_1c.created_at,_1c.updated_at,_1c.user_id,_1c.permalink,_1c.guid,_1c.text_filter_id,_1c.whiteboard,_1c.name,_1c.published,_1c.allow_pings,_1c.allow_comments,_1c.published_at,"published"]);
+});
+var _1d=_5[6];
+tx.executeSql("DELETE FROM feedback");
+jQuery.each(_1d,function(i,_1f){
+_1f.whiteboard=JSON.stringify(_1f.whiteboard);
+_1f.published=_1f.published==true?1:0;
+_1f.published_at=_6.parse_date_string(_1f.published_at);
+_1f.created_at=_6.parse_date_string(_1f.created_at);
+_1f.updated_at=_6.parse_date_string(_1f.updated_at);
+tx.executeSql("INSERT INTO feedback VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[_1f.id,_1f.type,_1f.title,_1f.author,_1f.body,_1f.excerpt,_1f.created_at,_1f.updated_at,_1f.user_id,_1f.guid,_1f.text_filter_id,_1f.whiteboard,_1f.article_id,_1f.email,_1f.url,_1f.ip,_1f.blog_name,_1f.published,_1f.published_at,_1f.state,_1f.status_confirmed]);
+});
+var _20=_5[7];
+tx.executeSql("DELETE FROM tags");
+jQuery.each(_20,function(i,_22){
+db.transaction(function(tx){
+tx.executeSql("INSERT INTO tags VALUES(?,?,?,?,?)",[_22.id,_22.name,_22.created_at,_22.updated_at,_22.display_name]);
+});
+});
+$("#progressbar-status").width("100");
+$("#progressbar-status").html("100%");
+},function(err){
+_3.terminate();
+_4.terminate();
+return _2();
+},function(){
+_3.terminate();
+_4.terminate();
+return _1();
+});
+}
+};
+_4.onmessage=function(_25){
+if(_25.data!=200){
+_4.terminate();
+_3.terminate();
+return _2();
+}
+};
+console.log("before start");
 db.transaction(function(tx){
 tx.executeSql("SELECT * FROM sync WHERE table_name = ?",["feedback"],function(tx,rs){
 for(var i=0;i<rs.rows.length;i++){
 var row=rs.rows.item(i);
-var id=row.id;
-tx.executeSql("SELECT author,body,email,article_id,url FROM feedback WHERE id = ?",[row.row_id],function(tx,rs){
+var id=row.row_id;
+var _2c=row.method;
+tx.executeSql("SELECT author,body,email,article_id,url FROM feedback WHERE id = ?",[id],function(tx,rs){
 var row=rs.rows.item(0);
-Synchronization.update_feedback("author="+row.author+"&body="+row.body+"&email="+row.email+"&url="+row.url+"&article_id="+row.article_id+"",tx.executeSql("DELETE FROM sync WHERE id = ?",[id]));
+var _30="author="+row.author+"&body="+row.body+"&email="+row.email+"&url="+row.url+"&article_id="+row.article_id+"";
+_4.postMessage({url:"feedback",method:_2c,params:_30});
 });
 }
-},function(tx,_29){
-Notification.msg(_29.message);
 });
+},function(err){
+return _2();
+},function(){
+console.log("start");
+_3.postMessage({url:"blog.json",method:"GET"});
+_3.postMessage({url:"articles_tags.json",method:"GET"});
+_3.postMessage({url:"sidebars.json",method:"GET"});
+_3.postMessage({url:"categories.json",method:"GET"});
+_3.postMessage({url:"categorizations.json",method:"GET"});
+_3.postMessage({url:"contents.json",method:"GET"});
+_3.postMessage({url:"feedback.json",method:"GET"});
+_3.postMessage({url:"tags.json",method:"GET"});
 });
-},sync_blog_table:function(_2a){
-if(_2a.length>0){
-var _2b=_2a[0];
-_2b.settings=JSON.stringify(_2b.settings).replace("{","").replace("}","").replace(/,/g,"\n").replace(/"/g,"");
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM blogs",[],function(tx,rs){
-tx.executeSql("INSERT INTO blogs VALUES(?,?,?)",[_2b.id,_2b.settings,_2b.base_url],function(tx,rs){
-},function(tx,_32){
-Notification.msg(_32.message);
-});
-},function(tx,_34){
-Notification.msg(_34.message);
-});
-});
-}
-},sync_articles_tags_table:function(_35){
-if(_35.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM articles_tags");
-});
-jQuery.each(_35,function(i,_38){
-db.transaction(function(tx){
-tx.executeSql("INSERT INTO articles_tags VALUES(?,?)",[_38.article_id,_38.tag_id],function(tx,rs){
-},function(tx,_3d){
-Notification.msg(_3d.message);
-});
-});
-});
-}
-},sync_categories_table:function(_3e){
-if(_3e.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM categories");
-});
-jQuery.each(_3e,function(i,_41){
-db.transaction(function(tx){
-tx.executeSql("INSERT INTO categories VALUES(?,?,?,?,?,?,?)",[_41.id,_41.name,_41.position,_41.permalink,_41.keywords,_41.description,_41.parent_id],function(tx,rs){
-},function(tx,_46){
-Notification.msg(_46.message);
-});
-});
-});
-}
-},sync_categorizations_table:function(_47){
-if(_47.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM categorizations");
-});
-jQuery.each(_47,function(i,_4a){
-db.transaction(function(tx){
-tx.executeSql("INSERT INTO categorizations VALUES(?,?,?,?)",[_4a.id,_4a.article_id,_4a.category_id,_4a.is_primary],function(tx,rs){
-},function(tx,_4f){
-Notification.msg(_4f.message);
-});
-});
-});
-}
-},sync_table_sidebars:function(_50){
-if(_50.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM sidebars");
-});
-jQuery.each(_50,function(i,_53){
-_53.config=JSON.stringify(_53.config).replace("{","").replace("}","").replace(/,/g,"\n").replace(/"/g,"");
-db.transaction(function(tx){
-tx.executeSql("INSERT INTO sidebars VALUES(?,?,?,?,?)",[_53.id,_53.active_position,_53.config,_53.staged_position,_53.type],function(tx,rs){
-},function(tx,_58){
-Notification.msg(_58.message);
-});
-});
-});
-}
-},sync_table_tags:function(_59){
-if(_59.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM tags");
-});
-jQuery.each(_59,function(i,_5c){
-db.transaction(function(tx){
-tx.executeSql("INSERT INTO tags VALUES(?,?,?,?,?)",[_5c.id,_5c.name,_5c.created_at,_5c.updated_at,_5c.display_name],function(tx,rs){
-},function(tx,_61){
-Notification.msg(_61.message);
-});
-});
-});
-}
-},sync_table_contents:function(_62){
-if(_62.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM contents");
-});
-jQuery.each(_62,function(i,_65){
-db.transaction(function(tx){
-_65.whiteboard=JSON.stringify(_65.whiteboard);
-_65.published=_65.published==true?1:0;
-_65.published_at=_65.published_at.substr(0,19).replace(new RegExp(/\//g),"-");
-_65.created_at=_65.created_at.substr(0,19).replace(new RegExp(/\//g),"-");
-_65.updated_at=_65.updated_at.substr(0,19).replace(new RegExp(/\//g),"-");
-tx.executeSql("INSERT INTO contents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[_65.id,_65.type,_65.title,_65.author,_65.body,_65.extended,_65.excerpt,_65.keywords,_65.created_at,_65.updated_at,_65.user_id,_65.permalink,_65.guid,_65.text_filter_id,_65.whiteboard,_65.name,_65.published,_65.allow_pings,_65.allow_comments,_65.published_at,"published"],function(tx,rs){
-},function(tx,_6a){
-Notification.msg(_6a.message);
-});
-});
-});
-}
-},sync_table_feedback:function(_6b){
-if(_6b.length>0){
-db.transaction(function(tx){
-tx.executeSql("DELETE FROM feedback");
-});
-jQuery.each(_6b,function(i,_6e){
-db.transaction(function(tx){
-_6e.whiteboard=JSON.stringify(_6e.whiteboard);
-_6e.published=_6e.published==true?1:0;
-_6e.published_at=_6e.published_at.substr(0,19).replace(new RegExp(/\//g),"-");
-_6e.created_at=_6e.created_at.substr(0,19).replace(new RegExp(/\//g),"-");
-_6e.updated_at=_6e.updated_at.substr(0,19).replace(new RegExp(/\//g),"-");
-tx.executeSql("INSERT INTO feedback VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[_6e.id,_6e.type,_6e.title,_6e.author,_6e.body,_6e.excerpt,_6e.created_at,_6e.updated_at,_6e.user_id,_6e.guid,_6e.text_filter_id,_6e.whiteboard,_6e.article_id,_6e.email,_6e.url,_6e.ip,_6e.blog_name,_6e.published,_6e.published_at,_6e.state,_6e.status_confirmed],function(tx,rs){
-},function(tx,_73){
-Notification.msg(_73.message);
-});
-});
-});
-}
-},});
+},parse_date_string:function(str){
+return str.substr(0,19).replace(new RegExp(/\//g),"-");
+}},{});
 ;
 include.setPath('controllers');
 jQuery.Controller.extend("MainController",{onDocument:true},{load:function(){
@@ -7532,7 +7530,6 @@ Blog.settings([],this.callback("load_settings"),this.callback(Notification.msg))
 $(window).bind("online",this.callback("is_online"));
 $(window).bind("offline",this.callback("is_online"));
 $("#dialog-message").dialog({modal:true,autoOpen:false,show:"clip"});
-this.initial_syncing();
 },time:function(){
 var _1=new Date();
 $("#date > span").html(_1.toLocaleDateString());
@@ -7551,37 +7548,8 @@ var el=$("#status");
 el.attr("class",_3+"-status");
 el.html(_3);
 Notification.msg("You are now "+_3);
-},initial_syncing:function(){
-if(typeof localStorage["last_sync"]=="undefined"){
-if(navigator.onLine){
-this.syncing_dialog("<p>It seems you are here for the first time. Before you continue, you must sync your db for offline using.<br/><br/>Click on sync button to start synchronization process.</p>");
-}else{
-Notification.msg("Sync error: you must be online.");
-}
-}
-},syncing_dialog:function(_5){
-$("#dialog-message").html(_5);
-var _6=this;
-$("#dialog-message").dialog("option","title","Syncing process");
-$("#dialog-message").dialog("option","buttons",{sync:function(){
-Synchronization.start();
-$("#dialog-message").dialog("option","buttons",{close:function(){
-window.location.reload();
-}});
-$("#dialog-message").html("Syncing done succesfully. Click on done button.");
-$("#dialog-message").dialog("open");
-},});
-$("#dialog-message").dialog("open");
-},"#searchform submit":function(el){
-this.offline_msg();
 },".offline click":function(el){
 this.offline_msg();
-},"#synchronize click":function(){
-if(navigator.onLine){
-this.syncing_dialog("To start syncing please click on sync button.");
-}else{
-Notification.msg("Sync error: you must be online.");
-}
 },});
 ;
 include.setPath('controllers');
@@ -7692,6 +7660,58 @@ Article.find_all({},this.callback("display_archive"),this.callback(Notification.
 },"history.menu-about.index subscribe":function(el,ev){
 Article.find_page("about",this.callback("display_page"),this.callback(Notification.msg));
 }});
+;
+include.setPath('controllers');
+jQuery.Controller.extend("SearchController",{onDocument:true},{display_articles:function(_1,_2){
+$(".section").html(this.view("init",{articles:_1,params:_2}));
+},perform_search:function(_3,_4){
+if(_3.length>1){
+window.location.hash="#search&page="+_4+"&q="+_3;
+Article.search({current_page:_4,search:_3},this.callback("display_articles"),this.callback(Notification.msg));
+}else{
+Notification.msg("The length of a search term must be more than 1 character");
+}
+},"form submit":function(el,ev){
+this.perform_search($("#q").val(),1);
+},"history.search.index subscribe":function(_7,_8){
+this.perform_search(_8.q,_8.page);
+}});
+;
+include.setPath('controllers');
+jQuery.Controller.extend("SynchronizationController",{onDocument:true},{load:function(){
+if(localStorage["last_sync"]==undefined){
+if(navigator.onLine){
+this.sync_process();
+}else{
+Notification.msg("Sync error: you must be online to sync database.");
+}
+}
+},sync_process:function(){
+$("#sync-link").html("syncing...");
+$("#progressbar").show();
+window.location.hash="";
+Synchronization.start(this.callback("success"),this.callback("error"));
+},success:function(){
+Notification.msg("Synchronization successfull");
+var _1=$(document.createElement("a"));
+_1.attr("href","/offline/index.html");
+_1.html("reload a page with new data");
+$("#sync-link").html(_1);
+localStorage["last_sync"]=(new Date()).getTime();
+},error:function(){
+Notification.msg("Synchronization failed. Please try again!");
+var _2=$(document.createElement("a"));
+_2.attr("href","#sync");
+_2.html("synchronize");
+$("#sync-link").html(_2);
+$("#progressbar").hide();
+},"history.sync.index subscribe":function(_3,_4){
+if(navigator.onLine){
+this.sync_process();
+}else{
+Notification.msg("Sync error: you must be online to sync database.");
+}
+},});
 ;
 include.setPath('views/article');
 (function($){
@@ -8322,22 +8342,32 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    <h1>Your status</h1>\n");
-_4.push("    <p>Status: <span  class=\"");
+_4.push("    <p>Connection status: <span  class=\"");
 _4.push((jQuery.View.Scanner.to_text(status)));
 _4.push("-status\" id=\"status\">");
 _4.push((jQuery.View.Scanner.to_text(status)));
 _4.push("</span></p>\n");
 _4.push("    <p>Last sync:\n");
 _4.push("    ");
-if(typeof last_sync=="undefined"){
-_4.push(" never sync ");
+if(last_sync==undefined){
+_4.push("\n");
+_4.push("        \"never\"\n");
+_4.push("        ");
 }else{
-_4.push(" ");
-_4.push((jQuery.View.Scanner.to_text((new Date(parseInt(last_sync)).strftime("%Y-%m-%d %H:%M:%S")))));
-_4.push(" ");
+var _5=new Date(parseInt(last_sync));
+_4.push("\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(_5.toLocaleTimeString())));
+_4.push("\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(_5.toDateString())));
+_4.push("\n");
+_4.push("        ");
 }
-_4.push("</p>\n");
-_4.push("    <p id=\"sidebar\" class=\"sync\"><a href=\"javascript:void(0);\" id=\"synchronize\">synchronize</a></p>");
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p id=\"sync-link\"><a href=\"#sync\">synchronize</a></p>\n");
+_4.push("    <div id=\"progressbar\" class=\"hidden\"><div id=\"progressbar-wrapper\"><div id=\"progressbar-status\">&nbsp;</div></div></div>");
 return _4.join("");
 }
 }
@@ -8357,10 +8387,12 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    <h1>Search</h1>\n");
-_4.push("    <form action=\"/search\" method=\"get\">\n");
+_4.push("    <div id=\"search\">\n");
+_4.push("    <form action=\"#search\" method=\"get\" onsubmit=\"return false\">\n");
 _4.push("    <input type=\"search\" id=\"q\" name=\"q\" placeholder=\"search blog\" value=\"\" size=\"15\">\n");
-_4.push("    <input type='submit' value='Search' onclick=\"javascript:void(0); return false;\" class=\"offline\">\n");
-_4.push("    </form>");
+_4.push("    <input type='submit' value='Search'>\n");
+_4.push("    </form>\n");
+_4.push("    </div>");
 return _4.join("");
 }
 }
@@ -8409,6 +8441,36 @@ _4.push((jQuery.View.Scanner.to_text(tag.name)));
 _4.push("\" rel=\"tag\">");
 _4.push((jQuery.View.Scanner.to_text(tag.display_name)));
 _4.push("</a></span>");
+return _4.join("");
+}
+}
+}
+catch(e){
+e.lineNumber=null;
+throw e;
+}
+});
+})(jQuery);
+;
+include.setPath('views/search');
+(function($){
+jQuery.View.PreCompiledFunction("../../views/search/init.ejs","views/search/init.ejs",function(_2,_3){
+try{
+with(_3){
+with(_2){
+var _4=[];
+_4.push("    <h1>Search result for \"");
+_4.push((jQuery.View.Scanner.to_text(params.search)));
+_4.push("\"</h1>\n");
+_4.push("        ");
+mark_search_term(articles,params.search);
+_4.push("\n");
+_4.push("    \n");
+_4.push("    ");
+_4.push((jQuery.View.Scanner.to_text(view("views/article/list",{articles:articles}))));
+_4.push("\n");
+_4.push("    ");
+_4.push((jQuery.View.Scanner.to_text(pagination("#search",params))));
 return _4.join("");
 }
 }

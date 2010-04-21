@@ -1,5 +1,14 @@
     <h1>Your status</h1>
-    <p>Status: <span  class="<%= status %>-status" id="status"><%= status %></span></p>
+    <p>Connection status: <span  class="<%= status %>-status" id="status"><%= status %></span></p>
     <p>Last sync:
-    <% if(typeof last_sync == 'undefined') { %> never sync <% } else { %> <%= (new Date(parseInt(last_sync)).strftime('%Y-%m-%d %H:%M:%S')) %> <% } %></p>
-    <p id="sidebar" class="sync"><a href="javascript:void(0);" id="synchronize">synchronize</a></p>
+    <% if(last_sync == undefined) { %>
+        "never"
+        <% } else {
+            var date = new Date(parseInt(last_sync))
+        %>
+        <%= date.toLocaleTimeString() %>
+        <%= date.toDateString() %>
+        <% } %>
+    </p>
+    <p id="sync-link"><a href="#sync">synchronize</a></p>
+    <div id="progressbar" class="hidden"><div id="progressbar-wrapper"><div id="progressbar-status">&nbsp;</div></div></div>

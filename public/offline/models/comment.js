@@ -26,7 +26,7 @@ MainModel.extend('Comment',
                 tx.executeSql("INSERT INTO feedback (type,author,body,article_id,email,url,ip,published,state) VALUES (?,?,?,?,?,?,?,?,?)",
                     ['Comment',attrs['author'],attrs['body'],attrs['article_id'],attrs['email'],attrs['url'],'',1,'presumed_ham'],
                     function(tx, rs) {
-                        tx.executeSql("INSERT INTO sync (table_name,row_id,action) VALUES (?,?,?)",['feedback',rs.insertId,'post'],
+                        tx.executeSql("INSERT INTO sync (table_name,row_id,method) VALUES (?,?,?)",['feedback',rs.insertId,'POST'],
                             function(rs,tx){
                                 //we need to display date when the comment was created.
                                 var created_at = new Date()

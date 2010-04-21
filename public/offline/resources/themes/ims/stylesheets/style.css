@@ -420,3 +420,25 @@ section#archives  h3.archivemonth {
 .pagination span a:hover {
     background: rgb(42,56,65);
 }
+
+/* [] PROGRESS BAR */
+#progressbar {
+    background: url(../images/loader.gif) .5em no-repeat;
+    padding-left: 1.5em;
+}
+#progressbar-wrapper {
+    padding: 2px;
+    border: 1px solid #3378A2;
+    overflow: hidden;
+    width: 90%;
+    margin: auto;
+}
+#progressbar-status {
+    background: #55ADCF;
+    width: 0%;
+    padding: 2px;
+    max-width: 98.5%;
+    font-size: 10px;
+    color: white;
+    text-align: left;
+}

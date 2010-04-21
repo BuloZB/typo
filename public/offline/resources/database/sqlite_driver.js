@@ -29,7 +29,7 @@ Driver.extend('SqliteDriver',
             //table blogs
             "CREATE TABLE IF NOT EXISTS blogs (id INTEGER PRIMARY KEY, settings TEXT, base_url TEXT)",
             //table sync
-            "CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, action TEXT)"
+            "CREATE TABLE IF NOT EXISTS sync (id INTEGER PRIMARY KEY, table_name TEXT, row_id INTEGER, method TEXT)"
             ]
             this._super(queries)
         }

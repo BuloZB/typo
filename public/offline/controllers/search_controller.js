@@ -29,10 +29,6 @@ jQuery.Controller.extend('SearchController',
 
     //Events handler
 
-    "#q keyup": function() {
-        
-    },
-
     //goes from search from
     "form submit": function(el,ev) {
         this.perform_search($("#q").val(),1)

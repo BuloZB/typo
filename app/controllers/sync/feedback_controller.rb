@@ -1,7 +1,7 @@
 class Sync::FeedbackController < Sync::BaseController
 
   def index
-    @feedback = Feedback.find(:all)
+    @feedback = Feedback.find(:all, :conditions => "published=1")
     @feedback.each { |comment| comment.body = comment.html  }
     respond_to do |format|
       format.json { render :json => @feedback.to_json(:only => [:id,:type,:title,:author,:body,:excerpt,:created_at,:updated_at,:user_id,:guid,:text_filter_id,:whiteboard,:article_id,:email,:url,:ip,:blog_name,:published,:published_at,:state_confirmed]) }
