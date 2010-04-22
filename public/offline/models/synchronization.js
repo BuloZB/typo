@@ -13,7 +13,6 @@ $.Model.extend('Synchronization',
             var obj = this
             
             worker_input.onmessage = function(event) {
-                console.log("request: " + event)
                 if(event.data[0] == 200) {
                     request.push(event.data[1])
                 } else {
@@ -132,7 +131,6 @@ $.Model.extend('Synchronization',
                     return error()
                 }
             }
-            console.log("before start")
 
             //first we need to send data to server
             db.transaction(function(tx) {
@@ -156,7 +154,6 @@ $.Model.extend('Synchronization',
             },function(err) {
                 return error()
             },function() {
-                            console.log("start")
                 //all data are sent, we can retrieve new data
                 worker_input.postMessage({
                     url:"blog.json",

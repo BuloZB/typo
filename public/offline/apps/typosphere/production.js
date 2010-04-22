@@ -2809,7 +2809,7 @@ _1+="</div>";
 $("#dialog-message").html(_1);
 $("#dialog-message").dialog("open");
 }
-include.resources("sync","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
+include.resources("sync","connection","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
 include.models("main_model","article","category","tag","sidebar","comment","blog","synchronization");
 include.controllers("main","article","category","tag","sidebar","navigation","search","synchronization");
 include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show","views/search/init");
@@ -6905,7 +6905,7 @@ include.next_function();
 include.setPath('resources');
 onmessage=function(_1){
 setTimeout(function(){
-postMessage("");
+postMessage("503");
 },10000);
 var _2=_1.data.url;
 var _3=_1.data.method;
@@ -6922,6 +6922,20 @@ postMessage([_5.status,eval("("+_5.responseText+")")]);
 }else{
 postMessage(_5.status);
 }
+};
+;
+include.setPath('resources');
+onmessage=function(_1){
+setTimeout(function(){
+postMessage("503");
+},10000);
+var _2=new XMLHttpRequest();
+_2.open("GET","/sync/blog.json",false);
+_2.addEventListener("error",function(){
+postMessage("503");
+},false);
+_2.send();
+postMessage(_2.status);
 };
 ;
 include.setPath('resources');
@@ -7402,7 +7416,6 @@ var _4=new Worker("resources/sync.js");
 var _5=new Array;
 var _6=this;
 _3.onmessage=function(_7){
-console.log("request: "+_7);
 if(_7.data[0]==200){
 _5.push(_7.data[1]);
 }else{
@@ -7492,7 +7505,6 @@ _3.terminate();
 return _2();
 }
 };
-console.log("before start");
 db.transaction(function(tx){
 tx.executeSql("SELECT * FROM sync WHERE table_name = ?",["feedback"],function(tx,rs){
 for(var i=0;i<rs.rows.length;i++){
@@ -7509,7 +7521,6 @@ _4.postMessage({url:"feedback",method:_2c,params:_30});
 },function(err){
 return _2();
 },function(){
-console.log("start");
 _3.postMessage({url:"blog.json",method:"GET"});
 _3.postMessage({url:"articles_tags.json",method:"GET"});
 _3.postMessage({url:"sidebars.json",method:"GET"});
@@ -7527,27 +7538,47 @@ include.setPath('controllers');
 jQuery.Controller.extend("MainController",{onDocument:true},{load:function(){
 this.time();
 Blog.settings([],this.callback("load_settings"),this.callback(Notification.msg));
-$(window).bind("online",this.callback("is_online"));
-$(window).bind("offline",this.callback("is_online"));
 $("#dialog-message").dialog({modal:true,autoOpen:false,show:"clip"});
+var _1=this;
+setInterval(function(){
+_1.connection_status();
+},60000);
 },time:function(){
-var _1=new Date();
-$("#date > span").html(_1.toLocaleDateString());
+var _2=new Date();
+$("#date > span").html(_2.toLocaleDateString());
+},connection_status:function(){
+var _3=new Worker("resources/connection.js");
+var el=$("#status");
+var _5="";
+_3.onmessage=function(_6){
+if(_6.data==200){
+_5="online";
+}else{
+_5="offline";
+}
+el.attr("class",_5+"-status");
+if(el.html()!=_5){
+Notification.msg("Server status: "+_5);
+}
+el.html(_5);
+this.terminate();
+};
+_3.postMessage("");
 },offline_msg:function(){
 Notification.msg("This function is not available in offline mode");
-},load_settings:function(_2){
-$("#logo > hgroup > h1").html(_2["blog_name"]);
-$("#logo > hgroup > h2").html(_2["blog_subtitle"]);
-if(parseInt(localStorage["limit_article_display"])!=parseInt(_2["limit_article_display"])){
-localStorage["limit_article_display"]=_2["limit_article_display"];
+},load_settings:function(_7){
+$("#logo > hgroup > h1").html(_7["blog_name"]);
+$("#logo > hgroup > h2").html(_7["blog_subtitle"]);
+if(parseInt(localStorage["limit_article_display"])!=parseInt(_7["limit_article_display"])){
+localStorage["limit_article_display"]=_7["limit_article_display"];
 }
 localStorage["limit_article_display"]=2;
 },is_online:function(){
-var _3=navigator.onLine?"online":"offline";
+var _8=navigator.onLine?"online":"offline";
 var el=$("#status");
-el.attr("class",_3+"-status");
-el.html(_3);
-Notification.msg("You are now "+_3);
+el.attr("class",_8+"-status");
+el.html(_8);
+Notification.msg("You are now "+_8);
 },".offline click":function(el){
 this.offline_msg();
 },});
@@ -8342,7 +8373,7 @@ with(_3){
 with(_2){
 var _4=[];
 _4.push("    <h1>Your status</h1>\n");
-_4.push("    <p>Connection status: <span  class=\"");
+_4.push("    <p>Server status: <span  class=\"");
 _4.push((jQuery.View.Scanner.to_text(status)));
 _4.push("-status\" id=\"status\">");
 _4.push((jQuery.View.Scanner.to_text(status)));

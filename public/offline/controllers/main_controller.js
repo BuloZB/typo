@@ -12,15 +12,18 @@ jQuery.Controller.extend('MainController',
             //set blog settings (name, description, number of index articles etc.)
             Blog.settings([],this.callback('load_settings'),this.callback(Notification.msg))
 
-            $(window).bind('online', this.callback('is_online'))
-            $(window).bind('offline',this.callback('is_online'))
-
             //init dialog window
             $("#dialog-message").dialog({
                 modal: true,
                 autoOpen: false,
                 show: 'clip'
             });
+
+            //check server status every 60 seconds
+            var self = this
+            setInterval(function(){
+                self.connection_status()
+            },60000)
         },
     
         /**
@@ -29,6 +32,31 @@ jQuery.Controller.extend('MainController',
         time: function() {
             var date = new Date()
             $('#date > span').html(date.toLocaleDateString())
+        },
+
+        connection_status: function() {
+            var worker = new Worker("resources/connection.js")
+            var el = $('#status')
+            var status = ''
+            
+            worker.onmessage = function(event) {
+                if(event.data == 200) {
+                    status = 'online'
+                } else {
+                    status = 'offline'
+                }
+                el.attr("class",status + '-status')
+
+                //status changed
+                if(el.html() != status) {
+                    Notification.msg("Server status: " + status)
+                }
+                
+                el.html(status)
+                this.terminate()
+            }
+            //start worker
+            worker.postMessage("")
         },
 
         /**

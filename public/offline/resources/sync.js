@@ -1,7 +1,7 @@
 onmessage = function(event) {
     //max working time for thread
     setTimeout(function(){
-        postMessage("")
+        postMessage("503")
     }, 10000)
 
     var url = event.data.url
