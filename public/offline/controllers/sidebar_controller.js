@@ -86,10 +86,8 @@ jQuery.Controller.extend('SidebarController',
         if (!$('#status-box').length) {
             $('#sidebar').append($(document.createElement('section')).attr('id','status-box'))
         }
-        var status = navigator.onLine ? 'online' : 'offline'
         var last_sync = localStorage['last_sync']
         $("#status-box").html(this.view('sidebar/status',{
-            status:status,
             last_sync:last_sync
         }))
     },

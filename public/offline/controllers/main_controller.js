@@ -21,6 +21,7 @@ jQuery.Controller.extend('MainController',
 
             //check server status every 60 seconds
             var self = this
+            this.connection_status()
             setInterval(function(){
                 self.connection_status()
             },60000)
@@ -51,9 +52,9 @@ jQuery.Controller.extend('MainController',
                 if(el.html() != status) {
                     Notification.msg("Server status: " + status)
                 }
-                
                 el.html(status)
                 this.terminate()
+                return
             }
             //start worker
             worker.postMessage("")
