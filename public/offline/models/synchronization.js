@@ -84,6 +84,8 @@ $.Model.extend('Synchronization',
                             data.published_at = obj.parse_date_string(data.published_at)
                             data.created_at = obj.parse_date_string(data.created_at)
                             data.updated_at = obj.parse_date_string(data.updated_at)
+                            data.allow_comments = Number(data.allow_comments)
+                            data.allow_pings = Number(data.allow_pings)
                             tx.executeSql("INSERT INTO contents VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                                 [data.id,data.type,data.title,data.author,data.body,data.extended,data.excerpt,data.keywords,data.created_at,data.updated_at,data.user_id,data.permalink,data.guid,
                                 data.text_filter_id,data.whiteboard,data.name,data.published,data.allow_pings,data.allow_comments,data.published_at,'published'])
