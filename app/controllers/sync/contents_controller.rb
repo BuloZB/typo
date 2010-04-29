@@ -30,14 +30,10 @@ class Sync::ContentsController < Sync::BaseController
     build_guid
 
     if @article.save
-      message = "The article has been saved"
-      status = 200
+      render :text => "The article has been saved", :status => 200
     else
-      message = "The article has not been saved. Please try again!"
-      status = 500
+      render :text => "The article has not been saved. Please try again!", :status => 500
     end
-    
-    render :text => message, :status => status
   end
 
   private
