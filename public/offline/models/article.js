@@ -1,12 +1,24 @@
 MainModel.extend('Article',
     /* @Static */
     {
+        init: function() {
+            // Call the base classes constructor.
+            this._super();
+
+            this.validatesPresenceOf(['title'], {
+                message: "must be supplied"
+            });
+            this.validatesPresenceOf(['permalink'], {
+                message: "must be supplied"
+            });
+        },
+
         /**
-        * Retrieves articles.
-        * @param {Array} params - params that might refine your results.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Retrieves articles.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         find_all: function(params, success, error){
             var obj = this
             var current_page = 0
@@ -90,11 +102,11 @@ MainModel.extend('Article',
         },
 
         /**
-        * Finds article by id.
-        * @param {String} permalink - unique permalink representing your content.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Finds article by id.
+     * @param {String} permalink - unique permalink representing your content.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         find_by_permalink: function(permalink, success, error) {
             var obj = this
             db.transaction(function(tx) {
@@ -117,11 +129,11 @@ MainModel.extend('Article',
         },
 
         /**
-        * Finds a page by name.
-        * @param {String} page - the name of a page.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Finds a page by name.
+     * @param {String} page - the name of a page.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         find_page: function(page, success, error) {
             var obj = this
             db.transaction(function(tx) {
@@ -135,31 +147,31 @@ MainModel.extend('Article',
         },
 
         /**
-        * Finds articles by catetegory id.
-        * @param {Array} params - params that might refine your results.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Finds articles by catetegory id.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         find_by_category_id: function(params, success, error ){
             this.find_all(params,success,error)
         },
 
         /**
-        * Finds articles by tag id.
-        * @param {Array} params - params that might refine your results.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Finds articles by tag id.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         find_by_tag_id: function(params, success, error ){
             this.find_all(params,success,error)
         },
 
         /**
-        * Finds articles by published date.
-        * @param {Array} params params that might refine your results.
-        * @param {Function} success a callback function that returns wrapped article objects.
-        * @param {Function} error a callback function for an error.
-        */
+     * Finds articles by published date.
+     * @param {Array} params params that might refine your results.
+     * @param {Function} success a callback function that returns wrapped article objects.
+     * @param {Function} error a callback function for an error.
+     */
         find_by_published_at: function(params, success, error) {
             this.find_all(params,success,error)
         },
@@ -169,11 +181,11 @@ MainModel.extend('Article',
         },
 
         /**
-        * Finds articles for article sidebar.
-        * @param {Array} params - params that might refine your results.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Finds articles for article sidebar.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         archives_box: function(params, success, error ){
             var obj = this
             db.transaction(function(tx) {
@@ -196,11 +208,11 @@ MainModel.extend('Article',
         },
 
         /**
-        * Finds pages for page sidebar.
-        * @param {Array} params - params that might refine your results.
-        * @param {Function} success - a callback function that returns wrapped article objects.
-        * @param {Function} error - a callback function for an error.
-        */
+     * Finds pages for page sidebar.
+     * @param {Array} params - params that might refine your results.
+     * @param {Function} success - a callback function that returns wrapped article objects.
+     * @param {Function} error - a callback function for an error.
+     */
         page_box: function(params, success, error ){
             var obj = this
             db.transaction(function(tx) {
@@ -212,6 +224,25 @@ MainModel.extend('Article',
                     })
             })
         },
+
+        create: function(attrs, success, error){
+            var date = attrs.published_at_date.year+"-"+(attrs.published_at_date.month+1)+"-"+attrs.published_at_date.day+" "+attrs.published_at_time
+            
+            db.transaction(function(tx){
+                tx.executeSql("INSERT INTO contents (title,body,excerpt,published_at,created_at,updated_at,allow_pings,allow_comments,permalink,text_filter_id) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    [attrs.title,attrs.body,attrs.excerpt,date,date,date,Number(attrs.allow_pings),Number(attrs.allow_comments),attrs.permalink,attrs.text_filter_id],
+                    function(tx,rs){
+                        tx.executeSql("INSERT INTO sync (table_name,row_id,method) VALUES (?,?,?)",['contents',rs.insertId,'POST'],
+                            function(){
+                                return success(attrs)
+                            },function(tx,err){
+                                return error(err)
+                            })
+                    },function(tx,err){
+                        return error(err)
+                    })
+            })
+        }
     },
     /* @Prototype */
     {

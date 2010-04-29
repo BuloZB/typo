@@ -1,7 +1,7 @@
 onmessage = function(event) {
     //max working time for thread
     setTimeout(function(){
-        postMessage("503")
+        postMessage(["503",event])
     }, 10000)
 
     var url = event.data.url
@@ -21,6 +21,6 @@ onmessage = function(event) {
     if(request.status == 200 && method == "GET") {
         postMessage([request.status, eval('(' + request.responseText + ')')])
     } else {
-        postMessage(request.status)
+        postMessage([request.status,event])
     }
 }

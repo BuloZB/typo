@@ -33,10 +33,10 @@ include(function(){ //runs after prior includes are loaded
         $('#dialog-message').dialog('open')
     }
 
-    include.resources('sync','connection','strftime','notification','jquery-ui-1-2/jquery-ui-1.7.2.custom.min','modernizr-1.1.min','database/driver','database/sqlite_driver','database/creator','database/database_creator','database/init')
+    include.resources('base64','sync','server-status','strftime','notification','jquery-ui-1-2/jquery-ui-1.7.2.custom.min','modernizr-1.1.min','database/driver','database/sqlite_driver','database/creator','database/database_creator','database/init')
     include.models('main_model','article','category','tag','sidebar','comment','blog','synchronization');
-    include.controllers('main','article','category','tag','sidebar','navigation','search','synchronization');
-    include.views('views/article/show','views/article/archive','views/article/init','views/article/init_archive','views/article/comment','views/article/comment_form','views/article/list',
+    include.controllers('main','article','category','tag','sidebar','navigation','search','synchronization','admin');
+    include.views('views/article/show','views/article/new','views/article/archive','views/article/init','views/article/init_archive','views/article/comment','views/article/comment_form','views/article/list',
         'views/category/show','views/category/init',
         'views/sidebar/archive','views/sidebar/category','views/sidebar/page','views/sidebar/tag','views/sidebar/status','views/sidebar/search',
         'views/tag/init','views/tag/show',

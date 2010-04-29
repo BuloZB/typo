@@ -45,7 +45,7 @@ jQuery.Controller.extend('SynchronizationController',
             localStorage['last_sync'] = (new Date()).getTime()
         },
 
-        error: function() {
+        error: function(err) {
             Notification.msg("Synchronization failed. Please try again!")
 
             //update view

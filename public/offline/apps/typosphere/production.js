@@ -2809,10 +2809,10 @@ _1+="</div>";
 $("#dialog-message").html(_1);
 $("#dialog-message").dialog("open");
 }
-include.resources("sync","connection","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
+include.resources("base64","sync","server-status","strftime","notification","jquery-ui-1-2/jquery-ui-1.7.2.custom.min","modernizr-1.1.min","database/driver","database/sqlite_driver","database/creator","database/database_creator","database/init");
 include.models("main_model","article","category","tag","sidebar","comment","blog","synchronization");
-include.controllers("main","article","category","tag","sidebar","navigation","search","synchronization");
-include.views("views/article/show","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show","views/search/init");
+include.controllers("main","article","category","tag","sidebar","navigation","search","synchronization","admin");
+include.views("views/article/show","views/article/new","views/article/archive","views/article/init","views/article/init_archive","views/article/comment","views/article/comment_form","views/article/list","views/category/show","views/category/init","views/sidebar/archive","views/sidebar/category","views/sidebar/page","views/sidebar/tag","views/sidebar/status","views/sidebar/search","views/tag/init","views/tag/show","views/search/init");
 });
 ;
 include.setPath('jmvc/plugins/model');
@@ -4701,7 +4701,7 @@ for(var y=_c-15;y<_c+15;y++){
 _9.push({value:y,text:y});
 }
 for(var m=0;m<12;m++){
-_a.push({value:(m),text:$View.Helpers.month_names[m]});
+_a.push({value:(m),text:this.month_names[m]});
 }
 for(var d=0;d<31;d++){
 _b.push({value:(d+1),text:(d+1)});
@@ -6903,9 +6903,101 @@ return J;
 ;
 include.next_function();
 include.setPath('resources');
+var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(_1){
+var _2="";
+var _3,_4,_5,_6,_7,_8,_9;
+var i=0;
+_1=Base64._utf8_encode(_1);
+while(i<_1.length){
+_3=_1.charCodeAt(i++);
+_4=_1.charCodeAt(i++);
+_5=_1.charCodeAt(i++);
+_6=_3>>2;
+_7=((_3&3)<<4)|(_4>>4);
+_8=((_4&15)<<2)|(_5>>6);
+_9=_5&63;
+if(isNaN(_4)){
+_8=_9=64;
+}else{
+if(isNaN(_5)){
+_9=64;
+}
+}
+_2=_2+this._keyStr.charAt(_6)+this._keyStr.charAt(_7)+this._keyStr.charAt(_8)+this._keyStr.charAt(_9);
+}
+return _2;
+},decode:function(_b){
+var _c="";
+var _d,_e,_f;
+var _10,_11,_12,_13;
+var i=0;
+_b=_b.replace(/[^A-Za-z0-9\+\/\=]/g,"");
+while(i<_b.length){
+_10=this._keyStr.indexOf(_b.charAt(i++));
+_11=this._keyStr.indexOf(_b.charAt(i++));
+_12=this._keyStr.indexOf(_b.charAt(i++));
+_13=this._keyStr.indexOf(_b.charAt(i++));
+_d=(_10<<2)|(_11>>4);
+_e=((_11&15)<<4)|(_12>>2);
+_f=((_12&3)<<6)|_13;
+_c=_c+String.fromCharCode(_d);
+if(_12!=64){
+_c=_c+String.fromCharCode(_e);
+}
+if(_13!=64){
+_c=_c+String.fromCharCode(_f);
+}
+}
+_c=Base64._utf8_decode(_c);
+return _c;
+},_utf8_encode:function(_15){
+_15=_15.replace(/\r\n/g,"\n");
+var _16="";
+for(var n=0;n<_15.length;n++){
+var c=_15.charCodeAt(n);
+if(c<128){
+_16+=String.fromCharCode(c);
+}else{
+if((c>127)&&(c<2048)){
+_16+=String.fromCharCode((c>>6)|192);
+_16+=String.fromCharCode((c&63)|128);
+}else{
+_16+=String.fromCharCode((c>>12)|224);
+_16+=String.fromCharCode(((c>>6)&63)|128);
+_16+=String.fromCharCode((c&63)|128);
+}
+}
+}
+return _16;
+},_utf8_decode:function(_19){
+var _1a="";
+var i=0;
+var c=c1=c2=0;
+while(i<_19.length){
+c=_19.charCodeAt(i);
+if(c<128){
+_1a+=String.fromCharCode(c);
+i++;
+}else{
+if((c>191)&&(c<224)){
+c2=_19.charCodeAt(i+1);
+_1a+=String.fromCharCode(((c&31)<<6)|(c2&63));
+i+=2;
+}else{
+c2=_19.charCodeAt(i+1);
+c3=_19.charCodeAt(i+2);
+_1a+=String.fromCharCode(((c&15)<<12)|((c2&63)<<6)|(c3&63));
+i+=3;
+}
+}
+}
+return _1a;
+}};
+;
+include.setPath('resources');
 onmessage=function(_1){
 setTimeout(function(){
-postMessage("503");
+postMessage(["503",_1]);
 },10000);
 var _2=_1.data.url;
 var _3=_1.data.method;
@@ -6920,7 +7012,7 @@ _5.send(_4);
 if(_5.status==200&&_3=="GET"){
 postMessage([_5.status,eval("("+_5.responseText+")")]);
 }else{
-postMessage(_5.status);
+postMessage([_5.status,_1]);
 }
 };
 ;
@@ -7135,7 +7227,11 @@ return this.wrapMany(_2);
 }},{});
 ;
 include.setPath('models');
-MainModel.extend("Article",{find_all:function(_1,_2,_3){
+MainModel.extend("Article",{init:function(){
+this._super();
+this.validatesPresenceOf(["title"],{message:"must be supplied"});
+this.validatesPresenceOf(["permalink"],{message:"must be supplied"});
+},find_all:function(_1,_2,_3){
 var _4=this;
 var _5=0;
 var _6=0;
@@ -7245,21 +7341,34 @@ return _47(obj.parse_result(rs));
 return _48(err);
 });
 });
-},},{published_at_month:function(){
-var _4f=this.published_at.split(" ");
-var _50=_4f[0].split("-");
-return _50[1];
+},create:function(_4f,_50,_51){
+var _52=_4f.published_at_date.year+"-"+(_4f.published_at_date.month+1)+"-"+_4f.published_at_date.day+" "+_4f.published_at_time;
+db.transaction(function(tx){
+tx.executeSql("INSERT INTO contents (title,body,excerpt,published_at,created_at,updated_at,allow_pings,allow_comments,permalink,text_filter_id) VALUES(?,?,?,?,?,?,?,?,?,?)",[_4f.title,_4f.body,_4f.excerpt,_52,_52,_52,Number(_4f.allow_pings),Number(_4f.allow_comments),_4f.permalink,_4f.text_filter_id],function(tx,rs){
+tx.executeSql("INSERT INTO sync (table_name,row_id,method) VALUES (?,?,?)",["contents",rs.insertId,"POST"],function(){
+return _50(_4f);
+},function(tx,err){
+return _51(err);
+});
+},function(tx,err){
+return _51(err);
+});
+});
+}},{published_at_month:function(){
+var _5a=this.published_at.split(" ");
+var _5b=_5a[0].split("-");
+return _5b[1];
 },published_at_year:function(){
-var _51=this.published_at.split(" ");
-var _52=_51[0].split("-");
-return _52[0];
+var _5c=this.published_at.split(" ");
+var _5d=_5c[0].split("-");
+return _5d[0];
 },published_at_mday:function(){
-var _53=this.published_at.split(" ");
-var _54=_53[0].split("-");
-return _54[2];
-},mark_search_term:function(_55){
-jQuery.each(this,function(i,_57){
-console.log("value: "+_57);
+var _5e=this.published_at.split(" ");
+var _5f=_5e[0].split("-");
+return _5f[2];
+},mark_search_term:function(_60){
+jQuery.each(this,function(i,_62){
+console.log("value: "+_62);
 });
 }});
 ;
@@ -7499,27 +7608,48 @@ return _1();
 }
 };
 _4.onmessage=function(_25){
-if(_25.data!=200){
+if(_25.data[0]!=200){
 _4.terminate();
 _3.terminate();
 return _2();
 }
 };
 db.transaction(function(tx){
-tx.executeSql("SELECT * FROM sync WHERE table_name = ?",["feedback"],function(tx,rs){
+tx.executeSql("SELECT * FROM sync",[],function(tx,rs){
+var _29="";
+var _2a="";
+var id=0;
+var _2c="";
+var url="";
+var _2e="";
 for(var i=0;i<rs.rows.length;i++){
-var row=rs.rows.item(i);
-var id=row.row_id;
-var _2c=row.method;
-tx.executeSql("SELECT author,body,email,article_id,url FROM feedback WHERE id = ?",[id],function(tx,rs){
+_2a=url=rs.rows.item(i).table_name;
+id=rs.rows.item(i).row_id;
+_2c=rs.rows.item(i).method;
+if(_2a=="contents"){
+if(_2e==""){
+_2e=window.confirm("You are going to sync Contents table. \n\nBefore you continue you have to sign in on \n(http://typo.galileoagency.sk/admin).");
+}
+if(!_2e){
+_4.terminate();
+_3.terminate();
+return _2();
+}
+}
+tx.executeSql("SELECT * FROM "+_2a+" WHERE id = ?",[id],function(tx,rs){
 var row=rs.rows.item(0);
-var _30="author="+row.author+"&body="+row.body+"&email="+row.email+"&url="+row.url+"&article_id="+row.article_id+"";
-_4.postMessage({url:"feedback",method:_2c,params:_30});
+_29="";
+for(var key in row){
+if(row[key]!=null){
+_29+=key+"="+row[key]+"&";
+}
+}
+_4.postMessage({url:url+".xml",method:_2c,params:_29});
 });
 }
 });
 },function(err){
-return _2();
+return _2(err);
 },function(){
 _3.postMessage({url:"blog.json",method:"GET"});
 _3.postMessage({url:"articles_tags.json",method:"GET"});
@@ -7539,46 +7669,24 @@ jQuery.Controller.extend("MainController",{onDocument:true},{load:function(){
 this.time();
 Blog.settings([],this.callback("load_settings"),this.callback(Notification.msg));
 $("#dialog-message").dialog({modal:true,autoOpen:false,show:"clip"});
-var _1=this;
-setInterval(function(){
-_1.connection_status();
-},60000);
 },time:function(){
-var _2=new Date();
-$("#date > span").html(_2.toLocaleDateString());
-},connection_status:function(){
-var _3=new Worker("resources/connection.js");
-var el=$("#status");
-var _5="";
-_3.onmessage=function(_6){
-if(_6.data==200){
-_5="online";
-}else{
-_5="offline";
-}
-el.attr("class",_5+"-status");
-if(el.html()!=_5){
-Notification.msg("Server status: "+_5);
-}
-el.html(_5);
-this.terminate();
-};
-_3.postMessage("");
+var _1=new Date();
+$("#date > span").html(_1.toLocaleDateString());
 },offline_msg:function(){
 Notification.msg("This function is not available in offline mode");
-},load_settings:function(_7){
-$("#logo > hgroup > h1").html(_7["blog_name"]);
-$("#logo > hgroup > h2").html(_7["blog_subtitle"]);
-if(parseInt(localStorage["limit_article_display"])!=parseInt(_7["limit_article_display"])){
-localStorage["limit_article_display"]=_7["limit_article_display"];
+},load_settings:function(_2){
+$("#logo > hgroup > h1").html(_2["blog_name"]);
+$("#logo > hgroup > h2").html(_2["blog_subtitle"]);
+if(parseInt(localStorage["limit_article_display"])!=parseInt(_2["limit_article_display"])){
+localStorage["limit_article_display"]=_2["limit_article_display"];
 }
 localStorage["limit_article_display"]=2;
 },is_online:function(){
-var _8=navigator.onLine?"online":"offline";
+var _3=navigator.onLine?"online":"offline";
 var el=$("#status");
-el.attr("class",_8+"-status");
-el.html(_8);
-Notification.msg("You are now "+_8);
+el.attr("class",_3+"-status");
+el.html(_3);
+Notification.msg("You are now "+_3);
 },".offline click":function(el){
 this.offline_msg();
 },});
@@ -7610,6 +7718,7 @@ if(!_15.save()){
 Notification.validation_errors(_15.errors);
 }
 },"comment.created subscribe":function(_16,_17){
+Notification.msg("The comment has been saved");
 $("#commentList").append(this.view("comment",_17));
 jQuery("#article form input[type=text]").val("");
 jQuery("#article form textarea").val("");
@@ -7641,41 +7750,62 @@ Category.box([],this.callback("categories_box"));
 Tag.box([],this.callback("tags_box"),this.callback(Notification.msg));
 Article.archives_box([],this.callback("archives_box"),this.callback(Notification.msg));
 Article.page_box([],this.callback("page_box"),this.callback(Notification.msg));
+var _1=this;
+this.update_server_status();
+setInterval(function(){
+_1.update_server_status();
+},60000);
 },search_box:function(){
 if(!$("#search-box").length){
 $("#sidebar").append($(document.createElement("section")).attr("id","search-box"));
 }
 $("#search-box").html(this.view("sidebar/search",{}));
-},categories_box:function(_1){
+},categories_box:function(_2){
 if(!$("#categories-box").length){
 $("#sidebar").append($(document.createElement("section")).attr("id","categories-box"));
 }
-$("#categories-box").html(this.view("sidebar/category",{categories:_1}));
-},tags_box:function(_2){
+$("#categories-box").html(this.view("sidebar/category",{categories:_2}));
+},tags_box:function(_3){
 if(!$("#tags-box").length){
 $("#sidebar").append($(document.createElement("section")).attr("id","tags-box"));
 }
-$("#tags-box").html(this.view("sidebar/tag",{tags:_2}));
-},archives_box:function(_3){
+$("#tags-box").html(this.view("sidebar/tag",{tags:_3}));
+},archives_box:function(_4){
 if(!$("#archives-box").length){
 $("#sidebar").append($(document.createElement("section")).attr("id","archives-box"));
 }
-$("#archives-box").html(this.view("sidebar/archive",{articles:_3}));
-},page_box:function(_4){
+$("#archives-box").html(this.view("sidebar/archive",{articles:_4}));
+},page_box:function(_5){
 if(!$("#page-box").length){
 $("#sidebar").append($(document.createElement("section")).attr("id","page-box"));
 }
-$("#page-box").html(this.view("sidebar/page",{pages:_4}));
+$("#page-box").html(this.view("sidebar/page",{pages:_5}));
 },status_box:function(){
 if(!$("#status-box").length){
 $("#sidebar").append($(document.createElement("section")).attr("id","status-box"));
 }
-var _5=navigator.onLine?"online":"offline";
 var _6=localStorage["last_sync"];
-$("#status-box").html(this.view("sidebar/status",{status:_5,last_sync:_6}));
-},"#synchronize click":function(){
-this.load();
-}});
+$("#status-box").html(this.view("sidebar/status",{last_sync:_6}));
+},update_server_status:function(){
+var _7=new Worker("resources/server-status.js");
+var el=$("#status");
+var _9="";
+_7.onmessage=function(_a){
+if(_a.data==200){
+_9="online";
+}else{
+_9="offline";
+}
+el.attr("class",_9+"-status");
+if(el.html()!=_9){
+Notification.msg("Server status: "+_9);
+}
+el.html(_9);
+this.terminate();
+return;
+};
+_7.postMessage("");
+},});
 ;
 include.setPath('controllers');
 jQuery.Controller.extend("NavigationController",{onDocument:true},{display_article_list:function(_1,_2){
@@ -7729,19 +7859,34 @@ _1.attr("href","/offline/index.html");
 _1.html("reload a page with new data");
 $("#sync-link").html(_1);
 localStorage["last_sync"]=(new Date()).getTime();
-},error:function(){
+},error:function(_2){
 Notification.msg("Synchronization failed. Please try again!");
-var _2=$(document.createElement("a"));
-_2.attr("href","#sync");
-_2.html("synchronize");
-$("#sync-link").html(_2);
+var _3=$(document.createElement("a"));
+_3.attr("href","#sync");
+_3.html("synchronize");
+$("#sync-link").html(_3);
 $("#progressbar").hide();
-},"history.sync.index subscribe":function(_3,_4){
+},"history.sync.index subscribe":function(_4,_5){
 if(navigator.onLine){
 this.sync_process();
 }else{
 Notification.msg("Sync error: you must be online to sync database.");
 }
+},});
+;
+include.setPath('controllers');
+jQuery.Controller.extend("AdminController",{onDocument:true},{"history.new-article.index subscribe":function(){
+$(".section").html(this.view("article/new"));
+},"#new-article submit":function(el,ev){
+ev.preventDefault();
+var _3=new Article(el.formParams());
+if(!_3.save()){
+Notification.validation_errors(_3.errors);
+}
+},"article.created subscribe":function(_4,_5){
+Notification.msg("The article has been saved");
+jQuery("#new-article input[type=text]").val("");
+jQuery("#new-article textarea").val("");
 },});
 ;
 include.setPath('views/article');
@@ -7883,6 +8028,93 @@ _4.push("        ");
 }
 _4.push("\n");
 _4.push("    </article>");
+return _4.join("");
+}
+}
+}
+catch(e){
+e.lineNumber=null;
+throw e;
+}
+});
+})(jQuery);
+;
+include.setPath('views/article');
+(function($){
+jQuery.View.PreCompiledFunction("../../views/article/new.ejs","views/article/new.ejs",function(_2,_3){
+try{
+with(_3){
+with(_2){
+var _4=[];
+_4.push("<section id=\"admin\" class=\"new-article\">\n");
+_4.push("<h1>New article</h1>\n");
+_4.push("    <p>\n");
+_4.push("    If you want to publish a new article you must save it locally and then sync your offline database with online service and sign in with your login and\n");
+_4.push("password on http://typo.galileoagency.sk/admin before syncing process.\n");
+_4.push("    </p>\n");
+_4.push("    ");
+_4.push((jQuery.View.Scanner.to_text(form_tag("#new-article",{method:"post",id:"new-article"}))));
+_4.push("\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"title\">Title</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(input_field_tag("title"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"body\">Body</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(text_area_tag("body"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"excerpt\">Excerpt</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(text_area_tag("excerpt"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label>Published at</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(date_tag("published_at_date"))));
+_4.push("\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(time_tag("published_at_time"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"permalink\">Permalink</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(input_field_tag("permalink"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"text_filter_id\">Article filter</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(select_tag("text_filter_id","",[{text:"None",value:1},{text:"Markdown",value:2},{text:"SmartyPants",value:3},{text:"Markdown with SmartyPants",value:4},{text:"Textile",value:5}]))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"allow_comments\">Allow comments</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(check_box_tag("allow_comments","1"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        <label for=\"allow_pings\">Allow trackbacks</label>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(check_box_tag("allow_pings","1"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    <p>\n");
+_4.push("        ");
+_4.push((jQuery.View.Scanner.to_text(input_field_tag("submit","save","submit"))));
+_4.push("\n");
+_4.push("    </p>\n");
+_4.push("    ");
+_4.push((jQuery.View.Scanner.to_text(form_tag_end())));
+_4.push("\n");
+_4.push("</section>");
 return _4.join("");
 }
 }
@@ -8372,12 +8604,10 @@ try{
 with(_3){
 with(_2){
 var _4=[];
-_4.push("    <h1>Your status</h1>\n");
+_4.push("    <h1>Offline app menu</h1>\n");
 _4.push("    <p>Server status: <span  class=\"");
 _4.push((jQuery.View.Scanner.to_text(status)));
-_4.push("-status\" id=\"status\">");
-_4.push((jQuery.View.Scanner.to_text(status)));
-_4.push("</span></p>\n");
+_4.push("-status\" id=\"status\"> checking ...</span></p>\n");
 _4.push("    <p>Last sync:\n");
 _4.push("    ");
 if(last_sync==undefined){
@@ -8398,6 +8628,7 @@ _4.push("        ");
 _4.push("\n");
 _4.push("    </p>\n");
 _4.push("    <p id=\"sync-link\"><a href=\"#sync\">synchronize</a></p>\n");
+_4.push("    <p><a href=\"#new-article\">new article</a></p>\n");
 _4.push("    <div id=\"progressbar\" class=\"hidden\"><div id=\"progressbar-wrapper\"><div id=\"progressbar-status\">&nbsp;</div></div></div>");
 return _4.join("");
 }

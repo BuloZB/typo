@@ -1,0 +1,45 @@
+<section id="admin" class="new-article">
+<h1>New article</h1>
+    <p>
+    If you want to publish a new article you must save it locally and then sync your offline database with online service and sign in with your login and
+password on http://typo.galileoagency.sk/admin before syncing process.
+    </p>
+    <%= form_tag("#new-article",{method:"post",id:"new-article"}) %>
+    <p>
+        <label for="title">Title</label>
+        <%= input_field_tag("title") %>
+    </p>
+    <p>
+        <label for="body">Body</label>
+        <%= text_area_tag("body") %>
+    </p>
+    <p>
+        <label for="excerpt">Excerpt</label>
+        <%= text_area_tag("excerpt") %>
+    </p>
+    <p>
+        <label>Published at</label>
+        <%= date_tag("published_at_date") %>
+        <%= time_tag("published_at_time") %>
+    </p>
+    <p>
+        <label for="permalink">Permalink</label>
+        <%= input_field_tag("permalink") %>
+    </p>
+    <p>
+        <label for="text_filter_id">Article filter</label>
+        <%= select_tag("text_filter_id",'',[{text:"None",value:1},{text:"Markdown",value:2},{text:"SmartyPants",value:3},{text:"Markdown with SmartyPants",value:4},{text:"Textile",value:5}]) %>
+    </p>
+    <p>
+        <label for="allow_comments">Allow comments</label>
+        <%= check_box_tag("allow_comments","1") %>
+    </p>
+    <p>
+        <label for="allow_pings">Allow trackbacks</label>
+        <%= check_box_tag("allow_pings","1") %>
+    </p>
+    <p>
+        <%= input_field_tag("submit","save","submit") %>
+    </p>
+    <%= form_tag_end() %>
+</section>

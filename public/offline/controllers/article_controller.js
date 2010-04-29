@@ -81,6 +81,7 @@ jQuery.Controller.extend('ArticleController',
         },
 
         "comment.created subscribe": function(called, content){
+            Notification.msg("The comment has been saved")
             $('#commentList').append(this.view('comment', content))
             jQuery("#article form input[type=text]").val(""); //clear old vals
             jQuery("#article form textarea").val(""); //clear old vals

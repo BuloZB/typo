@@ -11,6 +11,8 @@ $.Model.extend('Synchronization',
             var worker_output = new Worker("resources/sync.js")
             var request = new Array
             var obj = this
+            var post_request = false
+            var num_of_post_requests = 0
             
             worker_input.onmessage = function(event) {
                 if(event.data[0] == 200) {
@@ -124,27 +126,98 @@ $.Model.extend('Synchronization',
                 }
             }
 
+            var step = 0
+
             worker_output.onmessage = function(event) {
-                if(event.data != 200) {
+
+                step++
+                console.log(step +","+post_request+","+num_of_post_requests)
+                if(event.data[0] != 200) {
                     worker_output.terminate()
                     worker_input.terminate()
                     return error()
+                } 
+                
+                else if(post_request && (num_of_post_requests == step)) {
+                    //we sent all data, we are sending GET requests after all POST requests are done
+                    worker_input.postMessage({
+                        url:"blog.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"articles_tags.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"sidebars.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"categories.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"categorizations.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"contents.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"feedback.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"tags.json",
+                        method:"GET"
+                    })
                 }
             }
 
             //first we need to send data to server
             db.transaction(function(tx) {
-                tx.executeSql("SELECT * FROM sync WHERE table_name = ?",['feedback'],function(tx,rs){
+                tx.executeSql("SELECT * FROM sync",[],function(tx,rs){
+                    var params = ''
+                    var table = ''
+                    var id = 0
+                    var method = ''
+                    var url = ''
+                    var answer = ''
+
                     for(var i=0;i<rs.rows.length;i++) {
-                        var row = rs.rows.item(i)
-                        var id = row.row_id
-                        var method = row.method
-                        tx.executeSql("SELECT author,body,email,article_id,url FROM feedback WHERE id = ?",[id],
+
+                        //we are sending post request
+                        post_request = true
+                        num_of_post_requests = rs.rows.length
+
+                        table = url = rs.rows.item(i).table_name
+                        id = rs.rows.item(i).row_id
+                        method = rs.rows.item(i).method
+
+                        if(table == 'contents') {
+                            //we are syncing contents table - auth is required
+                            if(answer==''){
+                                answer = window.confirm("You are going to sync Contents table. \n\nBefore you continue you have to sign in on \n(http://typo.galileoagency.sk/admin).")
+                            }
+                            if(!answer) {
+                                worker_output.terminate()
+                                worker_input.terminate()
+                                return error()
+                            }
+                        }
+
+                        tx.executeSql("SELECT * FROM " + table + " WHERE id = ?",[id],
                             function(tx,rs){
                                 var row = rs.rows.item(0)
-                                var params = "author="+row.author+"&body="+row.body+"&email="+row.email+"&url="+row.url+"&article_id="+row.article_id+""
+                                params = ''
+                                for(var key in row) {
+                                    if(row[key] != null) {
+                                        params += key + "=" + row[key] + "&"
+                                    }
+                                }
                                 worker_output.postMessage({
-                                    url:"feedback",
+                                    url:url+".xml",
                                     method:method,
                                     params:params
                                 })
@@ -152,41 +225,43 @@ $.Model.extend('Synchronization',
                     }
                 })
             },function(err) {
-                return error()
+                return error(err)
             },function() {
-                //all data are sent, we can retrieve new data
-                worker_input.postMessage({
-                    url:"blog.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"articles_tags.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"sidebars.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"categories.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"categorizations.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"contents.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"feedback.json",
-                    method:"GET"
-                })
-                worker_input.postMessage({
-                    url:"tags.json",
-                    method:"GET"
-                })
+                //we haven't sent any data, we must send GET requests from here (otherwise requests are send after POST requests)
+                if(!post_request) {
+                    worker_input.postMessage({
+                        url:"blog.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"articles_tags.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"sidebars.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"categories.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"categorizations.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"contents.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"feedback.json",
+                        method:"GET"
+                    })
+                    worker_input.postMessage({
+                        url:"tags.json",
+                        method:"GET"
+                    })
+                }
             })
         },
 

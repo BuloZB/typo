@@ -1,8 +1,8 @@
-    <h1>Your status</h1>
+    <h1>Offline app menu</h1>
     <p>Server status: <span  class="<%= status %>-status" id="status"> checking ...</span></p>
     <p>Last sync:
     <% if(last_sync == undefined) { %>
-        "never"
+        never
         <% } else {
             var date = new Date(parseInt(last_sync))
         %>
@@ -11,4 +11,5 @@
         <% } %>
     </p>
     <p id="sync-link"><a href="#sync">synchronize</a></p>
+    <p><a href="#new-article">new article</a></p>
     <div id="progressbar" class="hidden"><div id="progressbar-wrapper"><div id="progressbar-status">&nbsp;</div></div></div>

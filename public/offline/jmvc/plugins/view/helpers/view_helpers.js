@@ -33,7 +33,7 @@ $.extend($.View.Helpers.prototype, {
 		var years = [], months = [], days =[];
 		var year = value.getFullYear(), month = value.getMonth(), day = value.getDate();
 		for(var y = year - 15; y < year+15 ; y++) years.push({value: y, text: y});
-		for(var m = 0; m < 12; m++) months.push({value: (m), text: $View.Helpers.month_names[m]});
+		for(var m = 0; m < 12; m++) months.push({value: (m), text: this.month_names[m]});
 		for(var d = 0; d < 31; d++) days.push({value: (d+1), text: (d+1)});
 		
 		var year_select = this.select_tag(name+'[year]', year, years, {id: name+'[year]'} );

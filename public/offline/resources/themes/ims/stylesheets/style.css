@@ -442,3 +442,17 @@ section#archives  h3.archivemonth {
     color: white;
     text-align: left;
 }
+
+
+/* [] NEW ARTICLE */
+.new-article label {
+    display: block;
+    font-weight: bold;
+}
+.new-article input[type=text], textarea {
+    width: 95%;
+    padding: .5em;
+}
+textarea {
+    height: 20em;
+}
