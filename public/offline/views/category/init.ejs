@@ -1,2 +1,2 @@
-<% console.log(category.articles) %>
-    <%= view('views/article/list',{articles: category.articles})%>
+<%= view('views/article/list',{articles: category.articles})%>
+<%= pagination("#category&amp;view="+category.permalink,params) %>
