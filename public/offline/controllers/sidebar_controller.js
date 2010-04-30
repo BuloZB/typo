@@ -21,7 +21,7 @@ jQuery.Controller.extend('SidebarController',
             this.update_server_status()
             setInterval(function(){
                 self.update_server_status()
-            },60000)
+            },30000)
         },
 
         /**
