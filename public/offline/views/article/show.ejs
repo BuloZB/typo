@@ -19,7 +19,15 @@
         <%}%>
     </header>
     <div class="post-body">
-    <%= this.body %>
+    <% if(this.comments == undefined) {%>
+        <% if(this.excerpt) { %>
+            <%= this.excerpt %>
+        <% } else { %>
+            <%= this.body %>
+        <% } %>
+    <% } else { %>
+        <%= this.body %>
+    <% } %>
     </div>
     
     <footer class="postmetadata">
