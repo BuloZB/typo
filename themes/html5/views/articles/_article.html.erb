@@ -22,7 +22,7 @@
   </div>
 
   <footer class="postmetadata">
-    <%= category_links(article) + " | " unless article.categories.empty?;  %>
-    <%= display_comments_counter(article) %>
+    <%= category_links(article) unless article.categories.empty?;  %>
+    <%#= display_comments_counter(article) %>
   </footer>
 </article>
