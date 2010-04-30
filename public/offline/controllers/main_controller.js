@@ -43,6 +43,7 @@ jQuery.Controller.extend('MainController',
             //blog header
             $('#logo > hgroup > h1').html(settings['blog_name'])
             $('#logo > hgroup > h2').html(settings['blog_subtitle'])
+            $('title').html(settings['blog_name'] + " offline")
 
             //number of articles in index
             if(parseInt(localStorage['limit_article_display']) != parseInt(settings['limit_article_display'])) {
