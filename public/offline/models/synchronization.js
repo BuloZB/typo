@@ -100,6 +100,7 @@ $.Model.extend('Synchronization',
                             data.published_at = obj.parse_date_string(data.published_at)
                             data.created_at = obj.parse_date_string(data.created_at)
                             data.updated_at = obj.parse_date_string(data.updated_at)
+                            data.status_confirmed = Number(data.status_confirmed)
                             tx.executeSql("INSERT INTO feedback VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                                 [data.id,data.type,data.title,data.author,data.body,data.excerpt,data.created_at,data.updated_at,data.user_id,data.guid,data.text_filter_id,data.whiteboard,data.article_id,data.email,data.url,data.ip,data.blog_name,data.published,data.published_at,data.state,data.status_confirmed])
                         })
