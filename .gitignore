@@ -24,3 +24,5 @@ nbproject/private/config.properties
 public/offline/index.htm
 config/database.yml
 .gitignore.orig
+Capfile
+config/deploy.rb

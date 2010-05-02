@@ -1,3 +1,37 @@
 <div class="section" id="read">
-  <%= render :partial => 'article', :object => @article %>
+  <article class="post" id="article-<%= @article.id %>">
+    <header>
+      <h1 class="title"><%= link_to_permalink(@article,@article.title) %></h1>
+      <span>
+        <%= _("Posted by") %> <%= author_link(@article) %>, <time datetime="<%= display_gregorian_time(@article.published_at) %>" pubdate><%= _('Date') %> <%= display_article_time(@article.published_at) %></time>
+      </span>
+      <% unless @article.tags.empty? %>
+        <aside class="tags"><%= tag_links(@article) %></aside>
+      <% end %>
+    </header>
+
+    <%= @article.html(:body) %>
+    <%= @article.html(:extended) %>
+
+    <% if @article.allow_comments? or @article.published_comments.size > 0 -%>
+      <section class="comments">
+        <h1><%= display_comments_counter(@article) %></h1>
+        <p><a href="#commentform"><%= _("Leave a response")%></a></p>
+        <%= render :partial => "/articles/comment_list" %>
+      </section>
+    <% end -%>
+
+    <%= render :partial => 'comment_form' if @article.allow_comments? %>
+
+    <% if @article.allow_pings? -%>
+      <aside class="trackbacks">
+        <h1><a href="#trackbacks"><%= _("Trackbacks for ") %> <%= @article.title %></a></h1>
+        <% unless @article.published_trackbacks.blank? -%>
+          <ol id="trackbacks" class="trackbacks">
+            <%= render(:partial => "/articles/trackback", :collection => @article.published_trackbacks) %>
+          </ol>
+        <% end -%>
+      </aside>
+    <% end -%>
+  </article>
 </div>

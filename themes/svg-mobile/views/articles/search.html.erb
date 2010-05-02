@@ -1,7 +1,12 @@
 <section class="section" id="search">
-  <h1>Search results</h1>
+  <h1>Search results for "<%= params[:q] %>"</h1>
   <% for article in @articles -%>
+    <% #mark search query string
+    article.body = mark_search_expr(article.body, params[:q])
+    article.title = mark_search_expr(article.title, params[:q])
+    article.excerpt = mark_search_expr(article.excerpt, params[:q])
+    -%>
     <%= render :partial => 'article', :object => article  %>
-<% end -%>
-<p id="pagination"><%= will_paginate @articles %></p>
+  <% end -%>
+  <p id="pagination"><%= will_paginate @articles %></p>
 </section>

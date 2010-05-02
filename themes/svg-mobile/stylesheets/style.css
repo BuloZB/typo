@@ -44,6 +44,10 @@ a:hover {
 .svg-more {
     margin: .5em 0 .5em 0;
 }
+#search mark {
+    background: rgb(255,255,153);
+    padding: .1em;
+}
 
 /* [] HEADER */
 #header {
@@ -154,4 +158,27 @@ a:hover {
 /* [] ARCHIVES */
 #archives h3 {
     margin-top: 1em;
+}
+
+
+/* [] PAGINATION */
+.pagination {
+    margin: .5em .5em .5em 0;
+}
+.pagination a, .pagination a:visited, .pagination a:active, .pagination span {
+    padding: .5em;
+    background: #3e8337;
+    color: white;
+    margin: .2em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.pagination a:hover {
+    background: gray;
+}
+.pagination span {
+    background: #f0f0f0;
+    color: black;
 }

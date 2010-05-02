@@ -6,7 +6,7 @@
         <%= _("Posted by") %> <%= author_link(@article) %>, <time datetime="<%= display_gregorian_time(@article.published_at) %>" pubdate><%= _('Date') %> <%= display_article_time(@article.published_at) %></time>
       </span>
       <% unless @article.tags.empty? %>
-        <div class="tags"><%= tag_links(@article) %></div>
+        <aside class="tags"><%= tag_links(@article) %></aside>
       <% end %>
     </header>
 
