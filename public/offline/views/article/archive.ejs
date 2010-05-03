@@ -16,7 +16,6 @@
             <div class="archivepost">
             <%= articles[i].published_at_mday() %> -
             <a href="#article&amp;view=<%= articles[i].permalink %>" class="view"><%= articles[i].title %></a>
-            <% console.log(articles[i].categories) %>
             <% if(articles[i].categories != undefined && articles[i].categories.length > 0) { %>
                 posted in
                 <% for(var j=0;j<articles[i].categories.length;j++) {%>

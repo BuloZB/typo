@@ -134,7 +134,6 @@ $.Model.extend('Synchronization',
             worker_output.onmessage = function(event) {
 
                 step++
-                console.log(step +","+post_request+","+num_of_post_requests)
                 if(event.data[0] != 200) {
                     worker_output.terminate()
                     worker_input.terminate()

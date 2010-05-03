@@ -60,7 +60,6 @@ MainModel.extend('Article',
             if(params.search) {
                 where += ' AND title like ("%'+params.search+'%")'
                 //                args.unshift(params.search)
-                console.log(args)
             }
 
             db.transaction(function(tx) {
@@ -261,9 +260,4 @@ MainModel.extend('Article',
             var mday = date[0].split("-")
             return mday[2]
         },
-        mark_search_term: function(term) {
-            jQuery.each(this,function(i,value) {
-                console.log("value: " + value)
-            })
-        }
     })
