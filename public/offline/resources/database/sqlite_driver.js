@@ -3,7 +3,7 @@ Driver.extend('SqliteDriver',
     },
     {
         init: function(){
-            this._super('SqliteTypo','1.0','10485760','Offline database for Typosphere')
+            this._super('SqliteTypo','1.0',5*1024*1024,'Offline database for Typosphere')
         },
         create_tables: function() {
             var queries = [
